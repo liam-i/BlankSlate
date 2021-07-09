@@ -1,6 +1,6 @@
 //
-//  LPEmptyDataSet.swift
-//  LPEmptyDataSet
+//  EmptyDataSet.swift
+//  EmptyDataSet
 //
 //  Created by pengli on 2020/2/6.
 //  Copyright © 2020 pengli. All rights reserved.
@@ -10,21 +10,14 @@ import UIKit
 
 // MARK: - Extension UIScrollView
 
-private var LPEmptyDataSetSourceKey: Void?
-private var LPEmptyDataSetDelegateKey: Void?
-private var LPEmptyDataSetViewKey: Void?
-private var LPEmptyDataSetTypeKey: Void?
-private let LPEmptyImageViewAnimationKey = "com.lp.emptyDataSet.imageViewAnimation"
-private var LPIMPLookupTable = [String: (owner: AnyClass, selector: String)](minimumCapacity: 3)
-
 /// 空数据集类型；适用于网络请求数据出差的情况。
-public enum LPEmptyDataSetType {
+public enum EmptyDataSetType {
     case empty // 数据请求成功，但数据为空
     case error // 数据请求出错
 }
 
 /// 空数据集元素类型
-public enum LPEmptyDataSetElement: CaseIterable {
+public enum EmptyDataSetElement: CaseIterable {
     case image  // 图片视图
     case title  // 标题标签
     case detail // 明细标签
@@ -33,54 +26,54 @@ public enum LPEmptyDataSetElement: CaseIterable {
 }
 
 /// `UITableView` / `UICollectionView`父类的扩展，用于在视图无内容时自动显示空数据集
-/// - Note: 只需遵循`LPEmptyDataSetDataSource`协议，并返回要显示的数据它将自动工作
+/// - Note: 只需遵循`EmptyDataSetDataSource`协议，并返回要显示的数据它将自动工作
 extension UIScrollView: UIGestureRecognizerDelegate {
     /// 空数据集数据源
-    public weak var emptyDataSetSource: LPEmptyDataSetDataSource? {
-        get { (objc_getAssociatedObject(self, &LPEmptyDataSetSourceKey) as? LPWeakObject)?.weakObject as? LPEmptyDataSetDataSource }
+    public weak var emptyDataSetSource: EmptyDataSetDataSource? {
+        get { (objc_getAssociatedObject(self, &EmptyDataSetSourceKey) as? WeakObject)?.value as? EmptyDataSetDataSource }
         set {
-            if newValue == nil || !lp_canDisplay { lp_invalidate() }
-            
-            objc_setAssociatedObject(self, &LPEmptyDataSetSourceKey, LPWeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            
+            if newValue == nil || !canDisplay { invalidate() }
+
+            objc_setAssociatedObject(self, &EmptyDataSetSourceKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
             /// 使用runtime swizzle将`lp_reloadData()`和`reloadData()`交换
             switch self {
             case is UITableView:
-                lp_swizzleIfNeeded(UITableView.self, #selector(UITableView.reloadData))
-                lp_swizzleIfNeeded(UITableView.self, #selector(UITableView.endUpdates))
+                swizzleIfNeeded(UITableView.self, #selector(UITableView.reloadData))
+                swizzleIfNeeded(UITableView.self, #selector(UITableView.endUpdates))
             case is UICollectionView:
-                lp_swizzleIfNeeded(UICollectionView.self, #selector(UICollectionView.reloadData))
+                swizzleIfNeeded(UICollectionView.self, #selector(UICollectionView.reloadData))
             default:
                 assert(false)
             }
         }
     }
-    
+
     /// 空数据集委托
-    public weak var emptyDataSetDelegate: LPEmptyDataSetDelegate? {
-        get { (objc_getAssociatedObject(self, &LPEmptyDataSetDelegateKey) as? LPWeakObject)?.weakObject as? LPEmptyDataSetDelegate }
+    public weak var emptyDataSetDelegate: EmptyDataSetDelegate? {
+        get { (objc_getAssociatedObject(self, &EmptyDataSetDelegateKey) as? WeakObject)?.value as? EmptyDataSetDelegate }
         set {
-            if newValue == nil { lp_invalidate() }
-            objc_setAssociatedObject(self, &LPEmptyDataSetDelegateKey, LPWeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            if newValue == nil { invalidate() }
+            objc_setAssociatedObject(self, &EmptyDataSetDelegateKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    
+
     /// 空数据集类型
-    public var emptyDataSetType: LPEmptyDataSetType? {
-        get { objc_getAssociatedObject(self, &LPEmptyDataSetTypeKey) as? LPEmptyDataSetType }
-        set { objc_setAssociatedObject(self, &LPEmptyDataSetTypeKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    public var emptyDataSetType: EmptyDataSetType? {
+        get { objc_getAssociatedObject(self, &EmptyDataSetTypeKey) as? EmptyDataSetType }
+        set { objc_setAssociatedObject(self, &EmptyDataSetTypeKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
-    
+
     /// 如果空数据集可见，则为`true`
     public var isEmptyDataSetVisible: Bool {
-        guard let view = objc_getAssociatedObject(self, &LPEmptyDataSetViewKey) as? LPEmptyDataSetView else { return false }
+        guard let view = objc_getAssociatedObject(self, &EmptyDataSetViewKey) as? EmptyDataSetView else { return false }
         return !view.isHidden
     }
-    
+
     /// 重新加载数据
     /// - Parameter type: 指定空数据集类型
     /// - Note: 调用此方法以自动按序执行`reloadData()` 和`reloadEmptyDataSet()`
-    public func reloadAllData(with type: LPEmptyDataSetType) {
+    public func reloadAllData(with type: EmptyDataSetType) {
         emptyDataSetType = type
         switch self {
         case let tableView as UITableView:           tableView.reloadData()
@@ -88,20 +81,20 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         default:                                     assert(false)
         }
     }
-    
+
     /// 重新加载空数据集内容视图
     /// - Note: 调用此方法以强制刷新所有数据。类似于`reloadData()`，但这仅强制重新加载空数据集，而不强制重新加载整个表视图或集合视图
     public func reloadEmptyDataSet() {
-        guard let emptyDataSetSource = emptyDataSetSource, lp_canDisplay else { return }
-        
-        if ((emptyDataSetDelegate?.emptyDataSetShouldDisplay(self) ?? true) && (lp_itemsCount == 0))
+        guard let emptyDataSetSource = emptyDataSetSource, canDisplay else { return }
+
+        if ((emptyDataSetDelegate?.emptyDataSetShouldDisplay(self) ?? true) && (itemsCount == 0))
             || (emptyDataSetDelegate?.emptyDataSetShouldBeForcedToDisplay(self) ?? false) {
-            let view = lp_emptyDataSetView ?? lp_create()
-            
+            let view = emptyDataSetView ?? lp_create()
+
             emptyDataSetDelegate?.emptyDataSetWillAppear(self) // 通知委托空数据集视图将要呈现
-            
+
             view.fadeInDuration = emptyDataSetSource.fadeInDuration(forEmptyDataSet: self) // 设置空数据集淡入持续时间
-            
+
             if view.superview == nil {
                 /// 如果`UITableView`/`UICollectionView`有内容存在则将空数据集插入到视图最底层
                 if (self is UITableView || self is UICollectionView) && subviews.count > 1 {
@@ -110,10 +103,10 @@ extension UIScrollView: UIGestureRecognizerDelegate {
                     addSubview(view)
                 }
             }
-            
+
             /// 重置视图以及约束
             view.prepareForReuse()
-            
+
             /// 如果允许，则设置自定义视图
             if let customView = emptyDataSetSource.customView(forEmptyDataSet: self) {
                 view.setCustomView(customView, edge: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .custom))
@@ -124,25 +117,25 @@ extension UIScrollView: UIGestureRecognizerDelegate {
                     let imageView = view.createImageView(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .image))
                     imageView.image = image.withRenderingMode(tintColor != nil ? .alwaysTemplate : .alwaysOriginal)
                     imageView.tintColor = tintColor
-                    
+
                     // 配置图像视图动画
                     if let animation = emptyDataSetSource.imageAnimation(forEmptyDataSet: self) {
-                        imageView.layer.add(animation, forKey: LPEmptyImageViewAnimationKey)
-                    } else if imageView.layer.animation(forKey: LPEmptyImageViewAnimationKey) != nil {
-                        imageView.layer.removeAnimation(forKey: LPEmptyImageViewAnimationKey)
+                        imageView.layer.add(animation, forKey: EmptyImageViewAnimationKey)
+                    } else if imageView.layer.animation(forKey: EmptyImageViewAnimationKey) != nil {
+                        imageView.layer.removeAnimation(forKey: EmptyImageViewAnimationKey)
                     }
                 }
-                
+
                 /// 配置标题标签
                 if let titleString = emptyDataSetSource.title(forEmptyDataSet: self) {
                     view.createTitleLabel(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .title)).attributedText = titleString
                 }
-                
+
                 /// 配置详细标签
                 if let detailString = emptyDataSetSource.detail(forEmptyDataSet: self) {
                     view.createDetailLabel(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .title)).attributedText = detailString
                 }
-                
+
                 /// 配置按钮
                 if let buttonImage = emptyDataSetSource.buttonImage(forEmptyDataSet: self, for: .normal) {
                     let button = view.createButton(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .button))
@@ -158,39 +151,39 @@ extension UIScrollView: UIGestureRecognizerDelegate {
                     emptyDataSetSource.configure(forEmptyDataSet: self, for: button)
                 }
             }
-            
+
             view.verticalOffset = emptyDataSetSource.verticalOffset(forEmptyDataSet: self)
-            
+
             // 配置空数据集视图
             view.backgroundColor = emptyDataSetSource.backgroundColor(forEmptyDataSet: self) ?? UIColor.clear
             view.isHidden = view.elements.isEmpty // 如果视图集为空，则不显示
             view.clipsToBounds = true
-            view.isUserInteractionEnabled = lp_isTouchAllowed // 设置空数据集的用户交互权限
+            view.isUserInteractionEnabled = isTouchAllowed // 设置空数据集的用户交互权限
             if !view.isHidden { view.setupConstraints() } // 如果视图集不为空，则设置约束
-            
+
             UIView.performWithoutAnimation { view.layoutIfNeeded() }
             isScrollEnabled = emptyDataSetDelegate?.emptyDataSetShouldAllowScroll(self) ?? false // 设置滚动权限
-            
+
             emptyDataSetDelegate?.emptyDataSetDidAppear(self) // 通知委托空数据集视图已经呈现
         } else if isEmptyDataSetVisible {
-            lp_invalidate()
+            invalidate()
         }
     }
-    
-    private var lp_emptyDataSetView: LPEmptyDataSetView? {
-        get { objc_getAssociatedObject(self, &LPEmptyDataSetViewKey) as? LPEmptyDataSetView }
-        set { objc_setAssociatedObject(self, &LPEmptyDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+
+    private var emptyDataSetView: EmptyDataSetView? {
+        get { objc_getAssociatedObject(self, &EmptyDataSetViewKey) as? EmptyDataSetView }
+        set { objc_setAssociatedObject(self, &EmptyDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
-    
-    private var lp_canDisplay: Bool {
+
+    private var canDisplay: Bool {
         (emptyDataSetSource != nil) && (self is UITableView || self is UICollectionView)
     }
-    
-    private var lp_isTouchAllowed: Bool {
+
+    private var isTouchAllowed: Bool {
         emptyDataSetDelegate?.emptyDataSetShouldAllowTouch(self) ?? true
     }
-    
-    private var lp_itemsCount: Int {
+
+    private var itemsCount: Int {
         var items: Int = 0
         switch self {
         case let tableView as UITableView: // UITableView 支持
@@ -212,79 +205,79 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         }
         return items
     }
-    
-    @objc private func lp_didTapContentView(_ sender: UITapGestureRecognizer) {
+
+    @objc private func didTapContentView(_ sender: UITapGestureRecognizer) {
         guard let view = sender.view else { return }
         emptyDataSetDelegate?.emptyDataSet(self, didTap: view)
     }
-    
-    private func lp_create() -> LPEmptyDataSetView {
-        let view = LPEmptyDataSetView()
+
+    private func lp_create() -> EmptyDataSetView {
+        let view = EmptyDataSetView()
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.isHidden = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(lp_didTapContentView))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapContentView))
         tap.delegate = self
         view.addGestureRecognizer(tap)
         view.tapGesture = tap
-        self.lp_emptyDataSetView = view
+        self.emptyDataSetView = view
         return view
     }
-    
-    private func lp_invalidate() {
+
+    private func invalidate() {
         emptyDataSetDelegate?.emptyDataSetWillDisappear(self) // 通知委托空数据集视图将要消失
-        
-        if let emptyDataSetView = lp_emptyDataSetView {
+
+        if let emptyDataSetView = emptyDataSetView {
             emptyDataSetView.prepareForReuse()
             emptyDataSetView.removeFromSuperview()
-            lp_emptyDataSetView = nil
+            self.emptyDataSetView = nil
         }
         emptyDataSetType = nil
-        
+
         isScrollEnabled = true
         emptyDataSetDelegate?.emptyDataSetDidDisappear(self) // 通知委托空数据集视图已经消失
     }
-    
-    private func lp_swizzleIfNeeded(_ originalClass: AnyClass, _ originalSelector: Selector) {
+
+    private func swizzleIfNeeded(_ originalClass: AnyClass, _ originalSelector: Selector) {
         /// 检查当前类是否实现了`originalSelector`方法
         guard responds(to: originalSelector) else { return assert(false) }
-        
+
         let originalStringSelector = NSStringFromSelector(originalSelector)
-        for info in LPIMPLookupTable.values where (info.selector == originalStringSelector && isKind(of: info.owner)) {
+        for info in IMPLookupTable.values where (info.selector == originalStringSelector && isKind(of: info.owner)) {
             return // 确保每个类（`UITableView`或`UICollectionView`）都只调用一次`method_setImplementation`
         }
-        
+
         let key = "\(NSStringFromClass(originalClass))_\(originalStringSelector)"
-        guard LPIMPLookupTable[key] == nil else { return } // 如果`originalClass`的实现已经存在，不在继续往下执行
-        
+        guard IMPLookupTable[key] == nil else { return } // 如果`originalClass`的实现已经存在，不在继续往下执行
+
         guard let originalMethod = class_getInstanceMethod(originalClass, originalSelector) else { return assert(false) }
         let originalImplementation = method_getImplementation(originalMethod)
-        
+
         typealias OriginalIMP = @convention(c) (UIScrollView, Selector) -> Void
-        
+
         /// `unsafeBitCast`将`originalImplementation`强制转换成`OriginalIMP`类型
         /// 两者的类型其实是相同的，都是一个`IMP`指针类型，即`id (*IMP)(id, SEL, ...)`
         let originalClosure = unsafeBitCast(originalImplementation, to: OriginalIMP.self)
-        
+
         let swizzledBlock: @convention(block) (UIScrollView) -> Void = { (owner) in
             originalClosure(owner, originalSelector)
             owner.reloadEmptyDataSet() // 重新加载空数据集。在调用`isEmptyDataSetVisible`属性之前进行此操作
         }
-        
+
         let swizzledImplementation = imp_implementationWithBlock(unsafeBitCast(swizzledBlock, to: AnyObject.self))
         method_setImplementation(originalMethod, swizzledImplementation)
-        
-        LPIMPLookupTable[key] = (originalClass, originalStringSelector) // 将新的实现存储在内存表中
+
+        IMPLookupTable[key] = (originalClass, originalStringSelector) // 将新的实现存储在内存表中
     }
-    
+
     open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let view = gestureRecognizer.view, view.isEqual(lp_emptyDataSetView) {
-            return lp_isTouchAllowed
+        if let view = gestureRecognizer.view, view.isEqual(emptyDataSetView) {
+            return isTouchAllowed
         }
         return super.gestureRecognizerShouldBegin(gestureRecognizer)
     }
-    
+
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        let tapGesture = lp_emptyDataSetView?.tapGesture
+        let tapGesture = emptyDataSetView?.tapGesture
         if gestureRecognizer.isEqual(tapGesture) || otherGestureRecognizer.isEqual(tapGesture) {
             return true
         }
@@ -299,24 +292,26 @@ extension UIScrollView: UIGestureRecognizerDelegate {
     }
 }
 
-// MARK: - LPWeakObject
+// MARK: - WeakObject
 
-private class LPWeakObject {
-    private(set) weak var weakObject: AnyObject?
-    init?(_ object: AnyObject?) {
-        guard let object = object else { return nil }
-        weakObject = object
+private class WeakObject {
+    private(set) weak var value: AnyObject?
+
+    init?(_ value: AnyObject?) {
+        guard let value = value else { return nil }
+        self.value = value
     }
+
     deinit {
         #if DEBUG
-        print("LPWeakObject: -> release memory.")
+        print("👍🏻👍🏻👍🏻 WeakObject is released.")
         #endif
     }
 }
 
-// MARK - LPEmptyDataSetView
+// MARK - EmptyDataSetView
 
-private class LPEmptyDataSetView: UIView {
+fileprivate class EmptyDataSetView: UIView {
     private let contentView: UIView = {
         let contentView = UIView()
         contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -325,12 +320,12 @@ private class LPEmptyDataSetView: UIView {
         contentView.alpha = 0
         return contentView
     }()
-    
-    private(set) var elements: [LPEmptyDataSetElement: (UIView, UIEdgeInsets)] = [:]
-    
+
+    private(set) var elements: [EmptyDataSetElement: (UIView, UIEdgeInsets)] = [:]
+
     func createImageView(with edge: UIEdgeInsets) -> UIImageView {
         if let element = elements[.image] { element.0.removeFromSuperview() }
-        
+
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = UIColor.clear
@@ -340,10 +335,10 @@ private class LPEmptyDataSetView: UIView {
         elements[.image] = (imageView, edge)
         return imageView
     }
-    
+
     func createTitleLabel(with edge: UIEdgeInsets) -> UILabel {
         if let element = elements[.title] { element.0.removeFromSuperview() }
-        
+
         let titleLabel = UILabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.backgroundColor = UIColor.clear
@@ -356,10 +351,10 @@ private class LPEmptyDataSetView: UIView {
         elements[.title] = (titleLabel, edge)
         return titleLabel
     }
-    
+
     func createDetailLabel(with edge: UIEdgeInsets) -> UILabel {
         if let element = elements[.detail] { element.0.removeFromSuperview() }
-        
+
         let detailLabel = UILabel()
         detailLabel.translatesAutoresizingMaskIntoConstraints = false
         detailLabel.backgroundColor = UIColor.clear
@@ -372,10 +367,10 @@ private class LPEmptyDataSetView: UIView {
         elements[.detail] = (detailLabel, edge)
         return detailLabel
     }
-    
+
     func createButton(with edge: UIEdgeInsets) -> UIButton {
         if let element = elements[.button] { element.0.removeFromSuperview() }
-        
+
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.clear
@@ -386,38 +381,38 @@ private class LPEmptyDataSetView: UIView {
         elements[.button] = (button, edge)
         return button
     }
-    
+
     func setCustomView(_ view: UIView, edge: UIEdgeInsets) {
         if let element = elements[.custom] { element.0.removeFromSuperview() }
-        
+
         view.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(view)
         elements[.custom] = (view, edge)
     }
-    
+
     weak var tapGesture: UITapGestureRecognizer?
     var verticalOffset: CGFloat = 0 // 自定义垂直偏移量
     var fadeInDuration: TimeInterval = 0
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(contentView)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     deinit {
         #if DEBUG
-        print("LPEmptyDataSetView: -> release memory.")
+        print("👍🏻👍🏻👍🏻 EmptyDataSetView is released.")
         #endif
     }
-    
+
     override func didMoveToSuperview() {
         guard let superview = superview else { return }
         frame = superview.bounds
-        
+
         guard fadeInDuration > 0.0 else {
             return contentView.alpha = 1.0
         }
@@ -425,35 +420,35 @@ private class LPEmptyDataSetView: UIView {
             self?.contentView.alpha = 1.0
         }
     }
-    
+
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let hitView = super.hitTest(point, with: event) else { return nil }
-        
+
         /// 返回任何`UIControl`实例，例如`UIButton、UISegmentedControl、UISwitch`等
         if hitView is UIControl {
             return hitView
         }
-        
+
         /// 返回`contentView`或`customView`
         if hitView.isEqual(contentView) || hitView.isEqual(elements[.custom]) {
             return hitView
         }
         return nil
     }
-    
+
     @objc private func didTapButton(_ sender: UIButton) {
         guard let superview = superview as? UIScrollView else { return }
         superview.emptyDataSetDelegate?.emptyDataSet(superview, didTap: sender)
     }
-    
+
     func prepareForReuse() {
         elements.values.forEach { $0.0.removeFromSuperview() }
         elements.removeAll()
-        
+
         removeConstraints(constraints)
         contentView.removeConstraints(contentView.constraints)
     }
-    
+
     func setupConstraints() {
         /// 首先，配置内容视图约束
         var constraints = [
@@ -461,7 +456,7 @@ private class LPEmptyDataSetView: UIView {
             contentView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: verticalOffset),
             contentView.widthAnchor.constraint(equalTo: widthAnchor)
         ]
-        
+
         /// 如果允许，设置自定义视图的约束
         if let element = elements[.custom] {
             let view = element.0
@@ -474,7 +469,7 @@ private class LPEmptyDataSetView: UIView {
             ]
         } else {
             var previous: (UIView, UIEdgeInsets)?
-            for key in LPEmptyDataSetElement.allCases {
+            for key in EmptyDataSetElement.allCases {
                 guard let element = elements[key] else { continue }
                 let view = element.0
                 let edge = element.1
@@ -495,144 +490,11 @@ private class LPEmptyDataSetView: UIView {
     }
 }
 
-// MARK: - LPEmptyDataSetDataSource
+// MARK: - Private keys
 
-/// 空数据集的数据源协议
-/// - Note: 数据源必须采用`LPEmptyDataSetDataSource`协议。所有数据源方法都是可选的
-public protocol LPEmptyDataSetDataSource: NSObjectProtocol {
-    /// 向数据源请求数据集的图像。默认`nil`
-    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage?
-    
-    /// 向数据源请求数据集图像的`TintColor`。默认`nil`
-    func imageTintColor(forEmptyDataSet scrollView: UIScrollView) -> UIColor?
-    
-    /// 向数据源请求数据集的图像动画，默认`nil`
-    func imageAnimation(forEmptyDataSet scrollView: UIScrollView) -> CAAnimation?
-    
-    /// 向数据源请求数据集的标题文本。默认`nil`
-    /// - Note: 如果未设置任何属性，则默认使用固定字体样式。如果要使用其他字体样式，请见`NSAttributedString`
-    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString?
-    
-    /// 向数据源请求数据集的明细文本。默认`nil`
-    /// - Note: 如果未设置任何属性，则默认使用固定字体样式。如果要使用其他字体样式，请见`NSAttributedString`
-    func detail(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString?
-    
-    /// 向数据源请求用于指定按钮状态的标题。默认`nil`
-    /// - Parameter state: 指定标题的状态。详情请见`UIControl.State`
-    /// - Note: 如果未设置任何属性，则默认使用固定字体样式。如果要使用其他字体样式，请见`NSAttributedString`
-    func buttonTitle(forEmptyDataSet scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString?
-    
-    /// 向数据源请求用于指定按钮状态的背景图像。默认`nil`
-    /// - Parameter state: 指定图像的状态。详情请见`UIControl.State`
-    func buttonBackgroundImage(forEmptyDataSet scrollView: UIScrollView, for state: UIControl.State) -> UIImage?
-    
-    /// 向数据源请求用于指定按钮状态的图像。默认`nil`
-    /// - Parameter state: 指定图像的状态。详情请见`UIControl.State`
-    /// - Note: 此方法将覆盖`buttonTitle(forEmptyDataSet:for:)`函数
-    func buttonImage(forEmptyDataSet scrollView: UIScrollView, for state: UIControl.State) -> UIImage?
-    
-    /// 向数据源请求去配置按钮样式
-    /// - Parameter button: 需要配置的按钮
-    func configure(forEmptyDataSet scrollView: UIScrollView, for button: UIButton)
-    
-    /// 向数据源请求数据集的背景色。 默认`UIColor.clear`
-    func backgroundColor(forEmptyDataSet scrollView: UIScrollView) -> UIColor?
-    
-    /// 向数据源请求自定义空数据集视图，而不显示默认视图，例如`labels`、`imageview`和`button`。默认`nil`
-    func customView(forEmptyDataSet scrollView: UIScrollView) -> UIView?
-    
-    /// 向数据源请求内容垂直对齐的偏移量。默认`0pt`
-    func verticalOffset(forEmptyDataSet scrollView: UIScrollView) -> CGFloat
-    
-    /// 向数据源请求`LPEmptyDataSetElement`的上下左右间距。默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
-    func edgeInsets(forEmptyDataSet scrollView: UIScrollView, for element: LPEmptyDataSetElement) -> UIEdgeInsets
-    
-    /// 向数据源请求在显示空数据集时采用淡入动画的持续时间。默认`0`
-    /// - Note: 如果`fadeInDuration <= 0`则不执行动画
-    func fadeInDuration(forEmptyDataSet scrollView: UIScrollView) -> TimeInterval
-}
-
-extension LPEmptyDataSetDataSource {
-    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? { nil }
-    func imageTintColor(forEmptyDataSet scrollView: UIScrollView) -> UIColor? { nil }
-    func imageAnimation(forEmptyDataSet scrollView: UIScrollView) -> CAAnimation? { nil }
-    
-    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? { nil }
-    
-    func detail(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? { nil }
-    
-    func buttonTitle(forEmptyDataSet scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? { nil }
-    func buttonBackgroundImage(forEmptyDataSet scrollView: UIScrollView, for state: UIControl.State) -> UIImage? { nil }
-    func buttonImage(forEmptyDataSet scrollView: UIScrollView, for state: UIControl.State) -> UIImage? { nil }
-    func configure(forEmptyDataSet scrollView: UIScrollView, for button: UIButton) { }
-    
-    func backgroundColor(forEmptyDataSet scrollView: UIScrollView) -> UIColor? { UIColor.clear }
-    
-    func customView(forEmptyDataSet scrollView: UIScrollView) -> UIView? { nil }
-    
-    func verticalOffset(forEmptyDataSet scrollView: UIScrollView) -> CGFloat { 0.0 }
-    
-    func edgeInsets(forEmptyDataSet scrollView: UIScrollView, for element: LPEmptyDataSetElement) -> UIEdgeInsets { UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16) }
-    
-    func fadeInDuration(forEmptyDataSet scrollView: UIScrollView) -> TimeInterval { 0.0 }
-}
-
-// MARK: - LPEmptyDataSetDelegate
-
-/// 空数据集的委托协议
-/// - Note: 所有委托方法都是可选的。使用此委托来接收操作回调
-public protocol LPEmptyDataSetDelegate: NSObjectProtocol {
-    /// 向委托请求当items数大于0时是否仍然显示空数据集。默认`false`
-    func emptyDataSetShouldBeForcedToDisplay(_ scrollView: UIScrollView) -> Bool
-    
-    /// 向委托请求是否允许显示空数据集。 默认为`true`
-    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool
-    
-    /// 向委托请求是否允许响应触摸手势。 默认为`true`
-    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool
-    
-    /// 向委托请求是否允许滚动。 默认为`false`
-    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool
-    
-    /// 通知委托该空数据集视图被触摸
-    /// - Parameter view: 用户点击的视图
-    func emptyDataSet(_ scrollView: UIScrollView, didTap view: UIView)
-    
-    /// 通知委托该操作按钮被点击
-    /// - Parameter button: 用户点击的按钮
-    func emptyDataSet(_ scrollView: UIScrollView, didTap button: UIButton)
-    
-    /// 通知委托该空数据集将要显示
-    func emptyDataSetWillAppear(_ scrollView: UIScrollView)
-    
-    /// 通知委托该空数据集已经显示
-    func emptyDataSetDidAppear(_ scrollView: UIScrollView)
-    
-    /// 通知委托该空数据集将要消失
-    func emptyDataSetWillDisappear(_ scrollView: UIScrollView)
-    
-    /// 通知委托该空数据集已经消失
-    func emptyDataSetDidDisappear(_ scrollView: UIScrollView)
-}
-
-extension LPEmptyDataSetDelegate {
-    func emptyDataSetShouldBeForcedToDisplay(_ scrollView: UIScrollView) -> Bool { false }
-    
-    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool { true }
-    
-    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool { true }
-    
-    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool { false }
-    
-    func emptyDataSet(_ scrollView: UIScrollView, didTap view: UIView) { }
-    
-    func emptyDataSet(_ scrollView: UIScrollView, didTap button: UIButton) { }
-    
-    func emptyDataSetWillAppear(_ scrollView: UIScrollView) { }
-    
-    func emptyDataSetDidAppear(_ scrollView: UIScrollView) { }
-    
-    func emptyDataSetWillDisappear(_ scrollView: UIScrollView) { }
-    
-    func emptyDataSetDidDisappear(_ scrollView: UIScrollView) { }
-}
+private var EmptyDataSetSourceKey: Void?
+private var EmptyDataSetDelegateKey: Void?
+private var EmptyDataSetViewKey: Void?
+private var EmptyDataSetTypeKey: Void?
+private let EmptyImageViewAnimationKey = "com.lp.emptyDataSet.imageViewAnimation"
+private var IMPLookupTable = [String: (owner: AnyClass, selector: String)](minimumCapacity: 3)
