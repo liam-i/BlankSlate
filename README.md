@@ -17,7 +17,7 @@ EmptyDataSet is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'EmptyDataSet'
+pod 'EmptyDataSet', :git => 'git@github.com:leo-lp/EmptyDataSet.git', :tag => '0.1.0'
 ```
 
 ## Author
