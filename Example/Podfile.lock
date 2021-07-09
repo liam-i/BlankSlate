@@ -1,0 +1,16 @@
+PODS:
+  - EmptyDataSet (0.1.0)
+
+DEPENDENCIES:
+  - EmptyDataSet (from `../`)
+
+EXTERNAL SOURCES:
+  EmptyDataSet:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  EmptyDataSet: 5153691234abe9de9046cc074d0b5d6f363df546
+
+PODFILE CHECKSUM: bde3e50ce024b47785f5f4d18172f8ecf6465161
+
+COCOAPODS: 1.10.1

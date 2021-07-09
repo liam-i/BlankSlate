@@ -8,6 +8,5 @@ target 'EmptyDataSet_Example' do
   target 'EmptyDataSet_Tests' do
     inherit! :search_paths
 
-    
   end
 end
