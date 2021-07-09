@@ -5,6 +5,8 @@
 [![License](https://img.shields.io/cocoapods/l/EmptyDataSet.svg?style=flat)](https://cocoapods.org/pods/EmptyDataSet)
 [![Platform](https://img.shields.io/cocoapods/p/EmptyDataSet.svg?style=flat)](https://cocoapods.org/pods/EmptyDataSet)
 
+The Swift version of [DZNEmptyDataSet](https://github.com/dzenbot/DZNEmptyDataSet).
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
