@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  EmptyDataSet
 //
-//  Created by leo-lp on 07/09/2021.
-//  Copyright (c) 2021 leo-lp. All rights reserved.
+//  Created by Liam on 07/09/2021.
+//  Copyright (c) 2021 Liam. All rights reserved.
 //
 
 import UIKit

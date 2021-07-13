@@ -3,7 +3,7 @@ This application makes use of the following third party libraries:
 
 ## EmptyDataSet
 
-Copyright (c) 2021 leo-lp <lipengmjy@163.com>
+Copyright (c) 2021 Liam <liam_i@163.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
