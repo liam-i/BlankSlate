@@ -3,16 +3,16 @@
   "version": "0.1.0",
   "summary": "A short description of EmptyDataSet.",
   "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/leo-lp/EmptyDataSet",
+  "homepage": "https://github.com/liam-i/EmptyDataSet",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "leo-lp": "lipengmjy@163.com"
+    "Liam": "liam_i@163.com"
   },
   "source": {
-    "git": "https://github.com/leo-lp/EmptyDataSet.git",
+    "git": "https://github.com/liam-i/EmptyDataSet.git",
     "tag": "0.1.0"
   },
   "platforms": {
