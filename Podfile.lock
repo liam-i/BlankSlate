@@ -1,0 +1,16 @@
+PODS:
+  - LPEmptyDataSet (0.1.0)
+
+DEPENDENCIES:
+  - LPEmptyDataSet (from `./`)
+
+EXTERNAL SOURCES:
+  LPEmptyDataSet:
+    :path: "./"
+
+SPEC CHECKSUMS:
+  LPEmptyDataSet: d907793e6895ac1fa55a837fd5bf63f87a23fb2c
+
+PODFILE CHECKSUM: 4301e142f68de5370881cbc4d464eb7f23c09624
+
+COCOAPODS: 1.11.2
