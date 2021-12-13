@@ -50,11 +50,11 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		6816B827B1DA7E206C4890D8 /* Pods_EmptyDataSet_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EmptyDataSet_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AC1FCDC72D81725E70A75FCB /* update-pod.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; name = "update-pod.sh"; path = "./update-pod.sh"; sourceTree = "<group>"; };
+		AC1FCDC72D81725E70A75FCB /* update-pods.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "update-pods.sh"; sourceTree = "<group>"; };
 		B1FD2A2CA7C878D207D7231A /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ./LICENSE; sourceTree = "<group>"; };
 		BD0D114FC47948A48267088E /* Pods-EmptyDataSet_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmptyDataSet_Tests.debug.xcconfig"; path = "Target Support Files/Pods-EmptyDataSet_Tests/Pods-EmptyDataSet_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C58AED957508D9113ECDF79D /* Pods-EmptyDataSet_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmptyDataSet_Example.debug.xcconfig"; path = "Target Support Files/Pods-EmptyDataSet_Example/Pods-EmptyDataSet_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		D73E84B90D153592A18459A8 /* install-pod.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; name = "install-pod.sh"; path = "./install-pod.sh"; sourceTree = "<group>"; };
+		D73E84B90D153592A18459A8 /* install-pods.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "install-pods.sh"; sourceTree = "<group>"; };
 		E846C446275D101F00CE208D /* IdealSans-Book-Pro.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "IdealSans-Book-Pro.otf"; sourceTree = "<group>"; };
 		E846C448275D101F00CE208D /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Regular.ttf"; sourceTree = "<group>"; };
 		E846C44B275D107B00CE208D /* applications.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = applications.json; sourceTree = "<group>"; };
@@ -165,8 +165,8 @@
 				B1FD2A2CA7C878D207D7231A /* LICENSE */,
 				20EAB2086FCF5E2465FB11BB /* build.sh */,
 				30DDACD85B7C26259D0BD9E9 /* push-git.sh */,
-				D73E84B90D153592A18459A8 /* install-pod.sh */,
-				AC1FCDC72D81725E70A75FCB /* update-pod.sh */,
+				D73E84B90D153592A18459A8 /* install-pods.sh */,
+				AC1FCDC72D81725E70A75FCB /* update-pods.sh */,
 			);
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
