@@ -2,24 +2,35 @@
 
 echo "执行的脚本名：$0"
 
-function pod_update() {
+function git_push() {
+    msg=$1
+
     case $1 in
-    no)
-        echo "\033[33m --> pod update --verbose --no-repo-update... \033[0m" # 黄色
-        pod update --verbose --no-repo-update
-        ;;
-    *)
-        echo "\033[33m --> pod update... \033[0m" # 黄色
-        pod update
+    d)
+        msg="Minor Updates"
         ;;
     esac
 
-    if [ $? -ne 0 ]
-    then
-        echo "\033[31m 🔴🔴🔴 --> pod update failed. \033[0m" # 红色
+
+    if [ -z "$msg" ]; then
+        echo "\033[33m --> 请输入提交信息[d. Minor Updates]: \033[0m" # 黄色
+        read -p " " msg;
+
+        git_push $msg;
+        return
+    fi
+
+    echo "\033[33m --> 输入的提交信息: ${msg} \033[0m" # 黄色
+
+    git add -A
+    git commit -m "${msg}"
+    git push
+
+    if [ $? -eq 0 ]; then
+        echo "\033[32m 🟢🟢🟢 --> Push 成功. \033[0m" # 绿色
     else
-        echo "\033[32m 🟢🟢🟢 --> pod update succeeded. \033[0m" # 绿色
+        echo "\033[31m 🔴🔴🔴 --> Push 失败. \033[0m" # 红色
     fi
 }
 
-pod_update $1;
+git_push $1;
