@@ -40,9 +40,13 @@ public struct ElementLayout {
     /// - Parameters:
     ///   - edgeInsets: 控件边缘内间距。默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
     ///   - height: 控件高。默认：`nil`，代表自适应高
-    public init(edgeInsets: UIEdgeInsets = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16),
-                height: CGFloat? = nil) {
+    public init(edgeInsets: UIEdgeInsets = .default, height: CGFloat? = nil) {
         self.edgeInsets = edgeInsets
         self.height = height
     }
+}
+
+extension UIEdgeInsets {
+    /// 默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
+    public static let `default` = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
 }
