@@ -10,28 +10,6 @@ import UIKit
 
 // MARK: - Extension UIScrollView
 
-/// 空数据集类型；适用于网络请求数据出差的情况。
-public enum EmptyDataSetType {
-    /// 数据请求成功，但数据为空
-    case empty
-    /// 数据请求出错
-    case error
-}
-
-/// 空数据集元素类型
-public enum EmptyDataSetElement: CaseIterable {
-    /// 图片视图
-    case image
-    /// 标题标签
-    case title
-    /// 明细标签
-    case detail
-    /// 按钮控件
-    case button
-    /// 定制视图（如果您不想使用系统提供的`image`、`title`、`detail`和`button`元素；则可以考虑定制）
-    case custom
-}
-
 /// `UITableView` / `UICollectionView`父类的扩展，用于在视图无内容时自动显示空数据集
 /// - Note: 只需遵循`EmptyDataSetDataSource`协议，并返回要显示的数据它将自动工作
 extension UIScrollView: UIGestureRecognizerDelegate {
@@ -130,12 +108,12 @@ extension UIScrollView: UIGestureRecognizerDelegate {
 
             /// 如果允许，则设置自定义视图
             if let customView = emptyDataSetSource.customView(forEmptyDataSet: self) {
-                view.setCustomView(customView, edge: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .custom))
+                view.setCustomView(customView, layout: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .custom))
             } else {
                 /// 配置 Image
                 if let image = emptyDataSetSource.image(forEmptyDataSet: self) {
                     let tintColor = emptyDataSetSource.imageTintColor(forEmptyDataSet: self)
-                    let imageView = view.createImageView(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .image))
+                    let imageView = view.createImageView(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .image))
                     imageView.image = image.withRenderingMode(tintColor != nil ? .alwaysTemplate : .alwaysOriginal)
                     imageView.tintColor = tintColor
 
@@ -149,22 +127,22 @@ extension UIScrollView: UIGestureRecognizerDelegate {
 
                 /// 配置标题标签
                 if let titleString = emptyDataSetSource.title(forEmptyDataSet: self) {
-                    view.createTitleLabel(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .title)).attributedText = titleString
+                    view.createTitleLabel(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .title)).attributedText = titleString
                 }
 
                 /// 配置详细标签
                 if let detailString = emptyDataSetSource.detail(forEmptyDataSet: self) {
-                    view.createDetailLabel(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .title)).attributedText = detailString
+                    view.createDetailLabel(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .title)).attributedText = detailString
                 }
 
                 /// 配置按钮
                 if let buttonImage = emptyDataSetSource.buttonImage(forEmptyDataSet: self, for: .normal) {
-                    let button = view.createButton(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .button))
+                    let button = view.createButton(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .button))
                     button.setImage(buttonImage, for: .normal)
                     button.setImage(emptyDataSetSource.buttonImage(forEmptyDataSet: self, for: .highlighted), for: .highlighted)
                     emptyDataSetSource.configure(forEmptyDataSet: self, for: button)
                 } else if let titleString = emptyDataSetSource.buttonTitle(forEmptyDataSet: self, for: .normal) {
-                    let button = view.createButton(with: emptyDataSetSource.edgeInsets(forEmptyDataSet: self, for: .button))
+                    let button = view.createButton(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .button))
                     button.setAttributedTitle(titleString, for: .normal)
                     button.setAttributedTitle(emptyDataSetSource.buttonTitle(forEmptyDataSet: self, for: .highlighted), for: .highlighted)
                     button.setBackgroundImage(emptyDataSetSource.buttonBackgroundImage(forEmptyDataSet: self, for: .normal), for: .normal)
@@ -334,7 +312,7 @@ private class WeakObject {
     }
 }
 
-// MARK - EmptyDataSetView
+// MARK: - EmptyDataSetView
 
 private class EmptyDataSetView: UIView {
     private let contentView: UIView = {
@@ -346,9 +324,9 @@ private class EmptyDataSetView: UIView {
         return contentView
     }()
 
-    private(set) var elements: [EmptyDataSetElement: (UIView, UIEdgeInsets)] = [:]
+    private(set) var elements: [EmptyDataSetElement: (UIView, ElementLayout)] = [:]
 
-    func createImageView(with edge: UIEdgeInsets) -> UIImageView {
+    func createImageView(with layout: ElementLayout) -> UIImageView {
         if let element = elements[.image] { element.0.removeFromSuperview() }
 
         let imageView = UIImageView()
@@ -357,11 +335,11 @@ private class EmptyDataSetView: UIView {
         imageView.isUserInteractionEnabled = false
         imageView.contentMode = .scaleAspectFit
         contentView.addSubview(imageView)
-        elements[.image] = (imageView, edge)
+        elements[.image] = (imageView, layout)
         return imageView
     }
 
-    func createTitleLabel(with edge: UIEdgeInsets) -> UILabel {
+    func createTitleLabel(with layout: ElementLayout) -> UILabel {
         if let element = elements[.title] { element.0.removeFromSuperview() }
 
         let titleLabel = UILabel()
@@ -373,11 +351,11 @@ private class EmptyDataSetView: UIView {
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.numberOfLines = 0
         contentView.addSubview(titleLabel)
-        elements[.title] = (titleLabel, edge)
+        elements[.title] = (titleLabel, layout)
         return titleLabel
     }
 
-    func createDetailLabel(with edge: UIEdgeInsets) -> UILabel {
+    func createDetailLabel(with layout: ElementLayout) -> UILabel {
         if let element = elements[.detail] { element.0.removeFromSuperview() }
 
         let detailLabel = UILabel()
@@ -389,11 +367,11 @@ private class EmptyDataSetView: UIView {
         detailLabel.lineBreakMode = .byWordWrapping
         detailLabel.numberOfLines = 0
         contentView.addSubview(detailLabel)
-        elements[.detail] = (detailLabel, edge)
+        elements[.detail] = (detailLabel, layout)
         return detailLabel
     }
 
-    func createButton(with edge: UIEdgeInsets) -> UIButton {
+    func createButton(with layout: ElementLayout) -> UIButton {
         if let element = elements[.button] { element.0.removeFromSuperview() }
 
         let button = UIButton(type: .custom)
@@ -403,16 +381,16 @@ private class EmptyDataSetView: UIView {
         button.contentVerticalAlignment = .center
         button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         contentView.addSubview(button)
-        elements[.button] = (button, edge)
+        elements[.button] = (button, layout)
         return button
     }
 
-    func setCustomView(_ view: UIView, edge: UIEdgeInsets) {
+    func setCustomView(_ view: UIView, layout: ElementLayout) {
         if let element = elements[.custom] { element.0.removeFromSuperview() }
 
         view.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(view)
-        elements[.custom] = (view, edge)
+        elements[.custom] = (view, layout)
     }
 
     weak var tapGesture: UITapGestureRecognizer?
@@ -485,32 +463,42 @@ private class EmptyDataSetView: UIView {
         /// 如果允许，设置自定义视图的约束
         if let element = elements[.custom] {
             let view = element.0
-            let edge = element.1
+            let layout = element.1
             constraints += [
-                view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge.left),
-                view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge.right),
-                view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: edge.top),
-                view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -edge.bottom)
+                view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: layout.edgeInsets.left),
+                view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -layout.edgeInsets.right),
+                view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: layout.edgeInsets.top),
+                view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -layout.edgeInsets.bottom)
             ]
+            if let height = layout.height {
+                constraints.append(view.heightAnchor.constraint(equalToConstant: height))
+            }
+
         } else {
-            var previous: (UIView, UIEdgeInsets)?
+            var previous: (UIView, ElementLayout)?
             for key in EmptyDataSetElement.allCases {
                 guard let element = elements[key] else { continue }
+
                 let view = element.0
-                let edge = element.1
+                let layout = element.1
                 if let previous = previous { // 上一个视图
-                    constraints.append(view.topAnchor.constraint(equalTo: previous.0.bottomAnchor, constant: edge.top))
+                    constraints.append(view.topAnchor.constraint(equalTo: previous.0.bottomAnchor, constant: layout.edgeInsets.top))
                 } else { // 第一个视图
-                    constraints.append(view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: edge.top))
+                    constraints.append(view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: layout.edgeInsets.top))
                 }
-                constraints.append(view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: edge.left))
-                constraints.append(view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -edge.right))
+                constraints.append(view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: layout.edgeInsets.left))
+                constraints.append(view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -layout.edgeInsets.right))
+
+                if let height = layout.height {
+                    constraints.append(view.heightAnchor.constraint(equalToConstant: height))
+                }
                 previous = element // 保存上一个视图
             }
             if let last = previous { // 最后一个视图
-                constraints.append(last.0.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -last.1.bottom))
+                constraints.append(last.0.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -last.1.edgeInsets.bottom))
             }
         }
+
         NSLayoutConstraint.activate(constraints)
     }
 }

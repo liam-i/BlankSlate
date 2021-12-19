@@ -37,6 +37,10 @@ class WebViewController: UIViewController, EmptyDataSetDataSource, EmptyDataSetD
     func emptyDataSetShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int {
         return -1
     }
+
+    func elementLayout(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> ElementLayout {
+        ElementLayout(height: 500)
+    }
 }
 
 // MARK: WKScriptMessageHandler

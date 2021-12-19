@@ -54,8 +54,8 @@ public protocol EmptyDataSetDataSource: AnyObject {
     /// 向数据源请求内容垂直对齐的偏移量。默认`0pt`
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView) -> CGFloat
 
-    /// 向数据源请求`EmptyDataSetElement`的上下左右间距。默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
-    func edgeInsets(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> UIEdgeInsets
+    /// 向数据源请求`EmptyDataSetElement`的布局约束值。
+    func elementLayout(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> ElementLayout
 
     /// 向数据源请求在显示空数据集时采用淡入动画的持续时间。默认`0`
     /// - Note: 如果`fadeInDuration <= 0`则不执行动画
@@ -82,7 +82,7 @@ extension EmptyDataSetDataSource {
 
     public func verticalOffset(forEmptyDataSet scrollView: UIScrollView) -> CGFloat { 0.0 }
 
-    public func edgeInsets(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> UIEdgeInsets { UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16) }
+    public func elementLayout(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> ElementLayout { ElementLayout() }
 
     public func fadeInDuration(forEmptyDataSet scrollView: UIScrollView) -> TimeInterval { 0.0 }
 }
