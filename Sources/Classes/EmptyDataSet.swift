@@ -318,7 +318,7 @@ private class WeakObject {
 
 // MARK - EmptyDataSetView
 
-fileprivate class EmptyDataSetView: UIView {
+private class EmptyDataSetView: UIView {
     private let contentView: UIView = {
         let contentView = UIView()
         contentView.translatesAutoresizingMaskIntoConstraints = false
