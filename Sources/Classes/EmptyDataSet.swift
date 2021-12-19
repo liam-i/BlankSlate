@@ -12,17 +12,24 @@ import UIKit
 
 /// 空数据集类型；适用于网络请求数据出差的情况。
 public enum EmptyDataSetType {
-    case empty // 数据请求成功，但数据为空
-    case error // 数据请求出错
+    /// 数据请求成功，但数据为空
+    case empty
+    /// 数据请求出错
+    case error
 }
 
 /// 空数据集元素类型
 public enum EmptyDataSetElement: CaseIterable {
-    case image  // 图片视图
-    case title  // 标题标签
-    case detail // 明细标签
-    case button // 按钮控件
-    case custom // 定制视图（如果您不想使用系统提供的`image`、`title`、`detail`和`button`元素；则可以考虑定制）
+    /// 图片视图
+    case image
+    /// 标题标签
+    case title
+    /// 明细标签
+    case detail
+    /// 按钮控件
+    case button
+    /// 定制视图（如果您不想使用系统提供的`image`、`title`、`detail`和`button`元素；则可以考虑定制）
+    case custom
 }
 
 /// `UITableView` / `UICollectionView`父类的扩展，用于在视图无内容时自动显示空数据集
@@ -44,7 +51,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             case is UICollectionView:
                 swizzleIfNeeded(UICollectionView.self, #selector(UICollectionView.reloadData))
             default:
-                assert(false)
+                assertionFailure()
             }
         }
     }
@@ -78,7 +85,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         switch self {
         case let tableView as UITableView:           tableView.reloadData()
         case let collectionView as UICollectionView: collectionView.reloadData()
-        default:                                     assert(false)
+        default:                                     assertionFailure()
         }
     }
 
@@ -201,7 +208,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
                 }
             }
         default:
-            assert(false)
+            assertionFailure()
         }
         return items
     }
@@ -239,7 +246,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
 
     private func swizzleIfNeeded(_ originalClass: AnyClass, _ originalSelector: Selector) {
         /// 检查当前类是否实现了`originalSelector`方法
-        guard responds(to: originalSelector) else { return assert(false) }
+        guard responds(to: originalSelector) else { return assertionFailure() }
 
         let originalStringSelector = NSStringFromSelector(originalSelector)
         for info in IMPLookupTable.values where (info.selector == originalStringSelector && isKind(of: info.owner)) {
@@ -249,7 +256,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         let key = "\(NSStringFromClass(originalClass))_\(originalStringSelector)"
         guard IMPLookupTable[key] == nil else { return } // 如果`originalClass`的实现已经存在，不在继续往下执行
 
-        guard let originalMethod = class_getInstanceMethod(originalClass, originalSelector) else { return assert(false) }
+        guard let originalMethod = class_getInstanceMethod(originalClass, originalSelector) else { return assertionFailure() }
         let originalImplementation = method_getImplementation(originalMethod)
 
         typealias OriginalIMP = @convention(c) (UIScrollView, Selector) -> Void

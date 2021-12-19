@@ -36,7 +36,7 @@
 
 /* Begin PBXFileReference section */
 		1828E0952643B700004E75A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		1B5C28457C1B114F3AB55AB9 /* LPEmptyDataSet.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LPEmptyDataSet.podspec; sourceTree = "<group>"; };
+		1B5C28457C1B114F3AB55AB9 /* LPEmptyDataSet.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LPEmptyDataSet.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		20EAB2086FCF5E2465FB11BB /* build.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; name = build.sh; path = ./build.sh; sourceTree = "<group>"; };
 		30DDACD85B7C26259D0BD9E9 /* push-git.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; name = "push-git.sh"; path = "./push-git.sh"; sourceTree = "<group>"; };
 		4A2821502AAB4962BBC3FDDC /* Pods-EmptyDataSet_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmptyDataSet_Example.release.xcconfig"; path = "Target Support Files/Pods-EmptyDataSet_Example/Pods-EmptyDataSet_Example.release.xcconfig"; sourceTree = "<group>"; };
