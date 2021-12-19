@@ -9,7 +9,7 @@ import UIKit
 
 /// 空数据集的委托协议
 /// - Note: 所有委托方法都是可选的。使用此委托来接收操作回调
-public protocol EmptyDataSetDelegate: NSObjectProtocol {
+public protocol EmptyDataSetDelegate: AnyObject {
     /// 向委托请求当items数大于0时是否仍然显示空数据集。默认`false`
     func emptyDataSetShouldBeForcedToDisplay(_ scrollView: UIScrollView) -> Bool
 

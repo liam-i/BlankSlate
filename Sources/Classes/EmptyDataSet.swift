@@ -296,12 +296,16 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         if gestureRecognizer.isEqual(tapGesture) || otherGestureRecognizer.isEqual(tapGesture) {
             return true
         }
-        /// 如果可用，请遵循emptyDataSetDelegate的实现方法
-        if let emptyDataSetDelegate = emptyDataSetDelegate, !emptyDataSetDelegate.isEqual(self) {
-            let delegate = emptyDataSetDelegate as AnyObject
-            if delegate.responds(to: #selector(gestureRecognizer(_:shouldRecognizeSimultaneouslyWith:))) {
-                return delegate.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
-            }
+
+        guard let emptyDataSetDelegate = emptyDataSetDelegate else { return false }
+
+        if let scrollView = emptyDataSetDelegate as? UIScrollView, scrollView == self {
+            return false
+        }
+
+        let delegate = emptyDataSetDelegate as AnyObject
+        if delegate.responds(to: #selector(gestureRecognizer(_:shouldRecognizeSimultaneouslyWith:))) {
+            return delegate.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
         }
         return false
     }

@@ -9,7 +9,7 @@ import UIKit
 
 /// 空数据集的数据源协议
 /// - Note: 数据源必须采用`EmptyDataSetDataSource`协议。所有数据源方法都是可选的
-public protocol EmptyDataSetDataSource: NSObjectProtocol {
+public protocol EmptyDataSetDataSource: AnyObject {
     /// 向数据源请求数据集的图像。默认`nil`
     func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage?
 
