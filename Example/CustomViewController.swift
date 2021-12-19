@@ -24,7 +24,7 @@ class CustomViewController: UICollectionViewController, UICollectionViewDelegate
         collectionView.emptyDataSetSource = self
         collectionView.emptyDataSetDelegate = self
     }
-    
+
     @IBAction func emptyDataButtonClicked(_ sender: UIBarButtonItem) {
         isEmptyData = !isEmptyData
         if isEmptyData {

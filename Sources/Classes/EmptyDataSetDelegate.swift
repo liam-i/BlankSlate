@@ -16,6 +16,9 @@ public protocol EmptyDataSetDelegate: NSObjectProtocol {
     /// 向委托请求是否允许显示空数据集。 默认为`true`
     func emptyDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool
 
+    /// 当 subviews.count > 1 时，向委托请求插入层级。-1. addSubview(EmptyDataSet); 0. insertSubview(EmptyDataSet, at: 0)。默认`0`
+    func emptyDataSetShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int
+
     /// 向委托请求是否允许响应触摸手势。 默认为`true`
     func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool
 
@@ -47,6 +50,8 @@ extension EmptyDataSetDelegate {
     public func emptyDataSetShouldBeForcedToDisplay(_ scrollView: UIScrollView) -> Bool { false }
 
     public func emptyDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool { true }
+
+    public func emptyDataSetShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int { 0 }
 
     public func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool { true }
 

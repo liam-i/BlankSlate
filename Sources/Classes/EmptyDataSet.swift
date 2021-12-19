@@ -39,7 +39,9 @@ extension UIScrollView: UIGestureRecognizerDelegate {
     public weak var emptyDataSetSource: EmptyDataSetDataSource? {
         get { (objc_getAssociatedObject(self, &EmptyDataSetSourceKey) as? WeakObject)?.value as? EmptyDataSetDataSource }
         set {
-            if newValue == nil || !canDisplay { invalidate() }
+            if newValue == nil || emptyDataSetSource == nil {
+                invalidate()
+            }
 
             objc_setAssociatedObject(self, &EmptyDataSetSourceKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
@@ -51,7 +53,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             case is UICollectionView:
                 swizzleIfNeeded(UICollectionView.self, #selector(UICollectionView.reloadData))
             default:
-                assertionFailure()
+                break
             }
         }
     }
@@ -60,7 +62,9 @@ extension UIScrollView: UIGestureRecognizerDelegate {
     public weak var emptyDataSetDelegate: EmptyDataSetDelegate? {
         get { (objc_getAssociatedObject(self, &EmptyDataSetDelegateKey) as? WeakObject)?.value as? EmptyDataSetDelegate }
         set {
-            if newValue == nil { invalidate() }
+            if newValue == nil {
+                invalidate()
+            }
             objc_setAssociatedObject(self, &EmptyDataSetDelegateKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
@@ -74,7 +78,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
     /// 如果空数据集可见，则为`true`
     public var isEmptyDataSetVisible: Bool {
         guard let view = objc_getAssociatedObject(self, &EmptyDataSetViewKey) as? EmptyDataSetView else { return false }
-        return !view.isHidden
+        return view.isHidden == false
     }
 
     /// 重新加载数据
@@ -85,14 +89,14 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         switch self {
         case let tableView as UITableView:           tableView.reloadData()
         case let collectionView as UICollectionView: collectionView.reloadData()
-        default:                                     assertionFailure()
+        default:                                     reloadEmptyDataSet()
         }
     }
 
     /// 重新加载空数据集内容视图
     /// - Note: 调用此方法以强制刷新所有数据。类似于`reloadData()`，但这仅强制重新加载空数据集，而不强制重新加载整个表视图或集合视图
     public func reloadEmptyDataSet() {
-        guard let emptyDataSetSource = emptyDataSetSource, canDisplay else { return }
+        guard let emptyDataSetSource = emptyDataSetSource else { return }
 
         if ((emptyDataSetDelegate?.emptyDataSetShouldDisplay(self) ?? true) && (itemsCount == 0))
             || (emptyDataSetDelegate?.emptyDataSetShouldBeForcedToDisplay(self) ?? false) {
@@ -103,9 +107,13 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             view.fadeInDuration = emptyDataSetSource.fadeInDuration(forEmptyDataSet: self) // 设置空数据集淡入持续时间
 
             if view.superview == nil {
-                /// 如果`UITableView`/`UICollectionView`有内容存在则将空数据集插入到视图最底层
-                if (self is UITableView || self is UICollectionView) && subviews.count > 1 {
-                    insertSubview(view, at: 0)
+                if subviews.count > 1 {
+                    let index = emptyDataSetDelegate?.emptyDataSetShouldBeInsertAtIndex(self) ?? 0
+                    if index >= 0 && index < subviews.count {
+                        insertSubview(view, at: index)
+                    } else {
+                        addSubview(view)
+                    }
                 } else {
                     addSubview(view)
                 }
@@ -177,13 +185,27 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         }
     }
 
+    public func invalidate() {
+        var isEmptyDataSetVisible = false
+        if let emptyDataSetView = emptyDataSetView {
+            isEmptyDataSetVisible = true
+            emptyDataSetDelegate?.emptyDataSetWillDisappear(self) // 通知委托空数据集视图将要消失
+
+            emptyDataSetView.prepareForReuse()
+            emptyDataSetView.removeFromSuperview()
+            self.emptyDataSetView = nil
+        }
+        emptyDataSetType = nil
+        isScrollEnabled = true
+
+        if isEmptyDataSetVisible {
+            emptyDataSetDelegate?.emptyDataSetDidDisappear(self) // 通知委托空数据集视图已经消失
+        }
+    }
+
     private var emptyDataSetView: EmptyDataSetView? {
         get { objc_getAssociatedObject(self, &EmptyDataSetViewKey) as? EmptyDataSetView }
         set { objc_setAssociatedObject(self, &EmptyDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
-    }
-
-    private var canDisplay: Bool {
-        (emptyDataSetSource != nil) && (self is UITableView || self is UICollectionView)
     }
 
     private var isTouchAllowed: Bool {
@@ -208,7 +230,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
                 }
             }
         default:
-            assertionFailure()
+            break
         }
         return items
     }
@@ -228,20 +250,6 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         view.tapGesture = tap
         self.emptyDataSetView = view
         return view
-    }
-
-    private func invalidate() {
-        emptyDataSetDelegate?.emptyDataSetWillDisappear(self) // 通知委托空数据集视图将要消失
-
-        if let emptyDataSetView = emptyDataSetView {
-            emptyDataSetView.prepareForReuse()
-            emptyDataSetView.removeFromSuperview()
-            self.emptyDataSetView = nil
-        }
-        emptyDataSetType = nil
-
-        isScrollEnabled = true
-        emptyDataSetDelegate?.emptyDataSetDidDisappear(self) // 通知委托空数据集视图已经消失
     }
 
     private func swizzleIfNeeded(_ originalClass: AnyClass, _ originalSelector: Selector) {
