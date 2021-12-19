@@ -81,6 +81,12 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         return view.isHidden == false
     }
 
+    /// 同时设置`EmptyDataSetDataSource` & `EmptyDataSetDelegate`
+    public func setEmptyDataSetSourceAndDelegate(_ newValue: (EmptyDataSetDataSource & EmptyDataSetDelegate)?) {
+        emptyDataSetSource = newValue
+        emptyDataSetDelegate = newValue
+    }
+
     /// 重新加载数据
     /// - Parameter type: 指定空数据集类型
     /// - Note: 调用此方法以自动按序执行`reloadData()` 和`reloadEmptyDataSet()`
