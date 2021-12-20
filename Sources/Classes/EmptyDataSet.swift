@@ -188,7 +188,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             self.emptyDataSetView = nil
         }
         emptyDataSetStatus = nil
-        isScrollEnabled = true
+        isScrollEnabled = emptyDataSetDelegate?.shouldAllowScrollAfterEmptyDataSetDisappear(self) ?? true
 
         if isEmptyDataSetVisible {
             emptyDataSetDelegate?.emptyDataSetDidDisappear(self) // 通知委托空数据集视图已经消失

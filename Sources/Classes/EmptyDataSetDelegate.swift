@@ -44,6 +44,9 @@ public protocol EmptyDataSetDelegate: AnyObject {
 
     /// 通知委托该空数据集已经消失
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView)
+
+    /// 向委托请求当空数据集已经消失后是否允许滚动。 默认为`true`
+    func shouldAllowScrollAfterEmptyDataSetDisappear(_ scrollView: UIScrollView) -> Bool
 }
 
 extension EmptyDataSetDelegate {
@@ -68,4 +71,6 @@ extension EmptyDataSetDelegate {
     public func emptyDataSetWillDisappear(_ scrollView: UIScrollView) { }
 
     public func emptyDataSetDidDisappear(_ scrollView: UIScrollView) { }
+
+    public func shouldAllowScrollAfterEmptyDataSetDisappear(_ scrollView: UIScrollView) -> Bool { true }
 }
