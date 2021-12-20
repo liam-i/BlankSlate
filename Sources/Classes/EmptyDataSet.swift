@@ -48,9 +48,9 @@ extension UIScrollView: UIGestureRecognizerDelegate {
     }
 
     /// 空数据集类型
-    public var emptyDataSetType: EmptyDataSetType? {
-        get { objc_getAssociatedObject(self, &EmptyDataSetTypeKey) as? EmptyDataSetType }
-        set { objc_setAssociatedObject(self, &EmptyDataSetTypeKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    public var emptyDataSetStatus: EmptyDataSetStatus? {
+        get { objc_getAssociatedObject(self, &EmptyDataSetStatusKey) as? EmptyDataSetStatus }
+        set { objc_setAssociatedObject(self, &EmptyDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
     /// 如果空数据集可见，则为`true`
@@ -65,22 +65,30 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         emptyDataSetDelegate = newValue
     }
 
-    /// 重新加载数据
-    /// - Parameter type: 指定空数据集类型
-    /// - Note: 调用此方法以自动按序执行`reloadData()` 和`reloadEmptyDataSet()`
-    public func reloadAllData(with type: EmptyDataSetType) {
-        emptyDataSetType = type
+    /// 重新加载空数据集内容视图
+    /// - Parameters:
+    ///   - status: 空数据集当前状态
+    ///   - reloadData: 是否执行`UITableView.reloadData()` 或`UICollectionView.reloadData()`方法
+    ///         true. 先执行 `reloadData()`再`reloadEmptyDataSet()`；false. 仅执行`reloadEmptyDataSet()`
+    public func reloadEmptyDataSet(with status: EmptyDataSetStatus, reloadData: Bool) {
+        emptyDataSetStatus = status
         switch self {
-        case let tableView as UITableView:           tableView.reloadData()
-        case let collectionView as UICollectionView: collectionView.reloadData()
-        default:                                     reloadEmptyDataSet()
+        case let tableView as UITableView:
+            reloadData ? tableView.reloadData() : reloadEmptyDataSet()
+        case let collectionView as UICollectionView:
+            reloadData ? collectionView.reloadData() : reloadEmptyDataSet()
+        default:
+            reloadEmptyDataSet()
         }
     }
 
     /// 重新加载空数据集内容视图
     /// - Note: 调用此方法以强制刷新所有数据。类似于`reloadData()`，但这仅强制重新加载空数据集，而不强制重新加载整个表视图或集合视图
     public func reloadEmptyDataSet() {
-        guard let emptyDataSetSource = emptyDataSetSource else { return }
+        guard let emptyDataSetSource = emptyDataSetSource else {
+            invalidate()
+            return
+        }
 
         if ((emptyDataSetDelegate?.emptyDataSetShouldDisplay(self) ?? true) && (itemsCount == 0))
             || (emptyDataSetDelegate?.emptyDataSetShouldBeForcedToDisplay(self) ?? false) {
@@ -179,7 +187,7 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             emptyDataSetView.removeFromSuperview()
             self.emptyDataSetView = nil
         }
-        emptyDataSetType = nil
+        emptyDataSetStatus = nil
         isScrollEnabled = true
 
         if isEmptyDataSetVisible {
@@ -508,6 +516,6 @@ private class EmptyDataSetView: UIView {
 private var EmptyDataSetSourceKey: Void?
 private var EmptyDataSetDelegateKey: Void?
 private var EmptyDataSetViewKey: Void?
-private var EmptyDataSetTypeKey: Void?
+private var EmptyDataSetStatusKey: Void?
 private let EmptyImageViewAnimationKey = "com.lp.emptyDataSet.imageViewAnimation"
 private var IMPLookupTable = [String: (owner: AnyClass, selector: String)](minimumCapacity: 3)

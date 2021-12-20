@@ -7,12 +7,14 @@
 
 import UIKit
 
-/// 空数据集类型；适用于网络请求数据出差的情况。
-public enum EmptyDataSetType {
-    /// 数据请求成功，但数据为空
+/// 空数据集状态
+public enum EmptyDataSetStatus {
+    /// 数据加载成功，但数据为空
     case empty
-    /// 数据请求出错
+    /// 数据加载出错
     case error
+    /// 数据加载中
+    case loading
 }
 
 /// 空数据集元素类型

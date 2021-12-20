@@ -28,8 +28,8 @@ class CustomViewController: UICollectionViewController, UICollectionViewDelegate
     @IBAction func emptyDataButtonClicked(_ sender: UIBarButtonItem) {
         isEmptyData = !isEmptyData
         if isEmptyData {
-            let type: EmptyDataSetType = collectionView.emptyDataSetType == .error ? .empty : .error
-            return collectionView.reloadAllData(with: type)
+            let status: EmptyDataSetStatus = collectionView.emptyDataSetStatus == .error ? .empty : .error
+            return collectionView.reloadEmptyDataSet(with: status, reloadData: true)
         }
         collectionView.reloadData()
     }
@@ -49,7 +49,7 @@ class CustomViewController: UICollectionViewController, UICollectionViewDelegate
 
 extension CustomViewController: EmptyDataSetDataSource, EmptyDataSetDelegate {
     func customView(forEmptyDataSet scrollView: UIScrollView) -> UIView? {
-        return UIImageView(image: scrollView.emptyDataSetType == .error ? #imageLiteral(resourceName: "placeholder_vine") : #imageLiteral(resourceName: "icon_wwdc"))
+        return UIImageView(image: scrollView.emptyDataSetStatus == .error ? #imageLiteral(resourceName: "placeholder_vine") : #imageLiteral(resourceName: "icon_wwdc"))
     }
     
 //    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {

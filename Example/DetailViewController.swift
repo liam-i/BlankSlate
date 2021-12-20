@@ -57,6 +57,11 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
             items.append(UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(listClicked)))
         }
         navigationItem.rightBarButtonItems = items
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.isEmptyData = false
+            self.tableView.reloadData()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

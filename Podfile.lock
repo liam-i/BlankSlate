@@ -1,5 +1,5 @@
 PODS:
-  - LPEmptyDataSet (0.1.6)
+  - LPEmptyDataSet (0.1.7)
 
 DEPENDENCIES:
   - LPEmptyDataSet (from `./`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "./"
 
 SPEC CHECKSUMS:
-  LPEmptyDataSet: b6bb742c4d1bde0c00ca19da595369e49ff1f72d
+  LPEmptyDataSet: 59f8ed26fe76d52aa1a5866913442f98db34e3bc
 
 PODFILE CHECKSUM: 4301e142f68de5370881cbc4d464eb7f23c09624
 
