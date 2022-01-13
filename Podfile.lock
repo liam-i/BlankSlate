@@ -1,16 +1,23 @@
 PODS:
-  - LPEmptyDataSet (0.1.8)
+  - LPEmptyDataSet (0.2.0)
+  - LPHUD (1.2.3)
 
 DEPENDENCIES:
   - LPEmptyDataSet (from `./`)
+  - LPHUD
+
+SPEC REPOS:
+  trunk:
+    - LPHUD
 
 EXTERNAL SOURCES:
   LPEmptyDataSet:
     :path: "./"
 
 SPEC CHECKSUMS:
-  LPEmptyDataSet: c466b0154f1d872920e42acba7f61a87e32a4ad8
+  LPEmptyDataSet: c5a372f6e2eda3ded0193b3745dcb9ddd2c77a7f
+  LPHUD: f3d935bfa14f8fe29368395ed69704e29148dc49
 
-PODFILE CHECKSUM: 4301e142f68de5370881cbc4d464eb7f23c09624
+PODFILE CHECKSUM: a3a0cd4b6f3f4706a1c9d63dfd71174c1365f8ea
 
 COCOAPODS: 1.11.2

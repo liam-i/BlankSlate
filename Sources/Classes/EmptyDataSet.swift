@@ -47,10 +47,23 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         }
     }
 
-    /// 空数据集类型
-    public var emptyDataSetStatus: EmptyDataSetStatus? {
-        get { objc_getAssociatedObject(self, &EmptyDataSetStatusKey) as? EmptyDataSetStatus }
-        set { objc_setAssociatedObject(self, &EmptyDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    /// 数据加载状态
+    /// - Note: 为`UITableView`和`UICollectionView`设置此属性时自动执行`reloadData()`方法
+    public var dataLoadStatus: EmptyDataLoadStatus? {
+        get { objc_getAssociatedObject(self, &EmptyDataSetStatusKey) as? EmptyDataLoadStatus }
+        set {
+            objc_setAssociatedObject(self, &EmptyDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
+            guard newValue != nil else { return }
+            switch self {
+            case let tableView as UITableView:
+                tableView.reloadData()
+            case let collectionView as UICollectionView:
+                collectionView.reloadData()
+            default:
+                reloadEmptyDataSet()
+            }
+        }
     }
 
     /// 如果空数据集可见，则为`true`
@@ -63,23 +76,6 @@ extension UIScrollView: UIGestureRecognizerDelegate {
     public func setEmptyDataSetSourceAndDelegate(_ newValue: (EmptyDataSetDataSource & EmptyDataSetDelegate)?) {
         emptyDataSetSource = newValue
         emptyDataSetDelegate = newValue
-    }
-
-    /// 重新加载空数据集内容视图
-    /// - Parameters:
-    ///   - status: 空数据集当前状态
-    ///   - reloadData: 是否执行`UITableView.reloadData()` 或`UICollectionView.reloadData()`方法
-    ///         true. 先执行 `reloadData()`再`reloadEmptyDataSet()`；false. 仅执行`reloadEmptyDataSet()`
-    public func reloadEmptyDataSet(with status: EmptyDataSetStatus, reloadData: Bool) {
-        emptyDataSetStatus = status
-        switch self {
-        case let tableView as UITableView:
-            reloadData ? tableView.reloadData() : reloadEmptyDataSet()
-        case let collectionView as UICollectionView:
-            reloadData ? collectionView.reloadData() : reloadEmptyDataSet()
-        default:
-            reloadEmptyDataSet()
-        }
     }
 
     /// 重新加载空数据集内容视图
@@ -187,10 +183,9 @@ extension UIScrollView: UIGestureRecognizerDelegate {
             emptyDataSetView.removeFromSuperview()
             self.emptyDataSetView = nil
         }
-        emptyDataSetStatus = nil
-        isScrollEnabled = emptyDataSetDelegate?.shouldAllowScrollAfterEmptyDataSetDisappear(self) ?? true
 
         if isEmptyDataSetVisible {
+            isScrollEnabled = emptyDataSetDelegate?.shouldAllowScrollAfterEmptyDataSetDisappear(self) ?? true
             emptyDataSetDelegate?.emptyDataSetDidDisappear(self) // 通知委托空数据集视图已经消失
         }
     }

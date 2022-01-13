@@ -62,7 +62,7 @@ extension WebViewController: WKUIDelegate, WKNavigationDelegate {
 
     /// 页面加载失败时调用
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        webView.scrollView.reloadEmptyDataSet(with: .error, reloadData: false)
+        webView.scrollView.dataLoadStatus = .failed
     }
 
     /// 在发送请求之前，决定是否跳转

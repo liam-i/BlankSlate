@@ -7,14 +7,14 @@
 
 import UIKit
 
-/// 空数据集状态
-public enum EmptyDataSetStatus {
-    /// 数据加载成功，但数据为空
-    case empty
-    /// 数据加载出错
-    case error
+/// 数据加载状态
+public enum EmptyDataLoadStatus {
     /// 数据加载中
     case loading
+    /// 数据加载成功。（有数据和空数据）
+    case success
+    /// 数据加载失败
+    case failed
 }
 
 /// 空数据集元素类型
