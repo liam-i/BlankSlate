@@ -54,7 +54,10 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         set {
             objc_setAssociatedObject(self, &EmptyDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-            guard newValue != nil else { return }
+            guard let newValue = newValue, newValue != .loading else {
+                return reloadEmptyDataSet()
+            }
+
             switch self {
             case let tableView as UITableView:
                 tableView.reloadData()
