@@ -66,6 +66,11 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         }
     }
 
+    /// 空视图集内容视图
+    public var emptyDataSetContentView: UIView? {
+        emptyDataSetView
+    }
+
     /// 如果空数据集可见，则为`true`
     public var isEmptyDataSetVisible: Bool {
         guard let view = objc_getAssociatedObject(self, &EmptyDataSetViewKey) as? EmptyDataSetView else { return false }
