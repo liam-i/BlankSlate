@@ -1,6 +1,6 @@
 //
 //  EmptyDataSetDataSource.swift
-//  EmptyDataSet
+//  EmptyDataSet <https://github.com/liam-i/EmptyDataSet>
 //
 //  Created by Liam on 2021/7/9.
 //
