@@ -15,13 +15,13 @@ import UIKit
 extension UIScrollView {
     /// 空数据集数据源
     public weak var emptyDataSetSource: EmptyDataSetDataSource? {
-        get { (objc_getAssociatedObject(self, &EmptyDataSetSourceKey) as? WeakObject)?.value as? EmptyDataSetDataSource }
+        get { (objc_getAssociatedObject(self, &kEmptyDataSetSourceKey) as? WeakObject)?.value as? EmptyDataSetDataSource }
         set {
             if newValue == nil || emptyDataSetSource == nil {
                 invalidate()
             }
 
-            objc_setAssociatedObject(self, &EmptyDataSetSourceKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kEmptyDataSetSourceKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
             /// 使用runtime swizzle将`lp_reloadData()`和`reloadData()`交换
             switch self {
@@ -38,21 +38,21 @@ extension UIScrollView {
 
     /// 空数据集委托
     public weak var emptyDataSetDelegate: EmptyDataSetDelegate? {
-        get { (objc_getAssociatedObject(self, &EmptyDataSetDelegateKey) as? WeakObject)?.value as? EmptyDataSetDelegate }
+        get { (objc_getAssociatedObject(self, &kEmptyDataSetDelegateKey) as? WeakObject)?.value as? EmptyDataSetDelegate }
         set {
             if newValue == nil {
                 invalidate()
             }
-            objc_setAssociatedObject(self, &EmptyDataSetDelegateKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kEmptyDataSetDelegateKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
     /// 数据加载状态
     /// - Note: 为`UITableView`和`UICollectionView`设置此属性时自动执行`reloadData()`方法
     public var dataLoadStatus: EmptyDataLoadStatus? {
-        get { objc_getAssociatedObject(self, &EmptyDataSetStatusKey) as? EmptyDataLoadStatus }
+        get { objc_getAssociatedObject(self, &kEmptyDataSetStatusKey) as? EmptyDataLoadStatus }
         set {
-            objc_setAssociatedObject(self, &EmptyDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kEmptyDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
             guard let newValue = newValue, newValue != .loading else {
                 return reloadEmptyDataSet()
@@ -76,7 +76,7 @@ extension UIScrollView {
 
     /// 如果空数据集可见，则为`true`
     public var isEmptyDataSetVisible: Bool {
-        guard let view = objc_getAssociatedObject(self, &EmptyDataSetViewKey) as? EmptyDataSetView else { return false }
+        guard let view = objc_getAssociatedObject(self, &kEmptyDataSetViewKey) as? EmptyDataSetView else { return false }
         return view.isHidden == false
     }
 
@@ -86,6 +86,7 @@ extension UIScrollView {
         emptyDataSetDelegate = newValue
     }
 
+    // swiftlint:disable cyclomatic_complexity function_body_length
     /// 重新加载空数据集内容视图
     /// - Note: 调用此方法以强制刷新所有数据。类似于`reloadData()`，但这仅强制重新加载空数据集，而不强制重新加载整个表视图或集合视图
     public func reloadEmptyDataSet() {
@@ -131,9 +132,9 @@ extension UIScrollView {
 
                     // 配置图像视图动画
                     if let animation = emptyDataSetSource.imageAnimation(forEmptyDataSet: self) {
-                        imageView.layer.add(animation, forKey: EmptyImageViewAnimationKey)
-                    } else if imageView.layer.animation(forKey: EmptyImageViewAnimationKey) != nil {
-                        imageView.layer.removeAnimation(forKey: EmptyImageViewAnimationKey)
+                        imageView.layer.add(animation, forKey: kEmptyImageViewAnimationKey)
+                    } else if imageView.layer.animation(forKey: kEmptyImageViewAnimationKey) != nil {
+                        imageView.layer.removeAnimation(forKey: kEmptyImageViewAnimationKey)
                     }
                 }
 
@@ -180,6 +181,7 @@ extension UIScrollView {
             invalidate()
         }
     }
+    // swiftlint:enable cyclomatic_complexity function_body_length
 
     public func invalidate() {
         var isEmptyDataSetVisible = false
@@ -199,8 +201,8 @@ extension UIScrollView {
     }
 
     private var emptyDataSetView: EmptyDataSetView? {
-        get { objc_getAssociatedObject(self, &EmptyDataSetViewKey) as? EmptyDataSetView }
-        set { objc_setAssociatedObject(self, &EmptyDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+        get { objc_getAssociatedObject(self, &kEmptyDataSetViewKey) as? EmptyDataSetView }
+        set { objc_setAssociatedObject(self, &kEmptyDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
     private var itemsCount: Int {
@@ -239,12 +241,12 @@ extension UIScrollView {
         guard responds(to: originalSelector) else { return assertionFailure() }
 
         let originalStringSelector = NSStringFromSelector(originalSelector)
-        for info in IMPLookupTable.values where (info.selector == originalStringSelector && isKind(of: info.owner)) {
+        for info in kIMPLookupTable.values where (info.selector == originalStringSelector && isKind(of: info.owner)) {
             return // 确保每个类（`UITableView`或`UICollectionView`）都只调用一次`method_setImplementation`
         }
 
         let key = "\(NSStringFromClass(originalClass))_\(originalStringSelector)"
-        guard IMPLookupTable[key] == nil else { return } // 如果`originalClass`的实现已经存在，不在继续往下执行
+        guard kIMPLookupTable[key] == nil else { return } // 如果`originalClass`的实现已经存在，不在继续往下执行
 
         guard let originalMethod = class_getInstanceMethod(originalClass, originalSelector) else { return assertionFailure() }
         let originalImplementation = method_getImplementation(originalMethod)
@@ -255,7 +257,7 @@ extension UIScrollView {
         /// 两者的类型其实是相同的，都是一个`IMP`指针类型，即`id (*IMP)(id, SEL, ...)`
         let originalClosure = unsafeBitCast(originalImplementation, to: OriginalIMP.self)
 
-        let swizzledBlock: @convention(block) (UIScrollView) -> Void = { (owner) in
+        let swizzledBlock: @convention(block) (UIScrollView) -> Void = { owner in
             originalClosure(owner, originalSelector)
             owner.reloadEmptyDataSet() // 重新加载空数据集。在调用`isEmptyDataSetVisible`属性之前进行此操作
         }
@@ -263,7 +265,7 @@ extension UIScrollView {
         let swizzledImplementation = imp_implementationWithBlock(unsafeBitCast(swizzledBlock, to: AnyObject.self))
         method_setImplementation(originalMethod, swizzledImplementation)
 
-        IMPLookupTable[key] = (originalClass, originalStringSelector) // 将新的实现存储在内存表中
+        kIMPLookupTable[key] = (originalClass, originalStringSelector) // 将新的实现存储在内存表中
     }
 }
 
@@ -272,7 +274,8 @@ extension UIScrollView: EmptyDataSetViewDelegate {
         emptyDataSetDelegate?.emptyDataSetShouldAllowTouch(self) ?? true
     }
 
-    fileprivate func shouldRecognizeSimultaneously(with otherGestureRecognizer: UIGestureRecognizer, of gestureRecognizer: UIGestureRecognizer) -> Bool {
+    fileprivate func shouldRecognizeSimultaneously(with otherGestureRecognizer: UIGestureRecognizer,
+                                                   of gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let emptyDataSetDelegate = emptyDataSetDelegate else { return false }
         if let scrollView = emptyDataSetDelegate as? UIScrollView, scrollView == self {
             return false
@@ -309,7 +312,9 @@ private class WeakObject {
 
 private protocol EmptyDataSetViewDelegate: AnyObject {
     var isTouchAllowed: Bool { get }
-    func shouldRecognizeSimultaneously(with otherGestureRecognizer: UIGestureRecognizer, of gestureRecognizer: UIGestureRecognizer) -> Bool
+
+    func shouldRecognizeSimultaneously(with otherGestureRecognizer: UIGestureRecognizer,
+                                       of gestureRecognizer: UIGestureRecognizer) -> Bool
     func didTap(_ view: UIView)
 }
 
@@ -408,6 +413,7 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
         tapGesture = tap
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -445,11 +451,13 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
         return nil
     }
 
-    @objc private func didTapButton(_ sender: UIButton) {
+    @objc
+    private func didTapButton(_ sender: UIButton) {
         delegate?.didTap(sender)
     }
 
-    @objc private func didTapContentView(_ sender: UITapGestureRecognizer) {
+    @objc
+    private func didTapContentView(_ sender: UITapGestureRecognizer) {
         guard let view = sender.view else { return }
         delegate?.didTap(view)
     }
@@ -483,7 +491,6 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
             if let height = layout.height {
                 constraints.append(view.heightAnchor.constraint(equalToConstant: height))
             }
-
         } else {
             var previous: (UIView, ElementLayout)?
             for key in EmptyDataSetElement.allCases {
@@ -520,7 +527,8 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
         return super.gestureRecognizerShouldBegin(gestureRecognizer)
     }
 
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer.isEqual(tapGesture) || otherGestureRecognizer.isEqual(tapGesture) {
             return true
         }
@@ -532,9 +540,9 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
 
 // MARK: - Private keys
 
-private var EmptyDataSetSourceKey: Void?
-private var EmptyDataSetDelegateKey: Void?
-private var EmptyDataSetViewKey: Void?
-private var EmptyDataSetStatusKey: Void?
-private let EmptyImageViewAnimationKey = "com.lp.emptyDataSet.imageViewAnimation"
-private var IMPLookupTable = [String: (owner: AnyClass, selector: String)](minimumCapacity: 3)
+private var kEmptyDataSetSourceKey: Void?
+private var kEmptyDataSetDelegateKey: Void?
+private var kEmptyDataSetViewKey: Void?
+private var kEmptyDataSetStatusKey: Void?
+private let kEmptyImageViewAnimationKey = "com.lp.emptyDataSet.imageViewAnimation"
+private var kIMPLookupTable = [String: (owner: AnyClass, selector: String)](minimumCapacity: 3)
