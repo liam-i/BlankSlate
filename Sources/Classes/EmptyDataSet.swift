@@ -12,7 +12,7 @@ import UIKit
 
 /// `UITableView` / `UICollectionView`父类的扩展，用于在视图无内容时自动显示空数据集
 /// - Note: 只需遵循`EmptyDataSetDataSource`协议，并返回要显示的数据它将自动工作
-extension UIScrollView: UIGestureRecognizerDelegate {
+extension UIScrollView {
     /// 空数据集数据源
     public weak var emptyDataSetSource: EmptyDataSetDataSource? {
         get { (objc_getAssociatedObject(self, &EmptyDataSetSourceKey) as? WeakObject)?.value as? EmptyDataSetDataSource }
@@ -203,10 +203,6 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         set { objc_setAssociatedObject(self, &EmptyDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
-    private var isTouchAllowed: Bool {
-        emptyDataSetDelegate?.emptyDataSetShouldAllowTouch(self) ?? true
-    }
-
     private var itemsCount: Int {
         var items: Int = 0
         switch self {
@@ -230,19 +226,10 @@ extension UIScrollView: UIGestureRecognizerDelegate {
         return items
     }
 
-    @objc private func didTapContentView(_ sender: UITapGestureRecognizer) {
-        guard let view = sender.view else { return }
-        emptyDataSetDelegate?.emptyDataSet(self, didTap: view)
-    }
-
     private func lp_create() -> EmptyDataSetView {
-        let view = EmptyDataSetView()
+        let view = EmptyDataSetView(delegate: self)
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.isHidden = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapContentView))
-        tap.delegate = self
-        view.addGestureRecognizer(tap)
-        view.tapGesture = tap
         self.emptyDataSetView = view
         return view
     }
@@ -278,31 +265,26 @@ extension UIScrollView: UIGestureRecognizerDelegate {
 
         IMPLookupTable[key] = (originalClass, originalStringSelector) // 将新的实现存储在内存表中
     }
+}
 
-    open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let view = gestureRecognizer.view, view.isEqual(emptyDataSetView) {
-            return isTouchAllowed
-        }
-        return super.gestureRecognizerShouldBegin(gestureRecognizer)
+extension UIScrollView: EmptyDataSetViewDelegate {
+    fileprivate var isTouchAllowed: Bool {
+        emptyDataSetDelegate?.emptyDataSetShouldAllowTouch(self) ?? true
     }
 
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        let tapGesture = emptyDataSetView?.tapGesture
-        if gestureRecognizer.isEqual(tapGesture) || otherGestureRecognizer.isEqual(tapGesture) {
-            return true
-        }
-
+    fileprivate func shouldRecognizeSimultaneously(with otherGestureRecognizer: UIGestureRecognizer, of gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let emptyDataSetDelegate = emptyDataSetDelegate else { return false }
-
         if let scrollView = emptyDataSetDelegate as? UIScrollView, scrollView == self {
             return false
         }
-
-        let delegate = emptyDataSetDelegate as AnyObject
-        if delegate.responds(to: #selector(gestureRecognizer(_:shouldRecognizeSimultaneouslyWith:))) {
-            return delegate.gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer)
+        if let delegate = emptyDataSetDelegate as? UIGestureRecognizerDelegate {
+            return delegate.gestureRecognizer?(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer) ?? false
         }
         return false
+    }
+
+    fileprivate func didTap(_ view: UIView) {
+        emptyDataSetDelegate?.emptyDataSet(self, didTap: view)
     }
 }
 
@@ -323,9 +305,15 @@ private class WeakObject {
     }
 }
 
-// MARK: - EmptyDataSetView
+// MARK: - EmptyDataSetViewDelegate & EmptyDataSetView
 
-private class EmptyDataSetView: UIView {
+private protocol EmptyDataSetViewDelegate: AnyObject {
+    var isTouchAllowed: Bool { get }
+    func shouldRecognizeSimultaneously(with otherGestureRecognizer: UIGestureRecognizer, of gestureRecognizer: UIGestureRecognizer) -> Bool
+    func didTap(_ view: UIView)
+}
+
+private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
     private let contentView: UIView = {
         let contentView = UIView()
         contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -404,13 +392,20 @@ private class EmptyDataSetView: UIView {
         elements[.custom] = (view, layout)
     }
 
-    weak var tapGesture: UITapGestureRecognizer?
-    var verticalOffset: CGFloat = 0 // 自定义垂直偏移量
-    var fadeInDuration: TimeInterval = 0
+    private weak var delegate: EmptyDataSetViewDelegate?
+    private weak var tapGesture: UITapGestureRecognizer?
+    fileprivate var verticalOffset: CGFloat = 0 // 自定义垂直偏移量
+    fileprivate var fadeInDuration: TimeInterval = 0
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(delegate: EmptyDataSetViewDelegate?) {
+        super.init(frame: .zero)
+        self.delegate = delegate
         addSubview(contentView)
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapContentView))
+        tap.delegate = self
+        addGestureRecognizer(tap)
+        tapGesture = tap
     }
 
     required init?(coder: NSCoder) {
@@ -451,8 +446,12 @@ private class EmptyDataSetView: UIView {
     }
 
     @objc private func didTapButton(_ sender: UIButton) {
-        guard let superview = superview as? UIScrollView else { return }
-        superview.emptyDataSetDelegate?.emptyDataSet(superview, didTap: sender)
+        delegate?.didTap(sender)
+    }
+
+    @objc private func didTapContentView(_ sender: UITapGestureRecognizer) {
+        guard let view = sender.view else { return }
+        delegate?.didTap(view)
     }
 
     func prepareForReuse() {
@@ -511,6 +510,23 @@ private class EmptyDataSetView: UIView {
         }
 
         NSLayoutConstraint.activate(constraints)
+    }
+
+    // MARK: - UIGestureRecognizerDelegate
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let delegate = delegate, isEqual(gestureRecognizer.view) {
+            return delegate.isTouchAllowed
+        }
+        return super.gestureRecognizerShouldBegin(gestureRecognizer)
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer.isEqual(tapGesture) || otherGestureRecognizer.isEqual(tapGesture) {
+            return true
+        }
+
+        guard let delegate = delegate else { return false }
+        return delegate.shouldRecognizeSimultaneously(with: otherGestureRecognizer, of: gestureRecognizer)
     }
 }
 
