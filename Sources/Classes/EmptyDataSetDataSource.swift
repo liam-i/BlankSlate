@@ -13,6 +13,9 @@ public protocol EmptyDataSetDataSource: AnyObject {
     /// 向数据源请求数据集的图像。默认`nil`
     func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage?
 
+    /// 向数据源请求数据集图像的`Alpha`，取值范围[0.0~1.0]。默认`1.0`
+    func imageAlpha(forEmptyDataSet scrollView: UIScrollView) -> CGFloat
+
     /// 向数据源请求数据集图像的`TintColor`。默认`nil`
     func imageTintColor(forEmptyDataSet scrollView: UIScrollView) -> UIColor?
 
@@ -64,6 +67,7 @@ public protocol EmptyDataSetDataSource: AnyObject {
 
 extension EmptyDataSetDataSource {
     public func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? { nil }
+    public func imageAlpha(forEmptyDataSet scrollView: UIScrollView) -> CGFloat { 1.0 }
     public func imageTintColor(forEmptyDataSet scrollView: UIScrollView) -> UIColor? { nil }
     public func imageAnimation(forEmptyDataSet scrollView: UIScrollView) -> CAAnimation? { nil }
 
@@ -82,7 +86,7 @@ extension EmptyDataSetDataSource {
 
     public func verticalOffset(forEmptyDataSet scrollView: UIScrollView) -> CGFloat { 0.0 }
 
-    public func elementLayout(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> ElementLayout { ElementLayout() }
+    public func elementLayout(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> ElementLayout { .default }
 
     public func fadeInDuration(forEmptyDataSet scrollView: UIScrollView) -> TimeInterval { 0.0 }
 }

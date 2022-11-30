@@ -129,6 +129,7 @@ extension UIScrollView {
                     let imageView = view.createImageView(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .image))
                     imageView.image = image.withRenderingMode(tintColor != nil ? .alwaysTemplate : .alwaysOriginal)
                     imageView.tintColor = tintColor
+                    imageView.alpha = emptyDataSetSource.imageAlpha(forEmptyDataSet: self)
 
                     // 配置图像视图动画
                     if let animation = emptyDataSetSource.imageAnimation(forEmptyDataSet: self) {
@@ -445,7 +446,7 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
         }
 
         /// 返回`contentView`或`customView`
-        if hitView.isEqual(contentView) || hitView.isEqual(elements[.custom]) {
+        if hitView.isEqual(contentView) || hitView.isEqual(elements[.custom]?.0) {
             return hitView
         }
         return nil

@@ -34,21 +34,38 @@ public enum EmptyDataSetElement: CaseIterable {
 /// 控件布局约束值
 public struct ElementLayout {
     /// 控件边缘内间距。默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
-    public let edgeInsets: UIEdgeInsets
+    public var edgeInsets: UIEdgeInsets
     /// 控件高。默认：`nil`，代表自适应高
-    public let height: CGFloat?
+    public var height: CGFloat?
 
     /// 初始化 ElementLayout
     /// - Parameters:
-    ///   - edgeInsets: 控件边缘内间距。默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
-    ///   - height: 控件高。默认：`nil`，代表自适应高
-    public init(edgeInsets: UIEdgeInsets = .default, height: CGFloat? = nil) {
+    ///   - edgeInsets: 控件边缘内间距。
+    ///   - height: 控件高。传值`nil`，表示自适应高
+    public init(edgeInsets: UIEdgeInsets, height: CGFloat?) {
         self.edgeInsets = edgeInsets
         self.height = height
     }
-}
 
-extension UIEdgeInsets {
-    /// 默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
-    public static let `default` = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
+    /// 更新属性值
+    @discardableResult
+    public mutating func with(_ populator: (inout Self) -> Void) -> Self {
+        populator(&self)
+        return self
+    }
+
+    /// 更新属性值
+    @discardableResult
+    public static func with(_ populator: (inout Self) -> Void) -> Self {
+        var layout = ElementLayout.default
+        populator(&layout)
+        return layout
+    }
+
+    /// 默认布局
+    /// - edgeInsets: 控件边缘内间距。默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
+    /// - height: 控件高。默认：`nil`，表示自适应高
+    public static let `default` = {
+        ElementLayout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: nil)
+    }()
 }
