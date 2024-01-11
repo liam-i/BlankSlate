@@ -33,7 +33,7 @@ public enum EmptyDataSetElement: CaseIterable {
 
 /// 控件布局约束值
 public struct ElementLayout {
-    /// 控件边缘内间距。默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
+    /// 控件边缘内间距
     public var edgeInsets: UIEdgeInsets
     /// 控件高。默认：`nil`，代表自适应高
     public var height: CGFloat?

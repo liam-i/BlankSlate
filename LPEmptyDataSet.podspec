@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'LPEmptyDataSet'
-  s.version          = '0.2.3'
+  s.version          = '0.2.5'
   s.summary          = 'A drop-in UITableView/UICollectionView superclass category for showing empty datasets whenever the view has no content to display.'
 
 s.description      = <<-DESC
@@ -12,9 +12,9 @@ It will work automatically, by just conforming to DZNEmptyDataSetSource, and ret
   s.author           = { 'Liam' => 'liam_i@163.com' }
   s.source           = { :git => 'https://github.com/liam-i/EmptyDataSet.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '11.0'
 
-  s.swift_versions = ['5.1', '5.2', '5.3']
+  s.swift_versions = ['5.0']
 
-  s.source_files = 'Sources/Classes/**/*'
+  s.source_files = 'Sources/**/*'
 end

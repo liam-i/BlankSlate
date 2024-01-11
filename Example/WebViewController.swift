@@ -31,15 +31,15 @@ class WebViewController: UIViewController, EmptyDataSetDataSource, EmptyDataSetD
     }
     
     func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
-        return UIImage(named: "icon_appstore")
+        UIImage(named: "icon_appstore")
     }
 
     func emptyDataSetShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int {
-        return -1
+        -1
     }
 
     func elementLayout(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> ElementLayout {
-        ElementLayout(height: 500)
+        ElementLayout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
     }
 }
 

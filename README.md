@@ -1,11 +1,11 @@
 # EmptyDataSet
 
-[![CI Status](https://img.shields.io/travis/Liam/EmptyDataSet.svg?style=flat)](https://travis-ci.org/Liam/EmptyDataSet)
-[![Version](https://img.shields.io/cocoapods/v/EmptyDataSet.svg?style=flat)](https://cocoapods.org/pods/EmptyDataSet)
-[![License](https://img.shields.io/cocoapods/l/EmptyDataSet.svg?style=flat)](https://cocoapods.org/pods/EmptyDataSet)
-[![Platform](https://img.shields.io/cocoapods/p/EmptyDataSet.svg?style=flat)](https://cocoapods.org/pods/EmptyDataSet)
+<!-- [![CI Status](https://img.shields.io/travis/Liam/LPEmptyDataSet.svg?style=flat)](https://travis-ci.org/Liam/LPEmptyDataSet) -->
+[![Version](https://img.shields.io/cocoapods/v/LPEmptyDataSet.svg?style=flat)](https://cocoapods.org/pods/LPEmptyDataSet)
+[![License](https://img.shields.io/cocoapods/l/LPEmptyDataSet.svg?style=flat)](https://cocoapods.org/pods/LPEmptyDataSet)
+[![Platform](https://img.shields.io/cocoapods/p/LPEmptyDataSet.svg?style=flat)](https://cocoapods.org/pods/LPEmptyDataSet)
 
-The Swift version of [DZNEmptyDataSet](https://github.com/dzenbot/DZNEmptyDataSet).
+A Swift version of [DZNEmptyDataSet](https://github.com/dzenbot/DZNEmptyDataSet).
 
 ## Example
 
@@ -13,13 +13,30 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+* iOS 11.0+ 
+* Xcode 14.0+
+* Swift 5.0+
+
 ## Installation
 
-EmptyDataSet is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+#### Swift Package Manager
+
+- File > Swift Packages > Add Package Dependency
+- Add `https://github.com/liam-i/EmptyDataSet.git`
+- Select "Up to Next Minor" with "0.2.5"
+
+#### CocoaPods
+
+EmptyDataSet is available through [CocoaPods](https://cocoapods.org). To install it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'LPEmptyDataSet'
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '11.0'
+use_frameworks!
+
+target 'MyApp' do
+  pod 'LPEmptyDataSet', '~> 0.2.5'
+end
 ```
 
 ## Author
