@@ -10,7 +10,7 @@ use_frameworks! :linkage => :static
 
 target 'EmptyDataSet_Example' do
   pod 'LPEmptyDataSet', :path => './'
-  pod 'LPHUD'
+  pod 'LPHUD', '~> 1.3.2'
 
   target 'EmptyDataSet_Tests' do
     inherit! :search_paths
