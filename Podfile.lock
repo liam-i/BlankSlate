@@ -1,10 +1,18 @@
 PODS:
-  - LPEmptyDataSet (0.2.5)
-  - LPHUD (1.3.2)
+  - LPEmptyDataSet (0.2.6)
+  - LPHUD (1.5.4):
+    - LPHUD/HUD (= 1.5.4)
+    - LPHUD/HUDIndicator (= 1.5.4)
+    - LPHUD/HUDProgress (= 1.5.4)
+  - LPHUD/HUD (1.5.4)
+  - LPHUD/HUDIndicator (1.5.4):
+    - LPHUD/HUD
+  - LPHUD/HUDProgress (1.5.4):
+    - LPHUD/HUD
 
 DEPENDENCIES:
   - LPEmptyDataSet (from `./`)
-  - LPHUD (~> 1.3.2)
+  - LPHUD
 
 SPEC REPOS:
   trunk:
@@ -15,9 +23,9 @@ EXTERNAL SOURCES:
     :path: "./"
 
 SPEC CHECKSUMS:
-  LPEmptyDataSet: 28be8d471d3238a2ad2815adcc300a3d6a88d592
-  LPHUD: 82c0ee30763394a40313bfc73c461ecb7409e1fa
+  LPEmptyDataSet: 7102614ead33808cdcc3c7dddb9bf4de5909194f
+  LPHUD: 023c955af0752d19e37b870a05ff1c9c0f928e8e
 
-PODFILE CHECKSUM: 2133b9bae497b11bd7551fd563ce36de0b463401
+PODFILE CHECKSUM: 726e94dfe9c64b507dbd236cc8226156104dc0cf
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.0

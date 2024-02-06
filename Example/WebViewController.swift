@@ -3,7 +3,7 @@
 //  EmptyDataSet_Example
 //
 //  Created by Liam on 2021/12/19.
-//  Copyright © 2021 CocoaPods. All rights reserved.
+//  Copyright © 2021 Liam. All rights reserved.
 //
 
 import UIKit
