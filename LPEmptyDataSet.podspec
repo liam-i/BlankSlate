@@ -13,6 +13,7 @@ It will work automatically, by just conforming to DZNEmptyDataSetSource, and ret
   s.source           = { :git => 'https://github.com/liam-i/EmptyDataSet.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '11.0'
+  s.tvos.deployment_target = '11.0'
 
   s.swift_versions = ['5.0']
 

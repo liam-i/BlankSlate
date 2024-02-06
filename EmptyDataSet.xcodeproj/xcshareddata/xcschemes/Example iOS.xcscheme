@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "EmptyDataSet_Example.app"
-               BlueprintName = "EmptyDataSet_Example"
+               BuildableName = "Example iOS.app"
+               BlueprintName = "Example iOS"
                ReferencedContainer = "container:EmptyDataSet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "EmptyDataSet_Tests.xctest"
-               BlueprintName = "EmptyDataSet_Tests"
+               BuildableName = "Example Tests.xctest"
+               BlueprintName = "Example Tests"
                ReferencedContainer = "container:EmptyDataSet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "EmptyDataSet_Example.app"
-            BlueprintName = "EmptyDataSet_Example"
+            BuildableName = "Example iOS.app"
+            BlueprintName = "Example iOS"
             ReferencedContainer = "container:EmptyDataSet.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -56,8 +56,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "EmptyDataSet_Tests.xctest"
-               BlueprintName = "EmptyDataSet_Tests"
+               BuildableName = "Example Tests.xctest"
+               BlueprintName = "Example Tests"
                ReferencedContainer = "container:EmptyDataSet.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -78,8 +78,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "EmptyDataSet_Example.app"
-            BlueprintName = "EmptyDataSet_Example"
+            BuildableName = "Example iOS.app"
+            BlueprintName = "Example iOS"
             ReferencedContainer = "container:EmptyDataSet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -95,8 +95,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "EmptyDataSet_Example.app"
-            BlueprintName = "EmptyDataSet_Example"
+            BuildableName = "Example iOS.app"
+            BlueprintName = "Example iOS"
             ReferencedContainer = "container:EmptyDataSet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
