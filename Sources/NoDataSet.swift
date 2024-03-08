@@ -1,6 +1,6 @@
 //
-//  EmptyDataSet.swift
-//  EmptyDataSet <https://github.com/liam-i/EmptyDataSet>
+//  NoDataSet.swift
+//  NoDataSet <https://github.com/liam-i/NoDataSet>
 //
 //  Created by Liam on 2020/2/6.
 //  Copyright © 2020 Liam. All rights reserved.
@@ -11,17 +11,17 @@ import UIKit
 // MARK: - Extension UIScrollView
 
 /// `UITableView` / `UICollectionView`父类的扩展，用于在视图无内容时自动显示空数据集
-/// - Note: 只需遵循`EmptyDataSetDataSource`协议，并返回要显示的数据它将自动工作
+/// - Note: 只需遵循`NoDataSetDataSource`协议，并返回要显示的数据它将自动工作
 extension UIScrollView {
     /// 空数据集数据源
-    public weak var emptyDataSetSource: EmptyDataSetDataSource? {
-        get { (objc_getAssociatedObject(self, &kEmptyDataSetSourceKey) as? WeakObject)?.value as? EmptyDataSetDataSource }
+    public weak var noDataSetSource: NoDataSetDataSource? {
+        get { (objc_getAssociatedObject(self, &kNoDataSetSourceKey) as? WeakObject)?.value as? NoDataSetDataSource }
         set {
-            if newValue == nil || emptyDataSetSource == nil {
+            if newValue == nil || noDataSetSource == nil {
                 invalidate()
             }
 
-            objc_setAssociatedObject(self, &kEmptyDataSetSourceKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kNoDataSetSourceKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
             /// 使用runtime swizzle将`lp_reloadData()`和`reloadData()`交换
             switch self {
@@ -37,25 +37,25 @@ extension UIScrollView {
     }
 
     /// 空数据集委托
-    public weak var emptyDataSetDelegate: EmptyDataSetDelegate? {
-        get { (objc_getAssociatedObject(self, &kEmptyDataSetDelegateKey) as? WeakObject)?.value as? EmptyDataSetDelegate }
+    public weak var noDataSetDelegate: NoDataSetDelegate? {
+        get { (objc_getAssociatedObject(self, &kNoDataSetDelegateKey) as? WeakObject)?.value as? NoDataSetDelegate }
         set {
             if newValue == nil {
                 invalidate()
             }
-            objc_setAssociatedObject(self, &kEmptyDataSetDelegateKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kNoDataSetDelegateKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
     /// 数据加载状态
     /// - Note: 为`UITableView`和`UICollectionView`设置此属性时自动执行`reloadData()`方法
     public var dataLoadStatus: EmptyDataLoadStatus? {
-        get { objc_getAssociatedObject(self, &kEmptyDataSetStatusKey) as? EmptyDataLoadStatus }
+        get { objc_getAssociatedObject(self, &kNoDataSetStatusKey) as? EmptyDataLoadStatus }
         set {
-            objc_setAssociatedObject(self, &kEmptyDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kNoDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
             guard let newValue = newValue, newValue != .loading else {
-                return reloadEmptyDataSet()
+                return reloadNoDataSet()
             }
 
             switch self {
@@ -64,48 +64,48 @@ extension UIScrollView {
             case let collectionView as UICollectionView:
                 collectionView.reloadData()
             default:
-                reloadEmptyDataSet()
+                reloadNoDataSet()
             }
         }
     }
 
     /// 空视图集内容视图
-    public var emptyDataSetContentView: UIView? {
-        emptyDataSetView
+    public var noDataSetContentView: UIView? {
+        noDataSetView
     }
 
     /// 如果空数据集可见，则为`true`
-    public var isEmptyDataSetVisible: Bool {
-        guard let view = objc_getAssociatedObject(self, &kEmptyDataSetViewKey) as? EmptyDataSetView else { return false }
+    public var isNoDataSetVisible: Bool {
+        guard let view = objc_getAssociatedObject(self, &kNoDataSetViewKey) as? NoDataSetView else { return false }
         return view.isHidden == false
     }
 
-    /// 同时设置`EmptyDataSetDataSource` & `EmptyDataSetDelegate`
-    public func setEmptyDataSetSourceAndDelegate(_ newValue: (EmptyDataSetDataSource & EmptyDataSetDelegate)?) {
-        emptyDataSetSource = newValue
-        emptyDataSetDelegate = newValue
+    /// 同时设置`NoDataSetDataSource` & `NoDataSetDelegate`
+    public func setNoDataSetSourceAndDelegate(_ newValue: (NoDataSetDataSource & NoDataSetDelegate)?) {
+        noDataSetSource = newValue
+        noDataSetDelegate = newValue
     }
 
     // swiftlint:disable cyclomatic_complexity function_body_length
     /// 重新加载空数据集内容视图
     /// - Note: 调用此方法以强制刷新所有数据。类似于`reloadData()`，但这仅强制重新加载空数据集，而不强制重新加载整个表视图或集合视图
-    public func reloadEmptyDataSet() {
-        guard let emptyDataSetSource = emptyDataSetSource else {
+    public func reloadNoDataSet() {
+        guard let noDataSetSource = noDataSetSource else {
             invalidate()
             return
         }
 
-        if ((emptyDataSetDelegate?.emptyDataSetShouldDisplay(self) ?? true) && (itemsCount == 0))
-            || (emptyDataSetDelegate?.emptyDataSetShouldBeForcedToDisplay(self) ?? false) {
-            let view = emptyDataSetView ?? lp_create()
+        if ((noDataSetDelegate?.noDataSetShouldDisplay(self) ?? true) && (itemsCount == 0))
+            || (noDataSetDelegate?.noDataSetShouldBeForcedToDisplay(self) ?? false) {
+            let view = noDataSetView ?? lp_create()
 
-            emptyDataSetDelegate?.emptyDataSetWillAppear(self) // 通知委托空数据集视图将要呈现
+            noDataSetDelegate?.noDataSetWillAppear(self) // 通知委托空数据集视图将要呈现
 
-            view.fadeInDuration = emptyDataSetSource.fadeInDuration(forEmptyDataSet: self) // 设置空数据集淡入持续时间
+            view.fadeInDuration = noDataSetSource.fadeInDuration(forNoDataSet: self) // 设置空数据集淡入持续时间
 
             if view.superview == nil {
                 if subviews.count > 1 {
-                    let index = emptyDataSetDelegate?.emptyDataSetShouldBeInsertAtIndex(self) ?? 0
+                    let index = noDataSetDelegate?.noDataSetShouldBeInsertAtIndex(self) ?? 0
                     if index >= 0 && index < subviews.count {
                         insertSubview(view, at: index)
                     } else {
@@ -120,19 +120,19 @@ extension UIScrollView {
             view.prepareForReuse()
 
             /// 如果允许，则设置自定义视图
-            if let customView = emptyDataSetSource.customView(forEmptyDataSet: self) {
-                view.setCustomView(customView, layout: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .custom))
+            if let customView = noDataSetSource.customView(forNoDataSet: self) {
+                view.setCustomView(customView, layout: noDataSetSource.elementLayout(forNoDataSet: self, for: .custom))
             } else {
                 /// 配置 Image
-                if let image = emptyDataSetSource.image(forEmptyDataSet: self) {
-                    let tintColor = emptyDataSetSource.imageTintColor(forEmptyDataSet: self)
-                    let imageView = view.createImageView(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .image))
+                if let image = noDataSetSource.image(forNoDataSet: self) {
+                    let tintColor = noDataSetSource.imageTintColor(forNoDataSet: self)
+                    let imageView = view.createImageView(with: noDataSetSource.elementLayout(forNoDataSet: self, for: .image))
                     imageView.image = image.withRenderingMode(tintColor != nil ? .alwaysTemplate : .alwaysOriginal)
                     imageView.tintColor = tintColor
-                    imageView.alpha = emptyDataSetSource.imageAlpha(forEmptyDataSet: self)
+                    imageView.alpha = noDataSetSource.imageAlpha(forNoDataSet: self)
 
                     // 配置图像视图动画
-                    if let animation = emptyDataSetSource.imageAnimation(forEmptyDataSet: self) {
+                    if let animation = noDataSetSource.imageAnimation(forNoDataSet: self) {
                         imageView.layer.add(animation, forKey: kEmptyImageViewAnimationKey)
                     } else if imageView.layer.animation(forKey: kEmptyImageViewAnimationKey) != nil {
                         imageView.layer.removeAnimation(forKey: kEmptyImageViewAnimationKey)
@@ -140,70 +140,70 @@ extension UIScrollView {
                 }
 
                 /// 配置标题标签
-                if let titleString = emptyDataSetSource.title(forEmptyDataSet: self) {
-                    view.createTitleLabel(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .title)).attributedText = titleString
+                if let titleString = noDataSetSource.title(forNoDataSet: self) {
+                    view.createTitleLabel(with: noDataSetSource.elementLayout(forNoDataSet: self, for: .title)).attributedText = titleString
                 }
 
                 /// 配置详细标签
-                if let detailString = emptyDataSetSource.detail(forEmptyDataSet: self) {
-                    view.createDetailLabel(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .title)).attributedText = detailString
+                if let detailString = noDataSetSource.detail(forNoDataSet: self) {
+                    view.createDetailLabel(with: noDataSetSource.elementLayout(forNoDataSet: self, for: .title)).attributedText = detailString
                 }
 
                 /// 配置按钮
-                if let buttonImage = emptyDataSetSource.buttonImage(forEmptyDataSet: self, for: .normal) {
-                    let button = view.createButton(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .button))
+                if let buttonImage = noDataSetSource.buttonImage(forNoDataSet: self, for: .normal) {
+                    let button = view.createButton(with: noDataSetSource.elementLayout(forNoDataSet: self, for: .button))
                     button.setImage(buttonImage, for: .normal)
-                    button.setImage(emptyDataSetSource.buttonImage(forEmptyDataSet: self, for: .highlighted), for: .highlighted)
-                    emptyDataSetSource.configure(forEmptyDataSet: self, for: button)
-                } else if let titleString = emptyDataSetSource.buttonTitle(forEmptyDataSet: self, for: .normal) {
-                    let button = view.createButton(with: emptyDataSetSource.elementLayout(forEmptyDataSet: self, for: .button))
+                    button.setImage(noDataSetSource.buttonImage(forNoDataSet: self, for: .highlighted), for: .highlighted)
+                    noDataSetSource.configure(forNoDataSet: self, for: button)
+                } else if let titleString = noDataSetSource.buttonTitle(forNoDataSet: self, for: .normal) {
+                    let button = view.createButton(with: noDataSetSource.elementLayout(forNoDataSet: self, for: .button))
                     button.setAttributedTitle(titleString, for: .normal)
-                    button.setAttributedTitle(emptyDataSetSource.buttonTitle(forEmptyDataSet: self, for: .highlighted), for: .highlighted)
-                    button.setBackgroundImage(emptyDataSetSource.buttonBackgroundImage(forEmptyDataSet: self, for: .normal), for: .normal)
-                    button.setBackgroundImage(emptyDataSetSource.buttonBackgroundImage(forEmptyDataSet: self, for: .highlighted), for: .highlighted)
-                    emptyDataSetSource.configure(forEmptyDataSet: self, for: button)
+                    button.setAttributedTitle(noDataSetSource.buttonTitle(forNoDataSet: self, for: .highlighted), for: .highlighted)
+                    button.setBackgroundImage(noDataSetSource.buttonBackgroundImage(forNoDataSet: self, for: .normal), for: .normal)
+                    button.setBackgroundImage(noDataSetSource.buttonBackgroundImage(forNoDataSet: self, for: .highlighted), for: .highlighted)
+                    noDataSetSource.configure(forNoDataSet: self, for: button)
                 }
             }
 
-            view.verticalOffset = emptyDataSetSource.verticalOffset(forEmptyDataSet: self)
+            view.verticalOffset = noDataSetSource.verticalOffset(forNoDataSet: self)
 
             // 配置空数据集视图
-            view.backgroundColor = emptyDataSetSource.backgroundColor(forEmptyDataSet: self) ?? UIColor.clear
+            view.backgroundColor = noDataSetSource.backgroundColor(forNoDataSet: self) ?? UIColor.clear
             view.isHidden = view.elements.isEmpty // 如果视图集为空，则不显示
             view.clipsToBounds = true
             view.isUserInteractionEnabled = isTouchAllowed // 设置空数据集的用户交互权限
             if !view.isHidden { view.setupConstraints() } // 如果视图集不为空，则设置约束
 
             UIView.performWithoutAnimation { view.layoutIfNeeded() }
-            isScrollEnabled = emptyDataSetDelegate?.emptyDataSetShouldAllowScroll(self) ?? false // 设置滚动权限
+            isScrollEnabled = noDataSetDelegate?.noDataSetShouldAllowScroll(self) ?? false // 设置滚动权限
 
-            emptyDataSetDelegate?.emptyDataSetDidAppear(self) // 通知委托空数据集视图已经呈现
-        } else if isEmptyDataSetVisible {
+            noDataSetDelegate?.noDataSetDidAppear(self) // 通知委托空数据集视图已经呈现
+        } else if isNoDataSetVisible {
             invalidate()
         }
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
 
     public func invalidate() {
-        var isEmptyDataSetVisible = false
-        if let emptyDataSetView = emptyDataSetView {
-            isEmptyDataSetVisible = true
-            emptyDataSetDelegate?.emptyDataSetWillDisappear(self) // 通知委托空数据集视图将要消失
+        var isNoDataSetVisible = false
+        if let noDataSetView = noDataSetView {
+            isNoDataSetVisible = true
+            noDataSetDelegate?.noDataSetWillDisappear(self) // 通知委托空数据集视图将要消失
 
-            emptyDataSetView.prepareForReuse()
-            emptyDataSetView.removeFromSuperview()
-            self.emptyDataSetView = nil
+            noDataSetView.prepareForReuse()
+            noDataSetView.removeFromSuperview()
+            self.noDataSetView = nil
         }
 
-        if isEmptyDataSetVisible {
-            isScrollEnabled = emptyDataSetDelegate?.shouldAllowScrollAfterEmptyDataSetDisappear(self) ?? true
-            emptyDataSetDelegate?.emptyDataSetDidDisappear(self) // 通知委托空数据集视图已经消失
+        if isNoDataSetVisible {
+            isScrollEnabled = noDataSetDelegate?.shouldAllowScrollAfterNoDataSetDisappear(self) ?? true
+            noDataSetDelegate?.noDataSetDidDisappear(self) // 通知委托空数据集视图已经消失
         }
     }
 
-    private var emptyDataSetView: EmptyDataSetView? {
-        get { objc_getAssociatedObject(self, &kEmptyDataSetViewKey) as? EmptyDataSetView }
-        set { objc_setAssociatedObject(self, &kEmptyDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    private var noDataSetView: NoDataSetView? {
+        get { objc_getAssociatedObject(self, &kNoDataSetViewKey) as? NoDataSetView }
+        set { objc_setAssociatedObject(self, &kNoDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
     private var itemsCount: Int {
@@ -229,11 +229,11 @@ extension UIScrollView {
         return items
     }
 
-    private func lp_create() -> EmptyDataSetView {
-        let view = EmptyDataSetView(delegate: self)
+    private func lp_create() -> NoDataSetView {
+        let view = NoDataSetView(delegate: self)
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.isHidden = true
-        self.emptyDataSetView = view
+        self.noDataSetView = view
         return view
     }
 
@@ -260,7 +260,7 @@ extension UIScrollView {
 
         let swizzledBlock: @convention(block) (UIScrollView) -> Void = { owner in
             originalClosure(owner, originalSelector)
-            owner.reloadEmptyDataSet() // 重新加载空数据集。在调用`isEmptyDataSetVisible`属性之前进行此操作
+            owner.reloadNoDataSet() // 重新加载空数据集。在调用`isNoDataSetVisible`属性之前进行此操作
         }
 
         let swizzledImplementation = imp_implementationWithBlock(unsafeBitCast(swizzledBlock, to: AnyObject.self))
@@ -270,25 +270,25 @@ extension UIScrollView {
     }
 }
 
-extension UIScrollView: EmptyDataSetViewDelegate {
+extension UIScrollView: NoDataSetViewDelegate {
     fileprivate var isTouchAllowed: Bool {
-        emptyDataSetDelegate?.emptyDataSetShouldAllowTouch(self) ?? true
+        noDataSetDelegate?.noDataSetShouldAllowTouch(self) ?? true
     }
 
     fileprivate func shouldRecognizeSimultaneously(with otherGestureRecognizer: UIGestureRecognizer,
                                                    of gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard let emptyDataSetDelegate = emptyDataSetDelegate else { return false }
-        if let scrollView = emptyDataSetDelegate as? UIScrollView, scrollView == self {
+        guard let noDataSetDelegate = noDataSetDelegate else { return false }
+        if let scrollView = noDataSetDelegate as? UIScrollView, scrollView == self {
             return false
         }
-        if let delegate = emptyDataSetDelegate as? UIGestureRecognizerDelegate {
+        if let delegate = noDataSetDelegate as? UIGestureRecognizerDelegate {
             return delegate.gestureRecognizer?(gestureRecognizer, shouldRecognizeSimultaneouslyWith: otherGestureRecognizer) ?? false
         }
         return false
     }
 
     fileprivate func didTap(_ view: UIView) {
-        emptyDataSetDelegate?.emptyDataSet(self, didTap: view)
+        noDataSetDelegate?.noDataSet(self, didTap: view)
     }
 }
 
@@ -309,9 +309,9 @@ private class WeakObject {
     }
 }
 
-// MARK: - EmptyDataSetViewDelegate & EmptyDataSetView
+// MARK: - NoDataSetViewDelegate & NoDataSetView
 
-private protocol EmptyDataSetViewDelegate: AnyObject {
+private protocol NoDataSetViewDelegate: AnyObject {
     var isTouchAllowed: Bool { get }
 
     func shouldRecognizeSimultaneously(with otherGestureRecognizer: UIGestureRecognizer,
@@ -319,7 +319,7 @@ private protocol EmptyDataSetViewDelegate: AnyObject {
     func didTap(_ view: UIView)
 }
 
-private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
+private class NoDataSetView: UIView, UIGestureRecognizerDelegate {
     private let contentView: UIView = {
         let contentView = UIView()
         contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -329,7 +329,7 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
         return contentView
     }()
 
-    private(set) var elements: [EmptyDataSetElement: (UIView, ElementLayout)] = [:]
+    private(set) var elements: [NoDataSetElement: (UIView, ElementLayout)] = [:]
 
     func createImageView(with layout: ElementLayout) -> UIImageView {
         if let element = elements[.image] { element.0.removeFromSuperview() }
@@ -398,12 +398,12 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
         elements[.custom] = (view, layout)
     }
 
-    private weak var delegate: EmptyDataSetViewDelegate?
+    private weak var delegate: NoDataSetViewDelegate?
     private weak var tapGesture: UITapGestureRecognizer?
     fileprivate var verticalOffset: CGFloat = 0 // 自定义垂直偏移量
     fileprivate var fadeInDuration: TimeInterval = 0
 
-    init(delegate: EmptyDataSetViewDelegate?) {
+    init(delegate: NoDataSetViewDelegate?) {
         super.init(frame: .zero)
         self.delegate = delegate
         addSubview(contentView)
@@ -421,7 +421,7 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
 
     deinit {
         #if DEBUG
-        print("👍🏻👍🏻👍🏻 EmptyDataSetView is released.")
+        print("👍🏻👍🏻👍🏻 NoDataSetView is released.")
         #endif
     }
 
@@ -494,7 +494,7 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
             }
         } else {
             var previous: (UIView, ElementLayout)?
-            for key in EmptyDataSetElement.allCases {
+            for key in NoDataSetElement.allCases {
                 guard let element = elements[key] else { continue }
 
                 let view = element.0
@@ -541,9 +541,9 @@ private class EmptyDataSetView: UIView, UIGestureRecognizerDelegate {
 
 // MARK: - Private keys
 
-private var kEmptyDataSetSourceKey: Void?
-private var kEmptyDataSetDelegateKey: Void?
-private var kEmptyDataSetViewKey: Void?
-private var kEmptyDataSetStatusKey: Void?
-private let kEmptyImageViewAnimationKey = "com.lp.emptyDataSet.imageViewAnimation"
+private var kNoDataSetSourceKey: Void?
+private var kNoDataSetDelegateKey: Void?
+private var kNoDataSetViewKey: Void?
+private var kNoDataSetStatusKey: Void?
+private let kEmptyImageViewAnimationKey = "com.lp.noDataSet.imageViewAnimation"
 private var kIMPLookupTable = [String: (owner: AnyClass, selector: String)](minimumCapacity: 3)

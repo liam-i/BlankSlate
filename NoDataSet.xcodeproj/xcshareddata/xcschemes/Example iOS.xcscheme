@@ -17,7 +17,7 @@
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
                BuildableName = "Example iOS.app"
                BlueprintName = "Example iOS"
-               ReferencedContainer = "container:EmptyDataSet.xcodeproj">
+               ReferencedContainer = "container:NoDataSet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,7 +31,7 @@
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
                BuildableName = "Example Tests.xctest"
                BlueprintName = "Example Tests"
-               ReferencedContainer = "container:EmptyDataSet.xcodeproj">
+               ReferencedContainer = "container:NoDataSet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
             BuildableName = "Example iOS.app"
             BlueprintName = "Example iOS"
-            ReferencedContainer = "container:EmptyDataSet.xcodeproj">
+            ReferencedContainer = "container:NoDataSet.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -58,7 +58,7 @@
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
                BuildableName = "Example Tests.xctest"
                BlueprintName = "Example Tests"
-               ReferencedContainer = "container:EmptyDataSet.xcodeproj">
+               ReferencedContainer = "container:NoDataSet.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -80,7 +80,7 @@
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
             BuildableName = "Example iOS.app"
             BlueprintName = "Example iOS"
-            ReferencedContainer = "container:EmptyDataSet.xcodeproj">
+            ReferencedContainer = "container:NoDataSet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -97,7 +97,7 @@
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
             BuildableName = "Example iOS.app"
             BlueprintName = "Example iOS"
-            ReferencedContainer = "container:EmptyDataSet.xcodeproj">
+            ReferencedContainer = "container:NoDataSet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

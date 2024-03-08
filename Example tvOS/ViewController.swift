@@ -7,22 +7,22 @@
 //
 
 import UIKit
-import LPEmptyDataSet
+import NoDataSet
 
-class ViewController: UIViewController, EmptyDataSetDataSource, EmptyDataSetDelegate {
+class ViewController: UIViewController, NoDataSetDataSource, NoDataSetDelegate {
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.emptyDataSetSource = self
-        tableView.emptyDataSetDelegate = self
+        tableView.noDataSetSource = self
+        tableView.noDataSetDelegate = self
     }
 
-    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+    func image(forNoDataSet scrollView: UIScrollView) -> UIImage? {
         UIImage(named: "icon_wwdc")
     }
 
-    func elementLayout(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> ElementLayout {
+    func elementLayout(forNoDataSet scrollView: UIScrollView, for element: NoDataSetElement) -> ElementLayout {
         ElementLayout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
     }
 }

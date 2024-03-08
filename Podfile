@@ -8,18 +8,20 @@ install! 'cocoapods',
 #use_frameworks!
 use_frameworks! :linkage => :static
 
-target 'Example iOS' do
-  platform :ios, '11.0'
+workspace 'NoDataSet.xcworkspace'
 
-  pod 'LPEmptyDataSet', :path => './'
-  pod 'LPHUD'
+target 'Example iOS' do
+  platform :ios, '12.0'
+
+  pod 'NoDataSet', :path => './'
+  pod 'FlyHUD'
 
   target 'Example Tests' do
     inherit! :search_paths
   end
 end
 target 'Example tvOS' do
-  platform :tvos, '11.0'
-  pod 'LPEmptyDataSet', :path => './'
-  pod 'LPHUD'
+  platform :tvos, '12.0'
+  pod 'NoDataSet', :path => './'
+  pod 'FlyHUD'
 end

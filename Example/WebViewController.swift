@@ -1,6 +1,6 @@
 //
 //  WebViewController.swift
-//  EmptyDataSet_Example
+//  NoDataSet_Example
 //
 //  Created by Liam on 2021/12/19.
 //  Copyright © 2021 Liam. All rights reserved.
@@ -8,9 +8,9 @@
 
 import UIKit
 import WebKit
-import LPEmptyDataSet
+import NoDataSet
 
-class WebViewController: UIViewController, EmptyDataSetDataSource, EmptyDataSetDelegate {
+class WebViewController: UIViewController, NoDataSetDataSource, NoDataSetDelegate {
     private var webView: WKWebView = WKWebView(frame: UIScreen.main.bounds)
 
     override func viewDidLoad() {
@@ -18,8 +18,8 @@ class WebViewController: UIViewController, EmptyDataSetDataSource, EmptyDataSetD
         view.insertSubview(webView, at: 0)
         webView.uiDelegate = self
         webView.navigationDelegate = self
-        webView.scrollView.emptyDataSetSource = self
-        webView.scrollView.emptyDataSetDelegate = self
+        webView.scrollView.noDataSetSource = self
+        webView.scrollView.noDataSetDelegate = self
     }
 
     @IBAction func errorButtonClicked(_ sender: Any) {
@@ -30,15 +30,15 @@ class WebViewController: UIViewController, EmptyDataSetDataSource, EmptyDataSetD
         webView.load(URLRequest(url: URL(string: "https://www.baidu.com/")!))
     }
     
-    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+    func image(forNoDataSet scrollView: UIScrollView) -> UIImage? {
         UIImage(named: "icon_appstore")
     }
 
-    func emptyDataSetShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int {
+    func noDataSetShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int {
         -1
     }
 
-    func elementLayout(forEmptyDataSet scrollView: UIScrollView, for element: EmptyDataSetElement) -> ElementLayout {
+    func elementLayout(forNoDataSet scrollView: UIScrollView, for element: NoDataSetElement) -> ElementLayout {
         ElementLayout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
     }
 }

@@ -1,6 +1,6 @@
 //
-//  EmptyDataSetModel.swift
-//  EmptyDataSet <https://github.com/liam-i/EmptyDataSet>
+//  NoDataSetModel.swift
+//  NoDataSet <https://github.com/liam-i/NoDataSet>
 //
 //  Created by Liam on 2021/12/20.
 //
@@ -18,7 +18,7 @@ public enum EmptyDataLoadStatus {
 }
 
 /// 空数据集元素类型
-public enum EmptyDataSetElement: CaseIterable {
+public enum NoDataSetElement: CaseIterable {
     /// 图片视图
     case image
     /// 标题标签

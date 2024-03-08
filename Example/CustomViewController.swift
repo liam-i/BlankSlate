@@ -1,14 +1,14 @@
 //
 //  CustomViewController.swift
-//  EmptyDataSet
+//  NoDataSet
 //
 //  Created by Liam on 2020/2/11.
 //  Copyright © 2020 Liam. All rights reserved.
 //
 
 import UIKit
-import LPEmptyDataSet
-import LPHUD
+import NoDataSet
+import FlyHUD
 
 private let reuseIdentifier = "Cell"
 class CustomViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
@@ -23,8 +23,8 @@ class CustomViewController: UICollectionViewController, UICollectionViewDelegate
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         collectionView.alwaysBounceVertical = true
         
-        collectionView.emptyDataSetSource = self
-        collectionView.emptyDataSetDelegate = self
+        collectionView.noDataSetSource = self
+        collectionView.noDataSetDelegate = self
     }
 
     @IBAction func emptyDataButtonClicked(_ sender: UIBarButtonItem) {
@@ -64,24 +64,24 @@ class CustomViewController: UICollectionViewController, UICollectionViewDelegate
     }
 }
 
-extension CustomViewController: EmptyDataSetDataSource, EmptyDataSetDelegate {
-    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool {
+extension CustomViewController: NoDataSetDataSource, NoDataSetDelegate {
+    func noDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool {
         switch scrollView.dataLoadStatus {
         case .loading:  return false
         default:        return true
         }
     }
 
-    func customView(forEmptyDataSet scrollView: UIScrollView) -> UIView? {
+    func customView(forNoDataSet scrollView: UIScrollView) -> UIView? {
         let image = scrollView.dataLoadStatus == .failed ? #imageLiteral(resourceName: "placeholder_vine") : #imageLiteral(resourceName: "icon_wwdc")
         return UIImageView(image:  image)
     }
 
-//    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
-//        return scrollView.emptyDataSetType == .error ? #imageLiteral(resourceName: "placeholder_vine") : #imageLiteral(resourceName: "icon_wwdc")
+//    func image(forNoDataSet scrollView: UIScrollView) -> UIImage? {
+//        return scrollView.noDataSetType == .error ? #imageLiteral(resourceName: "placeholder_vine") : #imageLiteral(resourceName: "icon_wwdc")
 //    }
     
-    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool {
+    func noDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool {
         return true
     }
 }

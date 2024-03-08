@@ -1,21 +1,21 @@
 //
 //  DetailViewController.swift
-//  EmptyDataSet
+//  NoDataSet
 //
 //  Created by Liam on 2020/2/6.
 //  Copyright © 2020 Liam. All rights reserved.
 //
 
 import UIKit
-import LPEmptyDataSet
+import NoDataSet
 
-class DetailViewController: UITableViewController, EmptyDataSetDataSource, EmptyDataSetDelegate {
+class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSetDelegate {
     private var platform: Platform
     private let platforms: [Platform]
     private let allowShuffling: Bool
     private var isLoading: Bool = false {
         didSet {
-            if isLoading != oldValue { tableView.reloadEmptyDataSet() }
+            if isLoading != oldValue { tableView.reloadNoDataSet() }
         }
     }
     private var randomPlatform: Platform {
@@ -46,8 +46,8 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         
         edgesForExtendedLayout = []
         
-        tableView.emptyDataSetSource = self
-        tableView.emptyDataSetDelegate = self
+        tableView.noDataSetSource = self
+        tableView.noDataSetDelegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         
         configureHeaderAndFooter()
@@ -210,7 +210,7 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         configureHeaderAndFooter()
         configureNavigationBar()
         
-        tableView.reloadEmptyDataSet()
+        tableView.reloadNoDataSet()
     }
     
     @objc private func didTapHeaderView(_ sender: UITapGestureRecognizer) {
@@ -233,13 +233,13 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell.textLabel?.text = "EmptyDataSet"
+        cell.textLabel?.text = "NoDataSet"
         return cell
     }
     
-    // MARK: - EmptyDataSetDataSource Methods
+    // MARK: - NoDataSetDataSource Methods
     
-    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+    func title(forNoDataSet scrollView: UIScrollView) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor? = nil
@@ -344,7 +344,7 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         return NSAttributedString(string: text, attributes: attributes)
     }
     
-    func detail(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+    func detail(forNoDataSet scrollView: UIScrollView) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor?
@@ -472,7 +472,7 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         return attributedString
     }
     
-    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+    func image(forNoDataSet scrollView: UIScrollView) -> UIImage? {
         if isLoading {
             return UIImage(named: "loading_imgBlue_78x78", in: Bundle(for: DetailViewController.self), compatibleWith: nil)
         } else {
@@ -481,7 +481,7 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         }
     }
     
-    func imageAnimation(forEmptyDataSet scrollView: UIScrollView) -> CAAnimation? {
+    func imageAnimation(forNoDataSet scrollView: UIScrollView) -> CAAnimation? {
         guard platform.type == .px500 else { return nil }
         
         let animation = CABasicAnimation(keyPath: "transform")
@@ -493,7 +493,7 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         return animation
     }
     
-    func buttonTitle(forEmptyDataSet scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? {
+    func buttonTitle(forNoDataSet scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor?
@@ -537,7 +537,7 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         return NSAttributedString(string: text, attributes: attributes)
     }
     
-    func configure(forEmptyDataSet scrollView: UIScrollView, for button: UIButton) {
+    func configure(forNoDataSet scrollView: UIScrollView, for button: UIButton) {
         var capInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
         var rectInsets = UIEdgeInsets.zero
         switch platform.type {
@@ -568,7 +568,7 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         button.setBackgroundImage(image(for: .highlighted), for: .highlighted)
     }
     
-    func backgroundColor(forEmptyDataSet scrollView: UIScrollView) -> UIColor? {
+    func backgroundColor(forNoDataSet scrollView: UIScrollView) -> UIColor? {
         switch platform.type {
         case .px500:      return UIColor.black
         case .airbnb:     return UIColor.white
@@ -590,7 +590,7 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         }
     }
     
-    func verticalOffset(forEmptyDataSet scrollView: UIScrollView) -> CGFloat {
+    func verticalOffset(forNoDataSet scrollView: UIScrollView) -> CGFloat {
         if platform.type == .kickstarter {
             var offset = UIApplication.shared.statusBarFrame.height
             if let navigationController = navigationController {
@@ -605,28 +605,28 @@ class DetailViewController: UITableViewController, EmptyDataSetDataSource, Empty
         return 0.0
     }
     
-    // MARK: - EmptyDataSetDelegate Methods
+    // MARK: - NoDataSetDelegate Methods
     
-    func emptyDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool {
+    func noDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool {
         return true
     }
     
-    func emptyDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool {
+    func noDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool {
         return true
     }
     
-    func emptyDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool {
+    func noDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool {
         return true
     }
     
-    func emptyDataSet(_ scrollView: UIScrollView, didTap view: UIView) {
+    func noDataSet(_ scrollView: UIScrollView, didTap view: UIView) {
         isLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.isLoading = false
         }
     }
     
-    func emptyDataSet(_ scrollView: UIScrollView, didTap button: UIButton) {
+    func noDataSet(_ scrollView: UIScrollView, didTap button: UIButton) {
         isLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.isLoading = false

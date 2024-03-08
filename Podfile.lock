@@ -1,31 +1,31 @@
 PODS:
-  - LPEmptyDataSet (0.2.6)
-  - LPHUD (1.5.4):
-    - LPHUD/HUD (= 1.5.4)
-    - LPHUD/HUDIndicator (= 1.5.4)
-    - LPHUD/HUDProgress (= 1.5.4)
-  - LPHUD/HUD (1.5.4)
-  - LPHUD/HUDIndicator (1.5.4):
-    - LPHUD/HUD
-  - LPHUD/HUDProgress (1.5.4):
-    - LPHUD/HUD
+  - FlyHUD (1.5.6):
+    - FlyHUD/FlyHUD (= 1.5.6)
+    - FlyHUD/FlyIndicatorHUD (= 1.5.6)
+    - FlyHUD/FlyProgressHUD (= 1.5.6)
+  - FlyHUD/FlyHUD (1.5.6)
+  - FlyHUD/FlyIndicatorHUD (1.5.6):
+    - FlyHUD/FlyHUD
+  - FlyHUD/FlyProgressHUD (1.5.6):
+    - FlyHUD/FlyHUD
+  - NoDataSet (0.2.6)
 
 DEPENDENCIES:
-  - LPEmptyDataSet (from `./`)
-  - LPHUD
+  - FlyHUD
+  - NoDataSet (from `./`)
 
 SPEC REPOS:
   trunk:
-    - LPHUD
+    - FlyHUD
 
 EXTERNAL SOURCES:
-  LPEmptyDataSet:
+  NoDataSet:
     :path: "./"
 
 SPEC CHECKSUMS:
-  LPEmptyDataSet: 7102614ead33808cdcc3c7dddb9bf4de5909194f
-  LPHUD: 023c955af0752d19e37b870a05ff1c9c0f928e8e
+  FlyHUD: 257b62dc7566e102e9f92123fe9293301cb64189
+  NoDataSet: 04cbe12e3327f1d7b3973d08b2a3d3a4a1503cde
 
-PODFILE CHECKSUM: 726e94dfe9c64b507dbd236cc8226156104dc0cf
+PODFILE CHECKSUM: 6d2b65d2b577b7eeae895df47fc8e88840b0a9b4
 
-COCOAPODS: 1.15.0
+COCOAPODS: 1.15.2

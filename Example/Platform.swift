@@ -1,6 +1,6 @@
 //
 //  Platform.swift
-//  EmptyDataSet
+//  NoDataSet
 //
 //  Created by Liam on 2020/2/10.
 //  Copyright © 2020 Liam. All rights reserved.

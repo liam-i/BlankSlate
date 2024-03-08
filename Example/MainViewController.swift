@@ -1,6 +1,6 @@
 //
 //  MainViewController.swift
-//  EmptyDataSet
+//  NoDataSet
 //
 //  Created by Liam on 2020/2/10.
 //  Copyright © 2020 Liam. All rights reserved.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainViewController: UITableViewController { // , EmptyDataSetDataSource, EmptyDataSetDelegate
+class MainViewController: UITableViewController { // , NoDataSetDataSource, NoDataSetDelegate
     private var platforms: [Platform] = {
         let url = Bundle.main.url(forResource: "applications", withExtension: "json")!
         return Platform.applicationsFromJSON(at: url)
@@ -37,7 +37,7 @@ class MainViewController: UITableViewController { // , EmptyDataSetDataSource, E
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "EmptyDataSet"
+        title = "NoDataSet"
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         tableView.tableFooterView = UIView()
