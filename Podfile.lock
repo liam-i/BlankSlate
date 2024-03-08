@@ -8,7 +8,7 @@ PODS:
     - FlyHUD/FlyHUD
   - FlyHUD/FlyProgressHUD (1.5.6):
     - FlyHUD/FlyHUD
-  - NoDataSet (0.2.6)
+  - NoDataSet (0.3.0)
 
 DEPENDENCIES:
   - FlyHUD
@@ -24,7 +24,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FlyHUD: 257b62dc7566e102e9f92123fe9293301cb64189
-  NoDataSet: 04cbe12e3327f1d7b3973d08b2a3d3a4a1503cde
+  NoDataSet: ca30206a861994bf2a7fdd69c11307a29548222b
 
 PODFILE CHECKSUM: 6d2b65d2b577b7eeae895df47fc8e88840b0a9b4
 

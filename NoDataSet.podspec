@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'NoDataSet'
-  s.version          = '0.2.6'
+  s.version          = '0.3.0'
   s.summary          = 'A drop-in UITableView/UICollectionView superclass category for showing empty datasets whenever the view has no content to display.'
 
 s.description      = <<-DESC
