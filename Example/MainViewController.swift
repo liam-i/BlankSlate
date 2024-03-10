@@ -13,7 +13,7 @@ class MainViewController: UITableViewController { // , NoDataSetDataSource, NoDa
         let url = Bundle.main.url(forResource: "applications", withExtension: "json")!
         return Platform.applicationsFromJSON(at: url)
     }()
-    
+
     private var filteredApps: [Platform] {
     //    UISearchBar *searchBar = self.searchDisplayController.searchBar;
     //    if ([searchBar isFirstResponder] && searchBar.text.length > 0) {
@@ -22,9 +22,9 @@ class MainViewController: UITableViewController { // , NoDataSetDataSource, NoDa
     //    }
         return platforms
     }
-    
+
     // MARK: - View lifecycle
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Resets styling
@@ -34,27 +34,27 @@ class MainViewController: UITableViewController { // , NoDataSetDataSource, NoDa
         bar.isTranslucent = false
         bar.barStyle = .default
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "NoDataSet"
-        
+
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         tableView.tableFooterView = UIView()
     }
 
     // MARK: - Table view data source
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredApps.count
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let app = filteredApps[indexPath.row]
         cell.textLabel?.text = app.displayName
         cell.detailTextLabel?.text = app.developerName
-        
+
         let image = UIImage(named: app.iconName)!
         cell.imageView?.image = image
         cell.imageView?.layer.cornerRadius = image.size.width * 0.2
@@ -65,16 +65,16 @@ class MainViewController: UITableViewController { // , NoDataSetDataSource, NoDa
         cell.imageView?.layer.rasterizationScale = UIScreen.main.scale
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70.0
     }
-    
+
     // MARK: - Table view delegate
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let app = filteredApps[indexPath.row]
-        let controller = DetailViewController(with: app, platforms: platforms, allowShuffling: true)
+        let controller = DetailViewController(with: app, platforms: platforms)
         controller.hidesBottomBarWhenPushed = true
         if controller.preferredStatusBarStyle == .lightContent {
             navigationController?.navigationBar.barStyle = .black

@@ -14,15 +14,15 @@ class ViewController: UIViewController, NoDataSetDataSource, NoDataSetDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.noDataSetSource = self
-        tableView.noDataSetDelegate = self
+        tableView.nds.dataSource = self
+        tableView.nds.delegate = self
     }
 
     func image(forNoDataSet scrollView: UIScrollView) -> UIImage? {
         UIImage(named: "icon_wwdc")
     }
 
-    func elementLayout(forNoDataSet scrollView: UIScrollView, for element: NoDataSetElement) -> ElementLayout {
-        ElementLayout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
+    func layout(forNoDataSet scrollView: UIScrollView, for element: NoDataSet.Element) -> NoDataSet.Layout {
+        NoDataSet.Layout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
     }
 }

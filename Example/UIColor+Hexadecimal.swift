@@ -16,7 +16,7 @@ extension UIColor {
             let idx_1 = cleanString.index(cleanString.startIndex, offsetBy: 1)
             let idx_2 = cleanString.index(idx_1, offsetBy: 1)
             let idx_3 = cleanString.index(idx_2, offsetBy: 1)
-            
+
             let char_1 = String(cleanString[idx_0..<idx_1])
             let char_2 = String(cleanString[idx_1..<idx_2])
             let char_3 = String(cleanString[idx_2..<idx_3])
@@ -25,10 +25,10 @@ extension UIColor {
         if cleanString.count == 6{
             cleanString += "ff"
         }
-        
+
         var baseValue: UInt32 = 0
         guard Scanner(string: cleanString).scanHexInt32(&baseValue) else { return nil }
-        
+
         let red = CGFloat((baseValue >> 24) & 0xFF) / 255.0
         let green = CGFloat((baseValue >> 16) & 0xFF) / 255.0
         let blue = CGFloat((baseValue >> 8) & 0xFF) / 255.0

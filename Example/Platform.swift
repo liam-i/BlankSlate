@@ -14,7 +14,7 @@ struct Platform {
     let identifier: String
     let iconName: String
     let type: DisplayName
-        
+
     static func applicationsFromJSON(at fileURL: URL) -> [Platform] {
         do {
             let data = try Data(contentsOf: fileURL)
@@ -25,14 +25,14 @@ struct Platform {
             fatalError("\(error)")
         }
     }
-    
+
     init(with dict: [String: Any]) {
         type = DisplayName(rawValue: dict["display_name"] as! String)!
         developerName = dict["developer_name"] as! String
         identifier = dict["identifier"] as! String
         iconName = "icon_\(type.rawValue)".lowercased().replacingOccurrences(of: " ", with: "_")
     }
-    
+
     enum DisplayName: String {
         case px500 = "500px"
         case airbnb = "Airbnb"

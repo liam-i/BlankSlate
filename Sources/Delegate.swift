@@ -1,5 +1,5 @@
 //
-//  NoDataSetDelegate.swift
+//  Delegate.swift
 //  NoDataSet <https://github.com/liam-i/NoDataSet>
 //
 //  Created by Liam on 2021/7/9.

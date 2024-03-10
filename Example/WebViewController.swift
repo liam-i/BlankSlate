@@ -18,18 +18,17 @@ class WebViewController: UIViewController, NoDataSetDataSource, NoDataSetDelegat
         view.insertSubview(webView, at: 0)
         webView.uiDelegate = self
         webView.navigationDelegate = self
-        webView.scrollView.noDataSetSource = self
-        webView.scrollView.noDataSetDelegate = self
+        webView.scrollView.nds.setDataSourceAndDelegate(self)
     }
 
     @IBAction func errorButtonClicked(_ sender: Any) {
         webView.load(URLRequest(url: URL(string: "https://www.baiduerror.com/")!))
     }
-    
+
     @IBAction func successButtonClicked(_ sender: Any) {
         webView.load(URLRequest(url: URL(string: "https://www.baidu.com/")!))
     }
-    
+
     func image(forNoDataSet scrollView: UIScrollView) -> UIImage? {
         UIImage(named: "icon_appstore")
     }
@@ -38,8 +37,8 @@ class WebViewController: UIViewController, NoDataSetDataSource, NoDataSetDelegat
         -1
     }
 
-    func elementLayout(forNoDataSet scrollView: UIScrollView, for element: NoDataSetElement) -> ElementLayout {
-        ElementLayout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
+    func elementLayout(forNoDataSet scrollView: UIScrollView, for element: NoDataSet.Element) -> NoDataSet.Layout {
+        .init(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
     }
 }
 
@@ -52,17 +51,17 @@ extension WebViewController: WKUIDelegate, WKNavigationDelegate {
 
     /// 当内容开始返回时调用
     public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        webView.scrollView.invalidate()
+        webView.scrollView.nds.dismiss()
     }
 
     /// 页面加载完成之后调用
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        webView.scrollView.invalidate()
+        webView.scrollView.nds.dismiss()
     }
 
     /// 页面加载失败时调用
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        webView.scrollView.dataLoadStatus = .failed
+        webView.scrollView.nds.setDataLoadStatus(.failed)
     }
 
     /// 在发送请求之前，决定是否跳转

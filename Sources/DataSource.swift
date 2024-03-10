@@ -1,5 +1,5 @@
 //
-//  NoDataSetDataSource.swift
+//  DataSource.swift
 //  NoDataSet <https://github.com/liam-i/NoDataSet>
 //
 //  Created by Liam on 2021/7/9.
@@ -57,8 +57,8 @@ public protocol NoDataSetDataSource: AnyObject {
     /// 向数据源请求内容垂直对齐的偏移量。默认`0pt`
     func verticalOffset(forNoDataSet scrollView: UIScrollView) -> CGFloat
 
-    /// 向数据源请求`NoDataSetElement`的布局约束值。
-    func elementLayout(forNoDataSet scrollView: UIScrollView, for element: NoDataSetElement) -> ElementLayout
+    /// 向数据源请求`NoDataSet.Element`的布局约束值。
+    func layout(forNoDataSet scrollView: UIScrollView, for element: NoDataSet.Element) -> NoDataSet.Layout
 
     /// 向数据源请求在显示空数据集时采用淡入动画的持续时间。默认`0`
     /// - Note: 如果`fadeInDuration <= 0`则不执行动画
@@ -86,7 +86,7 @@ extension NoDataSetDataSource {
 
     public func verticalOffset(forNoDataSet scrollView: UIScrollView) -> CGFloat { 0.0 }
 
-    public func elementLayout(forNoDataSet scrollView: UIScrollView, for element: NoDataSetElement) -> ElementLayout { .default }
+    public func layout(forNoDataSet scrollView: UIScrollView, for element: NoDataSet.Element) -> NoDataSet.Layout { .init() }
 
     public func fadeInDuration(forNoDataSet scrollView: UIScrollView) -> TimeInterval { 0.0 }
 }

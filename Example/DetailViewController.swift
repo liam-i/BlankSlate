@@ -12,67 +12,58 @@ import NoDataSet
 class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSetDelegate {
     private var platform: Platform
     private let platforms: [Platform]
-    private let allowShuffling: Bool
     private var isLoading: Bool = false {
         didSet {
-            if isLoading != oldValue { tableView.reloadNoDataSet() }
+            if isLoading != oldValue { tableView.nds.reload() }
         }
     }
     private var randomPlatform: Platform {
         return platforms[Int.random(in: 0..<platforms.count)]
     }
     private var isEmptyData: Bool = true
-    
+
     deinit {
         #if DEBUG
         print("👍🏻👍🏻👍🏻 DetailViewController is released.")
         #endif
     }
-    
-    init(with platform: Platform, platforms: [Platform], allowShuffling: Bool) {
+
+    init(with platform: Platform, platforms: [Platform]) {
         self.platform = platform
         self.platforms = platforms
-        self.allowShuffling = allowShuffling
         super.init(style: .plain)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         title = platform.displayName
-        
-        edgesForExtendedLayout = []
-        
-        tableView.noDataSetSource = self
-        tableView.noDataSetDelegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        
-        configureHeaderAndFooter()
-                
-        var items: [UIBarButtonItem] = [UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(shuffle))]
-        if allowShuffling {
-            items.append(UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(listClicked)))
-        }
-        navigationItem.rightBarButtonItems = items
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.isEmptyData = false
-            self.tableView.reloadData()
-        }
+        edgesForExtendedLayout = []
+
+        tableView.nds.setDataSourceAndDelegate(self)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+
+        configureHeaderAndFooter()
+
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(shuffle)),
+            UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(loadData))
+        ]
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureNavigationBar()
         setNeedsStatusBarAppearanceUpdate()
     }
-    
+
     private func configureNavigationBar() {
         navigationController?.navigationBar.titleTextAttributes = nil
-        
+
         var barColor: UIColor? = nil
         var tintColor: UIColor? = nil
         switch platform.type {
@@ -137,36 +128,36 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
                 barColor = UIColor(hex: "f8f8f8")
                 tintColor = UIApplication.shared.keyWindow?.tintColor
         }
-        
+
         if let logo = UIImage(named: "logo_\(platform.displayName.lowercased())") {
             navigationItem.titleView = UIImageView(image: logo)
         } else {
             navigationItem.titleView = nil
             navigationItem.title = platform.displayName
         }
-        
+
         navigationController?.navigationBar.barTintColor = barColor
         navigationController?.navigationBar.tintColor = tintColor
     }
-    
+
     private func configureHeaderAndFooter() {
         var imageName: String? = nil
-        
+
         if platform.type == .pinterest {
             imageName = "header_pinterest"
         }
         if platform.type == .podcasts {
             imageName = "header_podcasts"
         }
-        
+
         if let imageName = imageName {
             let image = UIImage(named: imageName, in: Bundle(for: DetailViewController.self), compatibleWith: nil)
             let imageView = UIImageView(image: image)
             imageView.isUserInteractionEnabled = true
-            
+
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapHeaderView))
             imageView.addGestureRecognizer(tapGesture)
-            
+
             var frame = view.bounds
             if let image = image {
                 frame.size.height = image.size.height
@@ -183,7 +174,7 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
 
         tableView.tableFooterView = UIView()
     }
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
             switch platform.type {
             case .px500, .camera, .facebook, .fancy, .foursquare, .instagram, .path, .skype, .tumblr, .twitter, .vesper, .vine:
@@ -192,60 +183,60 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
                 return .default
             }
     }
-    
-    @objc private func listClicked(_ sender: UIBarButtonItem) {
+
+    @objc private func loadData(_ sender: UIBarButtonItem) {
         isEmptyData = !isEmptyData
         tableView.reloadData()
     }
-    
+
     @objc private func shuffle(_ sender: UIBarButtonItem) {
         var randomApp = randomPlatform
-        
+
         while randomApp.identifier == platform.identifier {
             randomApp = randomPlatform
         }
-        
+
         platform = randomApp
-        
+
         configureHeaderAndFooter()
         configureNavigationBar()
-        
-        tableView.reloadNoDataSet()
+
+        tableView.nds.reload()
     }
-    
+
     @objc private func didTapHeaderView(_ sender: UITapGestureRecognizer) {
         print(#function)
     }
-    
+
     // MARK: - UITableViewDataSource Methods
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return isEmptyData ? 0 : 10
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return isEmptyData ? 0 : 5
     }
-    
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Header"
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.textLabel?.text = "NoDataSet"
         return cell
     }
-    
+
     // MARK: - NoDataSetDataSource Methods
-    
+
     func title(forNoDataSet scrollView: UIScrollView) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor? = nil
-        
+
         var attributes: [NSAttributedString.Key: Any] = [:]
-        
+
         switch platform.type {
         case .px500:
             text = "No Photos"
@@ -338,23 +329,23 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
         default:
             return nil
         }
-        
+
         if let font = font { attributes[.font] = font }
         if let textColor = textColor { attributes[.foregroundColor] = textColor }
         return NSAttributedString(string: text, attributes: attributes)
     }
-    
+
     func detail(forNoDataSet scrollView: UIScrollView) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor?
-        
+
         var attributes: [NSAttributedString.Key: Any] = [:]
-        
+
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = .byWordWrapping
         paragraph.alignment = .center
-        
+
         switch platform.type {
         case .px500:
             text = "Get started by uploading a photo."
@@ -452,7 +443,7 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
         default:
             return nil
         }
-        
+
         if let font = font {
             attributes[.font] = font
         }
@@ -460,7 +451,7 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
             attributes[.foregroundColor] = textColor
         }
         attributes[.paragraphStyle] = paragraph
-        
+
         let attributedString = NSMutableAttributedString(string: text, attributes: attributes)
         if platform.type == .skype
             , let color = UIColor(hex: "00adf1")
@@ -471,7 +462,7 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
         }
         return attributedString
     }
-    
+
     func image(forNoDataSet scrollView: UIScrollView) -> UIImage? {
         if isLoading {
             return UIImage(named: "loading_imgBlue_78x78", in: Bundle(for: DetailViewController.self), compatibleWith: nil)
@@ -480,10 +471,10 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
             return UIImage(named: imageName, in: Bundle(for: DetailViewController.self), compatibleWith: nil)
         }
     }
-    
+
     func imageAnimation(forNoDataSet scrollView: UIScrollView) -> CAAnimation? {
         guard platform.type == .px500 else { return nil }
-        
+
         let animation = CABasicAnimation(keyPath: "transform")
         animation.fromValue = NSValue(caTransform3D: CATransform3DIdentity)
         animation.toValue = NSValue(caTransform3D: CATransform3DMakeRotation(CGFloat.pi / 2.0, 0.0, 0.0, 1.0))
@@ -492,12 +483,12 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
         animation.repeatCount = MAXFLOAT
         return animation
     }
-    
+
     func buttonTitle(forNoDataSet scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor?
-        
+
         switch platform.type {
         case .airbnb:
             text = "Start Browsing"
@@ -530,13 +521,13 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
         default:
             return nil
         }
-        
+
         var attributes: [NSAttributedString.Key: Any] = [:]
         if let font = font { attributes[.font] = font }
         if let textColor = textColor { attributes[.foregroundColor] = textColor }
         return NSAttributedString(string: text, attributes: attributes)
     }
-    
+
     func configure(forNoDataSet scrollView: UIScrollView, for button: UIButton) {
         var capInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
         var rectInsets = UIEdgeInsets.zero
@@ -552,7 +543,7 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
         default:
             break
         }
-        
+
         func image(for state: UIControl.State) -> UIImage? {
             var imageName = "button_background_\(platform.displayName)".lowercased()
             if state == .normal {
@@ -567,7 +558,7 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
         button.setBackgroundImage(image(for: .normal), for: .normal)
         button.setBackgroundImage(image(for: .highlighted), for: .highlighted)
     }
-    
+
     func backgroundColor(forNoDataSet scrollView: UIScrollView) -> UIColor? {
         switch platform.type {
         case .px500:      return UIColor.black
@@ -589,7 +580,7 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
         default:          return nil
         }
     }
-    
+
     func verticalOffset(forNoDataSet scrollView: UIScrollView) -> CGFloat {
         if platform.type == .kickstarter {
             var offset = UIApplication.shared.statusBarFrame.height
@@ -598,34 +589,34 @@ class DetailViewController: UITableViewController, NoDataSetDataSource, NoDataSe
             }
             return -offset
         }
-        
+
         if platform.type == .twitter {
             return -CGFloat(roundf(Float(tableView.frame.height) / 2.5))
         }
         return 0.0
     }
-    
+
     // MARK: - NoDataSetDelegate Methods
-    
+
     func noDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool {
         return true
     }
-    
+
     func noDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool {
         return true
     }
-    
+
     func noDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool {
         return true
     }
-    
+
     func noDataSet(_ scrollView: UIScrollView, didTap view: UIView) {
         isLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.isLoading = false
         }
     }
-    
+
     func noDataSet(_ scrollView: UIScrollView, didTap button: UIButton) {
         isLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
