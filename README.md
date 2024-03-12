@@ -24,7 +24,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 - File > Swift Packages > Add Package Dependency
 - Add `https://github.com/liam-i/BlankSlate.git`
-- Select "Up to Next Minor" with "0.2.5"
+- Select "Up to Next Minor" with "0.3.1"
 
 #### CocoaPods
 
@@ -36,7 +36,7 @@ platform :ios, '12.0'
 use_frameworks!
 
 target 'MyApp' do
-  pod 'BlankSlate', '~> 0.2.5'
+  pod 'BlankSlate', '~> 0.3.1'
 end
 ```
 
