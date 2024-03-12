@@ -1,5 +1,5 @@
 import XCTest
-import NoDataSet
+import BlankSlate
 
 class Tests: XCTestCase {
     override func setUpWithError() throws {

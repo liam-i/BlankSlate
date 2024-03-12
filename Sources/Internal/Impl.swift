@@ -1,6 +1,6 @@
 //
 //  Impl.swift
-//  NoDataSet <https://github.com/liam-i/NoDataSet>
+//  BlankSlate <https://github.com/liam-i/BlankSlate>
 //
 //  Created by Liam on 2020/2/6.
 //  Copyright © 2020 Liam. All rights reserved.
@@ -8,20 +8,20 @@
 
 import UIKit
 
-/// `UITableView` / `UICollectionView`父类的扩展，用于在视图无内容时自动显示空数据集
-/// - Note: 只需遵循`NoDataSetDataSource`协议，并返回要显示的数据它将自动工作
+/// A drop-in UITableView/UICollectionView superclass category for showing empty datasets whenever the view has no content to display.
+/// - Attention: It will work automatically, by just conforming to `BlankSlateDataSource`, and returning the data you want to show.
 extension UIScrollView {
-    /// 空数据集数据源
-    weak var noDataSetSource: NoDataSetDataSource? {
-        get { (objc_getAssociatedObject(self, &kNoDataSetSourceKey) as? WeakObject)?.value as? NoDataSetDataSource }
+    weak var blankSlateDataSource: BlankSlateDataSource? {
+        get { (objc_getAssociatedObject(self, &kBlankSlateDataSourceKey) as? WeakObject)?.value as? BlankSlateDataSource }
         set {
-            if newValue == nil || noDataSetSource == nil {
-                dismissNoDataSetIfNeeded()
+            if newValue == nil || blankSlateDataSource == nil {
+                dismissBlankSlateIfNeeded()
             }
 
-            objc_setAssociatedObject(self, &kNoDataSetSourceKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kBlankSlateDataSourceKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-            /// 使用runtime swizzle将`reloadNoDataSetIfNeeded()`和`reloadData()`交换
+            // We add method sizzling for injecting `reloadBlankSlateIfNeeded()` implementation to the native `reloadData()` implementation
+            // Exclusively for UITableView, we also inject `reloadBlankSlateIfNeeded()` to `endUpdates()`
             switch self {
             case is UITableView:
                 swizzleIfNeeded(UITableView.self, #selector(UITableView.reloadData))
@@ -34,26 +34,23 @@ extension UIScrollView {
         }
     }
 
-    /// 空数据集委托
-    weak var noDataSetDelegate: NoDataSetDelegate? {
-        get { (objc_getAssociatedObject(self, &kNoDataSetDelegateKey) as? WeakObject)?.value as? NoDataSetDelegate }
+    weak var blankSlateDelegate: BlankSlateDelegate? {
+        get { (objc_getAssociatedObject(self, &kBlankSlateDelegateKey) as? WeakObject)?.value as? BlankSlateDelegate }
         set {
             if newValue == nil {
-                dismissNoDataSetIfNeeded()
+                dismissBlankSlateIfNeeded()
             }
-            objc_setAssociatedObject(self, &kNoDataSetDelegateKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kBlankSlateDelegateKey, WeakObject(newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
-    /// 数据加载状态
-    /// - Note: 为`UITableView`和`UICollectionView`设置此属性时自动执行`reloadData()`方法
-    var dataLoadStatus: NoDataSet.DataLoadStatus? {
-        get { objc_getAssociatedObject(self, &kNoDataSetStatusKey) as? NoDataSet.DataLoadStatus }
+    var dataLoadStatus: BlankSlate.DataLoadStatus? {
+        get { objc_getAssociatedObject(self, &kBlankSlateStatusKey) as? BlankSlate.DataLoadStatus }
         set {
-            objc_setAssociatedObject(self, &kNoDataSetStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &kBlankSlateStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
             guard let newValue = newValue, newValue != .loading else {
-                return reloadNoDataSetIfNeeded()
+                return reloadBlankSlateIfNeeded()
             }
 
             switch self {
@@ -62,37 +59,33 @@ extension UIScrollView {
             case let collectionView as UICollectionView:
                 collectionView.reloadData()
             default:
-                reloadNoDataSetIfNeeded()
+                reloadBlankSlateIfNeeded()
             }
         }
     }
 
-    /// 如果空数据集可见，则为`true`
-    var isNoDataSetVisible: Bool {
-        guard let view = objc_getAssociatedObject(self, &kNoDataSetViewKey) as? NoDataSet.View else { return false }
+    var isBlankSlateVisible: Bool {
+        guard let view = objc_getAssociatedObject(self, &kBlankSlateViewKey) as? BlankSlate.View else { return false }
         return view.isHidden == false
     }
 
-    // swiftlint:disable cyclomatic_complexity function_body_length
-    /// 重新加载空数据集内容视图
-    /// - Note: 调用此方法以强制刷新所有数据。类似于`reloadData()`，但这仅强制重新加载空数据集，而不强制重新加载整个表视图或集合视图
-    func reloadNoDataSetIfNeeded() {
-        guard let noDataSetSource = noDataSetSource else {
-            dismissNoDataSetIfNeeded()
+    func reloadBlankSlateIfNeeded() {
+        guard let blankSlateDataSource = blankSlateDataSource else {
+            dismissBlankSlateIfNeeded()
             return
         }
 
-        if ((noDataSetDelegate?.noDataSetShouldDisplay(self) ?? true) && (itemsCount == 0))
-            || (noDataSetDelegate?.noDataSetShouldBeForcedToDisplay(self) ?? false) {
-            let view = noDataSetView ?? makeNoDataSetView()
+        if ((blankSlateDelegate?.blankSlateShouldDisplay(self) ?? true) && (itemsCount == 0))
+            || (blankSlateDelegate?.blankSlateShouldBeForcedToDisplay(self) ?? false) {
+            let view = blankSlateView ?? makeBlankSlateView()
 
-            noDataSetDelegate?.noDataSetWillAppear(self) // 通知委托空数据集视图将要呈现
+            blankSlateDelegate?.blankSlateWillAppear(self) // Notifies that the empty dataset view will appear
 
-            view.fadeInDuration = noDataSetSource.fadeInDuration(forNoDataSet: self) // 设置空数据集淡入持续时间
+            view.fadeInDuration = blankSlateDataSource.fadeInDuration(forBlankSlate: self) // Configure empty dataset fade in display
 
             if view.superview == nil {
                 if subviews.count > 1 {
-                    let index = noDataSetDelegate?.noDataSetShouldBeInsertAtIndex(self) ?? 0
+                    let index = blankSlateDelegate?.blankSlateShouldBeInsertAtIndex(self) ?? 0
                     if index >= 0 && index < subviews.count {
                         insertSubview(view, at: index)
                     } else {
@@ -103,112 +96,111 @@ extension UIScrollView {
                 }
             }
 
-            /// 重置视图以及约束
+            // Removing view resetting the view and its constraints it very important to guarantee a good state
             view.prepareForReuse()
 
-            /// 如果允许，则设置自定义视图
-            if let customView = noDataSetSource.customView(forNoDataSet: self) {
-                view.setCustomView(customView, layout: noDataSetSource.layout(forNoDataSet: self, for: .custom))
+            // If a non-nil custom view is available, let's configure it instead
+            if let customView = blankSlateDataSource.customView(forBlankSlate: self) {
+                view.setCustomView(customView, layout: blankSlateDataSource.layout(forBlankSlate: self, for: .custom))
             } else {
-                /// 配置 Image
-                if let image = noDataSetSource.image(forNoDataSet: self) {
-                    let tintColor = noDataSetSource.imageTintColor(forNoDataSet: self)
-                    let imageView = view.createImageView(with: noDataSetSource.layout(forNoDataSet: self, for: .image))
+                // Configure Image
+                if let image = blankSlateDataSource.image(forBlankSlate: self) {
+                    let tintColor = blankSlateDataSource.imageTintColor(forBlankSlate: self)
+                    let imageView = view.createImageView(with: blankSlateDataSource.layout(forBlankSlate: self, for: .image))
                     imageView.image = image.withRenderingMode(tintColor != nil ? .alwaysTemplate : .alwaysOriginal)
                     imageView.tintColor = tintColor
-                    imageView.alpha = noDataSetSource.imageAlpha(forNoDataSet: self)
+                    imageView.alpha = blankSlateDataSource.imageAlpha(forBlankSlate: self)
 
-                    // 配置图像视图动画
-                    if let animation = noDataSetSource.imageAnimation(forNoDataSet: self) {
+                    // Configure image view animation
+                    if let animation = blankSlateDataSource.imageAnimation(forBlankSlate: self) {
                         imageView.layer.add(animation, forKey: kEmptyImageViewAnimationKey)
                     } else if imageView.layer.animation(forKey: kEmptyImageViewAnimationKey) != nil {
                         imageView.layer.removeAnimation(forKey: kEmptyImageViewAnimationKey)
                     }
                 }
 
-                /// 配置标题标签
-                if let titleString = noDataSetSource.title(forNoDataSet: self) {
-                    view.createTitleLabel(with: noDataSetSource.layout(forNoDataSet: self, for: .title)).attributedText = titleString
+                // Configure title label
+                if let titleString = blankSlateDataSource.title(forBlankSlate: self) {
+                    view.createTitleLabel(with: blankSlateDataSource.layout(forBlankSlate: self, for: .title)).attributedText = titleString
                 }
 
-                /// 配置详细标签
-                if let detailString = noDataSetSource.detail(forNoDataSet: self) {
-                    view.createDetailLabel(with: noDataSetSource.layout(forNoDataSet: self, for: .title)).attributedText = detailString
+                // Configure detail label
+                if let detailString = blankSlateDataSource.detail(forBlankSlate: self) {
+                    view.createDetailLabel(with: blankSlateDataSource.layout(forBlankSlate: self, for: .title)).attributedText = detailString
                 }
 
-                /// 配置按钮
-                if let buttonImage = noDataSetSource.buttonImage(forNoDataSet: self, for: .normal) {
-                    let button = view.createButton(with: noDataSetSource.layout(forNoDataSet: self, for: .button))
+                // Configure button
+                if let buttonImage = blankSlateDataSource.buttonImage(forBlankSlate: self, for: .normal) {
+                    let button = view.createButton(with: blankSlateDataSource.layout(forBlankSlate: self, for: .button))
                     button.setImage(buttonImage, for: .normal)
-                    button.setImage(noDataSetSource.buttonImage(forNoDataSet: self, for: .highlighted), for: .highlighted)
-                    noDataSetSource.configure(forNoDataSet: self, for: button)
-                } else if let titleString = noDataSetSource.buttonTitle(forNoDataSet: self, for: .normal) {
-                    let button = view.createButton(with: noDataSetSource.layout(forNoDataSet: self, for: .button))
+                    button.setImage(blankSlateDataSource.buttonImage(forBlankSlate: self, for: .highlighted), for: .highlighted)
+                    blankSlateDataSource.configure(forBlankSlate: self, for: button)
+                } else if let titleString = blankSlateDataSource.buttonTitle(forBlankSlate: self, for: .normal) {
+                    let button = view.createButton(with: blankSlateDataSource.layout(forBlankSlate: self, for: .button))
                     button.setAttributedTitle(titleString, for: .normal)
-                    button.setAttributedTitle(noDataSetSource.buttonTitle(forNoDataSet: self, for: .highlighted), for: .highlighted)
-                    button.setBackgroundImage(noDataSetSource.buttonBackgroundImage(forNoDataSet: self, for: .normal), for: .normal)
-                    button.setBackgroundImage(noDataSetSource.buttonBackgroundImage(forNoDataSet: self, for: .highlighted), for: .highlighted)
-                    noDataSetSource.configure(forNoDataSet: self, for: button)
+                    button.setAttributedTitle(blankSlateDataSource.buttonTitle(forBlankSlate: self, for: .highlighted), for: .highlighted)
+                    button.setBackgroundImage(blankSlateDataSource.buttonBackgroundImage(forBlankSlate: self, for: .normal), for: .normal)
+                    button.setBackgroundImage(blankSlateDataSource.buttonBackgroundImage(forBlankSlate: self, for: .highlighted), for: .highlighted)
+                    blankSlateDataSource.configure(forBlankSlate: self, for: button)
                 }
             }
 
-            view.verticalOffset = noDataSetSource.verticalOffset(forNoDataSet: self)
+            // Configure offset
+            view.offset = blankSlateDataSource.offset(forBlankSlate: self)
 
-            // 配置空数据集视图
-            view.backgroundColor = noDataSetSource.backgroundColor(forNoDataSet: self) ?? UIColor.clear
-            view.isHidden = view.elements.isEmpty // 如果视图集为空，则不显示
+            // Configure the empty dataset view
+            view.backgroundColor = blankSlateDataSource.backgroundColor(forBlankSlate: self) ?? .clear
+            view.isHidden = view.elements.isEmpty
             view.clipsToBounds = true
-            view.isUserInteractionEnabled = noDataSetDelegate?.noDataSetShouldAllowTouch(self) ?? true // 设置空数据集的用户交互权限
-            if !view.isHidden { view.setupConstraints() } // 如果视图集不为空，则设置约束
+            view.isUserInteractionEnabled = blankSlateDelegate?.blankSlateShouldAllowTouch(self) ?? true // Configure empty dataset userInteraction permission
+            if !view.isHidden { view.setupConstraints() }
 
             UIView.performWithoutAnimation { view.layoutIfNeeded() }
-            isScrollEnabled = noDataSetDelegate?.noDataSetShouldAllowScroll(self) ?? false // 设置滚动权限
+            isScrollEnabled = blankSlateDelegate?.blankSlateShouldAllowScroll(self) ?? false // Configure scroll permission
 
-            noDataSetDelegate?.noDataSetDidAppear(self) // 通知委托空数据集视图已经呈现
-        } else if isNoDataSetVisible {
-            dismissNoDataSetIfNeeded()
+            blankSlateDelegate?.blankSlateDidAppear(self) // Notifies that the empty dataset view did appear
+        } else if isBlankSlateVisible {
+            dismissBlankSlateIfNeeded()
         }
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
 
-    func dismissNoDataSetIfNeeded() {
-        var isNoDataSetVisible = false
-        if let noDataSetView = noDataSetView {
-            isNoDataSetVisible = true
-            noDataSetDelegate?.noDataSetWillDisappear(self) // 通知委托空数据集视图将要消失
+    func dismissBlankSlateIfNeeded() {
+        var isBlankSlateVisible = false
+        if let blankSlateView = blankSlateView {
+            isBlankSlateVisible = true
+            blankSlateDelegate?.blankSlateWillDisappear(self) // Notifies that the empty dataset view will disappear
 
-            noDataSetView.prepareForReuse()
-            noDataSetView.removeFromSuperview()
-            self.noDataSetView = nil
+            blankSlateView.prepareForReuse()
+            blankSlateView.removeFromSuperview()
+            self.blankSlateView = nil
         }
 
-        if isNoDataSetVisible {
-            isScrollEnabled = noDataSetDelegate?.shouldAllowScrollAfterNoDataSetDisappear(self) ?? true
-            noDataSetDelegate?.noDataSetDidDisappear(self) // 通知委托空数据集视图已经消失
+        if isBlankSlateVisible {
+            isScrollEnabled = blankSlateDelegate?.shouldAllowScrollAfterBlankSlateDisappear(self) ?? true
+            blankSlateDelegate?.blankSlateDidDisappear(self) // Notifies that the empty dataset view did disappear
         }
     }
 
-    var noDataSetView: NoDataSet.View? {
-        get { objc_getAssociatedObject(self, &kNoDataSetViewKey) as? NoDataSet.View }
-        set { objc_setAssociatedObject(self, &kNoDataSetViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    var blankSlateView: BlankSlate.View? {
+        get { objc_getAssociatedObject(self, &kBlankSlateViewKey) as? BlankSlate.View }
+        set { objc_setAssociatedObject(self, &kBlankSlateViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
     private var itemsCount: Int {
         var items: Int = 0
         switch self {
-        case let tableView as UITableView: // UITableView 支持
-            if let dataSource = tableView.dataSource {
-                let sections = dataSource.numberOfSections?(in: tableView) ?? 1
-                (0..<sections).forEach {
-                    items += dataSource.tableView(tableView, numberOfRowsInSection: $0)
-                }
+        case let tableView as UITableView: // UITableView support
+            guard let dataSource = tableView.dataSource else { return items }
+            let sections = dataSource.numberOfSections?(in: tableView) ?? 1
+            (0..<sections).forEach {
+                items += dataSource.tableView(tableView, numberOfRowsInSection: $0)
             }
-        case let collectionView as UICollectionView: // UICollectionView 支持
-            if let dataSource = collectionView.dataSource {
-                let sections = dataSource.numberOfSections?(in: collectionView) ?? 1
-                (0..<sections).forEach {
-                    items += dataSource.collectionView(collectionView, numberOfItemsInSection: $0)
-                }
+        case let collectionView as UICollectionView: // UICollectionView support
+            guard let dataSource = collectionView.dataSource else { return items }
+            let sections = dataSource.numberOfSections?(in: collectionView) ?? 1
+            (0..<sections).forEach {
+                items += dataSource.collectionView(collectionView, numberOfItemsInSection: $0)
             }
         default:
             break
@@ -216,62 +208,70 @@ extension UIScrollView {
         return items
     }
 
-    private func makeNoDataSetView() -> NoDataSet.View {
-        let view = NoDataSet.View(frame: .zero)
+    private func makeBlankSlateView() -> BlankSlate.View {
+        let view = BlankSlate.View(frame: .zero)
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.isHidden = true
         view.isTouchAllowed = { [weak self] in
-            guard let `self` = self, let noDataSetDelegate = noDataSetDelegate else { return true }
-            return noDataSetDelegate.noDataSetShouldAllowTouch(self)
+            guard let `self` = self, let blankSlateDelegate = blankSlateDelegate else { return true }
+            return blankSlateDelegate.blankSlateShouldAllowTouch(self)
         }
         view.shouldRecognizeSimultaneously = { [weak self](other, of) in
-            guard let `self` = self, let noDataSetDelegate = noDataSetDelegate else { return false }
-            if let scrollView = noDataSetDelegate as? UIScrollView, scrollView == self {
+            guard let `self` = self, let blankSlateDelegate = blankSlateDelegate else { return false }
+            if let scrollView = blankSlateDelegate as? UIScrollView, scrollView == self {
                 return false
             }
-            if let delegate = noDataSetDelegate as? UIGestureRecognizerDelegate {
+            if let delegate = blankSlateDelegate as? UIGestureRecognizerDelegate {
+                // defer to blankSlateDelegate's implementation if available
                 return delegate.gestureRecognizer?(of, shouldRecognizeSimultaneouslyWith: other) ?? false
             }
             return false
         }
         view.didTap = { [weak self] in
-            guard let `self` = self, let noDataSetDelegate = noDataSetDelegate else { return }
-            noDataSetDelegate.noDataSet(self, didTap: $0)
+            guard let `self` = self, let blankSlateDelegate = blankSlateDelegate else { return }
+            if let button = $0 as? UIButton {
+                return blankSlateDelegate.blankSlate(self, didTapButton: button)
+            }
+            blankSlateDelegate.blankSlate(self, didTapView: $0)
         }
-        self.noDataSetView = view
+        self.blankSlateView = view
         return view
     }
 
     private func swizzleIfNeeded(_ originalClass: AnyClass, _ originalSelector: Selector) {
-        /// 检查当前类是否实现了`originalSelector`方法
+        // Check if the target responds to selector
         guard responds(to: originalSelector) else { return assertionFailure() }
 
+        // We make sure that setImplementation is called once per class kind, UITableView or UICollectionView.
         let originalStringSelector = NSStringFromSelector(originalSelector)
         for info in kIMPLookupTable.values where (info.selector == originalStringSelector && isKind(of: info.owner)) {
-            return // 确保每个类（`UITableView`或`UICollectionView`）都只调用一次`method_setImplementation`
+            return
         }
 
+        // If the implementation for this class already exist, skip!!
         let key = "\(NSStringFromClass(originalClass))_\(originalStringSelector)"
-        guard kIMPLookupTable[key] == nil else { return } // 如果`originalClass`的实现已经存在，不在继续往下执行
+        guard kIMPLookupTable[key] == nil else { return }
 
+        // Swizzle by injecting additional implementation
         guard let originalMethod = class_getInstanceMethod(originalClass, originalSelector) else { return assertionFailure() }
         let originalImplementation = method_getImplementation(originalMethod)
 
         typealias OriginalIMP = @convention(c) (UIScrollView, Selector) -> Void
 
-        /// `unsafeBitCast`将`originalImplementation`强制转换成`OriginalIMP`类型
-        /// 两者的类型其实是相同的，都是一个`IMP`指针类型，即`id (*IMP)(id, SEL, ...)`
         let originalClosure = unsafeBitCast(originalImplementation, to: OriginalIMP.self)
 
         let swizzledBlock: @convention(block) (UIScrollView) -> Void = { owner in
-            originalClosure(owner, originalSelector)
-            owner.reloadNoDataSetIfNeeded() // 重新加载空数据集。在调用`isNoDataSetVisible`属性之前进行此操作
+            originalClosure(owner, originalSelector) // Call original implementation
+
+            // We then inject the additional implementation for reloading the empty dataset
+            // Doing it before calling the original implementation does update the 'isEmptyDataSetVisible' flag on time.
+            owner.reloadBlankSlateIfNeeded()
         }
 
         let swizzledImplementation = imp_implementationWithBlock(unsafeBitCast(swizzledBlock, to: AnyObject.self))
         method_setImplementation(originalMethod, swizzledImplementation)
 
-        kIMPLookupTable[key] = (originalClass, originalStringSelector) // 将新的实现存储在内存表中
+        kIMPLookupTable[key] = (originalClass, originalStringSelector) // Store the new implementation in the lookup table
     }
 }
 
@@ -294,9 +294,9 @@ private class WeakObject {
 
 // MARK: - Private keys
 
-private var kNoDataSetSourceKey: Void?
-private var kNoDataSetDelegateKey: Void?
-private var kNoDataSetViewKey: Void?
-private var kNoDataSetStatusKey: Void?
-private let kEmptyImageViewAnimationKey = "com.liam.noDataSet.imageViewAnimation"
-private var kIMPLookupTable = [String: (owner: AnyClass, selector: String)](minimumCapacity: 3)
+private var kBlankSlateDataSourceKey: Void?
+private var kBlankSlateDelegateKey: Void?
+private var kBlankSlateViewKey: Void?
+private var kBlankSlateStatusKey: Void?
+private let kEmptyImageViewAnimationKey = "com.liam.blankSlate.imageViewAnimation"
+private var kIMPLookupTable = [String: (owner: AnyClass, selector: String)](minimumCapacity: 3) // 3 represent the supported base classes

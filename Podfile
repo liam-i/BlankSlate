@@ -8,12 +8,12 @@ install! 'cocoapods',
 #use_frameworks!
 use_frameworks! :linkage => :static
 
-workspace 'NoDataSet.xcworkspace'
+workspace 'BlankSlate.xcworkspace'
 
 target 'Example iOS' do
   platform :ios, '12.0'
 
-  pod 'NoDataSet', :path => './'
+  pod 'BlankSlate', :path => './'
   pod 'FlyHUD'
 
   target 'Example Tests' do
@@ -22,6 +22,6 @@ target 'Example iOS' do
 end
 target 'Example tvOS' do
   platform :tvos, '12.0'
-  pod 'NoDataSet', :path => './'
+  pod 'BlankSlate', :path => './'
   pod 'FlyHUD'
 end

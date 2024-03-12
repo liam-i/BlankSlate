@@ -7,22 +7,22 @@
 //
 
 import UIKit
-import NoDataSet
+import BlankSlate
 
-class ViewController: UIViewController, NoDataSetDataSource, NoDataSetDelegate {
+class ViewController: UIViewController, BlankSlateDataSource, BlankSlateDelegate {
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.nds.dataSource = self
-        tableView.nds.delegate = self
+        tableView.bs.dataSource = self
+        tableView.bs.delegate = self
     }
 
-    func image(forNoDataSet scrollView: UIScrollView) -> UIImage? {
+    func image(forBlankSlate scrollView: UIScrollView) -> UIImage? {
         UIImage(named: "icon_wwdc")
     }
 
-    func layout(forNoDataSet scrollView: UIScrollView, for element: NoDataSet.Element) -> NoDataSet.Layout {
-        NoDataSet.Layout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
+    func layout(forBlankSlate scrollView: UIScrollView, for element: BlankSlate.Element) -> BlankSlate.Layout {
+        BlankSlate.Layout(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
     }
 }

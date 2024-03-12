@@ -1,76 +1,79 @@
 //
 //  Delegate.swift
-//  NoDataSet <https://github.com/liam-i/NoDataSet>
+//  BlankSlate <https://github.com/liam-i/BlankSlate>
 //
 //  Created by Liam on 2021/7/9.
 //
 
 import UIKit
 
-/// 空数据集的委托协议
-/// - Note: 所有委托方法都是可选的。使用此委托来接收操作回调
-public protocol NoDataSetDelegate: AnyObject {
-    /// 向委托请求当items数大于0时是否仍然显示空数据集。默认`false`
-    func noDataSetShouldBeForcedToDisplay(_ scrollView: UIScrollView) -> Bool
+/// The object that acts as the delegate of the empty datasets.
+/// - Note: The delegate can adopt the `BlankSlateDelegate` protocol. The delegate is not retained. All delegate methods are optional.
+/// - Note: All delegate methods are optional. Use this delegate for receiving action callbacks.
+public protocol BlankSlateDelegate: AnyObject {
+    /// Asks the delegate to know if the empty dataset should still be displayed when the amount of items is more than 0. `Default to false`
+    func blankSlateShouldBeForcedToDisplay(_ scrollView: UIScrollView) -> Bool
 
-    /// 向委托请求是否允许显示空数据集。 默认为`true`
-    func noDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool
+    /// Asks the delegate to know if the empty dataset should be rendered and displayed. `Default to true`
+    func blankSlateShouldDisplay(_ scrollView: UIScrollView) -> Bool
 
-    /// 当 subviews.count > 1 时，向委托请求插入层级。-1. addSubview(NoDataSet); 0. insertSubview(NoDataSet, at: 0)。默认`0`
-    func noDataSetShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int
+    /// Asks the delegate to know insert levels when subviews.count > 1.
+    /// - Note: `-1`, addSubview(BlankSlate); `0`, insertSubview(BlankSlate, at: 0). `Default to 0`
+    func blankSlateShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int
 
-    /// 向委托请求是否允许响应触摸手势。 默认为`true`
-    func noDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool
+    /// Asks the delegate for touch permission. `Default to true`
+    func blankSlateShouldAllowTouch(_ scrollView: UIScrollView) -> Bool
 
-    /// 向委托请求是否允许滚动。 默认为`false`
-    func noDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool
+    /// Asks the delegate for scroll permission. `Default to false`
+    func blankSlateShouldAllowScroll(_ scrollView: UIScrollView) -> Bool
 
-    /// 通知委托该空数据集视图被触摸
-    /// - Parameter view: 用户点击的视图
-    func noDataSet(_ scrollView: UIScrollView, didTap view: UIView)
+    /// Asks the delegate whether scrolling is allowed when the empty data set has disappeared. `Default to true`
+    func shouldAllowScrollAfterBlankSlateDisappear(_ scrollView: UIScrollView) -> Bool
 
-    /// 通知委托该操作按钮被点击
-    /// - Parameter button: 用户点击的按钮
-    func noDataSet(_ scrollView: UIScrollView, didTap button: UIButton)
+    /// Tells the delegate that the empty dataset view was tapped.
+    /// Use this method either to resignFirstResponder of a textfield or searchBar.
+    /// - Parameter view: the view tapped by the user
+    func blankSlate(_ scrollView: UIScrollView, didTapView sender: UIView)
 
-    /// 通知委托该空数据集将要显示
-    func noDataSetWillAppear(_ scrollView: UIScrollView)
+    /// Tells the delegate that the action button was tapped.
+    /// - Parameter button: the button tapped by the user
+    func blankSlate(_ scrollView: UIScrollView, didTapButton sender: UIButton)
 
-    /// 通知委托该空数据集已经显示
-    func noDataSetDidAppear(_ scrollView: UIScrollView)
+    /// Tells the delegate that the empty data set will appear.
+    func blankSlateWillAppear(_ scrollView: UIScrollView)
 
-    /// 通知委托该空数据集将要消失
-    func noDataSetWillDisappear(_ scrollView: UIScrollView)
+    /// Tells the delegate that the empty data set did appear.
+    func blankSlateDidAppear(_ scrollView: UIScrollView)
 
-    /// 通知委托该空数据集已经消失
-    func noDataSetDidDisappear(_ scrollView: UIScrollView)
+    /// Tells the delegate that the empty data set will disappear.
+    func blankSlateWillDisappear(_ scrollView: UIScrollView)
 
-    /// 向委托请求当空数据集已经消失后是否允许滚动。 默认为`true`
-    func shouldAllowScrollAfterNoDataSetDisappear(_ scrollView: UIScrollView) -> Bool
+    /// Tells the delegate that the empty data set did disappear.
+    func blankSlateDidDisappear(_ scrollView: UIScrollView)
 }
 
-extension NoDataSetDelegate {
-    public func noDataSetShouldBeForcedToDisplay(_ scrollView: UIScrollView) -> Bool { false }
+extension BlankSlateDelegate {
+    public func blankSlateShouldBeForcedToDisplay(_ scrollView: UIScrollView) -> Bool { false }
 
-    public func noDataSetShouldDisplay(_ scrollView: UIScrollView) -> Bool { true }
+    public func blankSlateShouldDisplay(_ scrollView: UIScrollView) -> Bool { true }
 
-    public func noDataSetShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int { 0 }
+    public func blankSlateShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int { 0 }
 
-    public func noDataSetShouldAllowTouch(_ scrollView: UIScrollView) -> Bool { true }
+    public func blankSlateShouldAllowTouch(_ scrollView: UIScrollView) -> Bool { true }
 
-    public func noDataSetShouldAllowScroll(_ scrollView: UIScrollView) -> Bool { false }
+    public func blankSlateShouldAllowScroll(_ scrollView: UIScrollView) -> Bool { false }
 
-    public func noDataSet(_ scrollView: UIScrollView, didTap view: UIView) { }
+    public func shouldAllowScrollAfterBlankSlateDisappear(_ scrollView: UIScrollView) -> Bool { true }
 
-    public func noDataSet(_ scrollView: UIScrollView, didTap button: UIButton) { }
+    public func blankSlate(_ scrollView: UIScrollView, didTapView sender: UIView) { }
 
-    public func noDataSetWillAppear(_ scrollView: UIScrollView) { }
+    public func blankSlate(_ scrollView: UIScrollView, didTapButton sender: UIButton) { }
 
-    public func noDataSetDidAppear(_ scrollView: UIScrollView) { }
+    public func blankSlateWillAppear(_ scrollView: UIScrollView) { }
 
-    public func noDataSetWillDisappear(_ scrollView: UIScrollView) { }
+    public func blankSlateDidAppear(_ scrollView: UIScrollView) { }
 
-    public func noDataSetDidDisappear(_ scrollView: UIScrollView) { }
+    public func blankSlateWillDisappear(_ scrollView: UIScrollView) { }
 
-    public func shouldAllowScrollAfterNoDataSetDisappear(_ scrollView: UIScrollView) -> Bool { true }
+    public func blankSlateDidDisappear(_ scrollView: UIScrollView) { }
 }

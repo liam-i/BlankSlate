@@ -1,92 +1,96 @@
 //
 //  DataSource.swift
-//  NoDataSet <https://github.com/liam-i/NoDataSet>
+//  BlankSlate <https://github.com/liam-i/BlankSlate>
 //
 //  Created by Liam on 2021/7/9.
 //
 
 import UIKit
 
-/// 空数据集的数据源协议
-/// - Note: 数据源必须采用`NoDataSetDataSource`协议。所有数据源方法都是可选的
-public protocol NoDataSetDataSource: AnyObject {
-    /// 向数据源请求数据集的图像。默认`nil`
-    func image(forNoDataSet scrollView: UIScrollView) -> UIImage?
+/// The object that acts as the data source of the empty datasets.
+/// - Note: The data source must adopt the `BlankSlateDataSource` protocol. The data source is not retained. All data source methods are optional.
+public protocol BlankSlateDataSource: AnyObject {
+    /// Asks the data source for the image of the dataset. `Default to nil`
+    func image(forBlankSlate scrollView: UIScrollView) -> UIImage?
 
-    /// 向数据源请求数据集图像的`Alpha`，取值范围[0.0~1.0]。默认`1.0`
-    func imageAlpha(forNoDataSet scrollView: UIScrollView) -> CGFloat
+    /// Asks the `Alpha` of the data set image from the data source, the value range is [0.0~1.0]. `Default to 1.0`
+    func imageAlpha(forBlankSlate scrollView: UIScrollView) -> CGFloat
 
-    /// 向数据源请求数据集图像的`TintColor`。默认`nil`
-    func imageTintColor(forNoDataSet scrollView: UIScrollView) -> UIColor?
+    /// Asks the data source for a tint color of the image dataset. `Default to nil`
+    func imageTintColor(forBlankSlate scrollView: UIScrollView) -> UIColor?
 
-    /// 向数据源请求数据集的图像动画，默认`nil`
-    func imageAnimation(forNoDataSet scrollView: UIScrollView) -> CAAnimation?
+    /// Asks the data source for the image animation of the dataset. `Default to nil`
+    func imageAnimation(forBlankSlate scrollView: UIScrollView) -> CAAnimation?
 
-    /// 向数据源请求数据集的标题文本。默认`nil`
-    /// - Note: 如果未设置任何属性，则默认使用固定字体样式。如果要使用其他字体样式，请见`NSAttributedString`
-    func title(forNoDataSet scrollView: UIScrollView) -> NSAttributedString?
+    /// Asks the data source for the title of the dataset. `Default to nil`
+    /// - Returns: An attributed string for the dataset title, combining font, text color, text pararaph style, etc.
+    func title(forBlankSlate scrollView: UIScrollView) -> NSAttributedString?
 
-    /// 向数据源请求数据集的明细文本。默认`nil`
-    /// - Note: 如果未设置任何属性，则默认使用固定字体样式。如果要使用其他字体样式，请见`NSAttributedString`
-    func detail(forNoDataSet scrollView: UIScrollView) -> NSAttributedString?
+    /// Asks the data source for the description of the dataset. `Default to nil`
+    /// - Returns: An attributed string for the dataset description text, combining font, text color, text pararaph style, etc.
+    func detail(forBlankSlate scrollView: UIScrollView) -> NSAttributedString?
 
-    /// 向数据源请求用于指定按钮状态的标题。默认`nil`
-    /// - Parameter state: 指定标题的状态。详情请见`UIControl.State`
-    /// - Note: 如果未设置任何属性，则默认使用固定字体样式。如果要使用其他字体样式，请见`NSAttributedString`
-    func buttonTitle(forNoDataSet scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString?
+    /// Asks the data source for the title to be used for the specified button state. `Default to nil`
+    /// - Parameter state: The state that uses the specified title. The possible values are described in `UIControl.State`.
+    /// - Returns: An attributed string for the dataset button title, combining font, text color, text pararaph style, etc.
+    func buttonTitle(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString?
 
-    /// 向数据源请求用于指定按钮状态的背景图像。默认`nil`
-    /// - Parameter state: 指定图像的状态。详情请见`UIControl.State`
-    func buttonBackgroundImage(forNoDataSet scrollView: UIScrollView, for state: UIControl.State) -> UIImage?
+    /// Asks the data source for a background image to be used for the specified button state. `Default to nil`
+    /// - Parameter state: The state that uses the specified image. The values are described in `UIControl.State`.
+    /// - Returns: An attributed string for the dataset button title, combining font, text color, text pararaph style, etc.
+    func buttonBackgroundImage(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> UIImage?
 
-    /// 向数据源请求用于指定按钮状态的图像。默认`nil`
-    /// - Parameter state: 指定图像的状态。详情请见`UIControl.State`
-    /// - Note: 此方法将覆盖`buttonTitle(forNoDataSet:for:)`函数
-    func buttonImage(forNoDataSet scrollView: UIScrollView, for state: UIControl.State) -> UIImage?
+    /// Asks the data source for the image to be used for the specified button state. `Default to nil`
+    /// - Parameter state: The state that uses the specified title. The possible values are described in `UIControl.State`.
+    /// - Note: An image for the dataset button imageview.
+    func buttonImage(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> UIImage?
 
-    /// 向数据源请求去配置按钮样式
-    /// - Parameter button: 需要配置的按钮
-    func configure(forNoDataSet scrollView: UIScrollView, for button: UIButton)
+    /// Asks the data source to configure the button style.
+    /// - Parameter button: Buttons that need to be configured.
+    func configure(forBlankSlate scrollView: UIScrollView, for button: UIButton)
 
-    /// 向数据源请求数据集的背景色。 默认`UIColor.clear`
-    func backgroundColor(forNoDataSet scrollView: UIScrollView) -> UIColor?
+    /// Asks the data source for the background color of the dataset. Default is clear color. `Detail to UIColor.clear`
+    /// - Note: A color to be applied to the dataset background view.
+    func backgroundColor(forBlankSlate scrollView: UIScrollView) -> UIColor?
 
-    /// 向数据源请求自定义空数据集视图，而不显示默认视图，例如`labels`、`imageview`和`button`。默认`nil`
-    func customView(forNoDataSet scrollView: UIScrollView) -> UIView?
+    /// Asks the data source for a custom view to be displayed instead of the default views such as labels, imageview and button. Default is nil.
+    /// Use this method to show an activity view indicator for loading feedback, or for complete custom empty data set.
+    /// - Note: The custom view.
+    func customView(forBlankSlate scrollView: UIScrollView) -> UIView?
 
-    /// 向数据源请求内容垂直对齐的偏移量。默认`0pt`
-    func verticalOffset(forNoDataSet scrollView: UIScrollView) -> CGFloat
+    /// Asks the data source for a offset for vertical and horizontal alignment of the content. `Default is CGPoint.zero`.
+    func offset(forBlankSlate scrollView: UIScrollView) -> CGPoint
 
-    /// 向数据源请求`NoDataSet.Element`的布局约束值。
-    func layout(forNoDataSet scrollView: UIScrollView, for element: NoDataSet.Element) -> NoDataSet.Layout
+    /// Asks the layout constraint value of `BlankSlate.Element` from the data source.
+    func layout(forBlankSlate scrollView: UIScrollView, for element: BlankSlate.Element) -> BlankSlate.Layout
 
-    /// 向数据源请求在显示空数据集时采用淡入动画的持续时间。默认`0`
-    /// - Note: 如果`fadeInDuration <= 0`则不执行动画
-    func fadeInDuration(forNoDataSet scrollView: UIScrollView) -> TimeInterval
+    /// Requests the duration of the fade-in animation from the data source when displaying an empty dataset. `Default to 0.0`
+    /// - Returns: If `fadeInDuration <= 0.0` no animation is performed.
+    func fadeInDuration(forBlankSlate scrollView: UIScrollView) -> TimeInterval
 }
 
-extension NoDataSetDataSource {
-    public func image(forNoDataSet scrollView: UIScrollView) -> UIImage? { nil }
-    public func imageAlpha(forNoDataSet scrollView: UIScrollView) -> CGFloat { 1.0 }
-    public func imageTintColor(forNoDataSet scrollView: UIScrollView) -> UIColor? { nil }
-    public func imageAnimation(forNoDataSet scrollView: UIScrollView) -> CAAnimation? { nil }
+extension BlankSlateDataSource {
+    public func image(forBlankSlate scrollView: UIScrollView) -> UIImage? { nil }
+    public func imageAlpha(forBlankSlate scrollView: UIScrollView) -> CGFloat { 1.0 }
+    public func imageTintColor(forBlankSlate scrollView: UIScrollView) -> UIColor? { nil }
+    public func imageAnimation(forBlankSlate scrollView: UIScrollView) -> CAAnimation? { nil }
 
-    public func title(forNoDataSet scrollView: UIScrollView) -> NSAttributedString? { nil }
+    public func title(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? { nil }
 
-    public func detail(forNoDataSet scrollView: UIScrollView) -> NSAttributedString? { nil }
+    public func detail(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? { nil }
 
-    public func buttonTitle(forNoDataSet scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? { nil }
-    public func buttonBackgroundImage(forNoDataSet scrollView: UIScrollView, for state: UIControl.State) -> UIImage? { nil }
-    public func buttonImage(forNoDataSet scrollView: UIScrollView, for state: UIControl.State) -> UIImage? { nil }
-    public func configure(forNoDataSet scrollView: UIScrollView, for button: UIButton) { }
+    public func buttonTitle(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? { nil }
+    public func buttonBackgroundImage(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> UIImage? { nil }
+    public func buttonImage(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> UIImage? { nil }
+    public func configure(forBlankSlate scrollView: UIScrollView, for button: UIButton) { }
 
-    public func backgroundColor(forNoDataSet scrollView: UIScrollView) -> UIColor? { UIColor.clear }
+    public func backgroundColor(forBlankSlate scrollView: UIScrollView) -> UIColor? { .clear }
 
-    public func customView(forNoDataSet scrollView: UIScrollView) -> UIView? { nil }
+    public func customView(forBlankSlate scrollView: UIScrollView) -> UIView? { nil }
 
-    public func verticalOffset(forNoDataSet scrollView: UIScrollView) -> CGFloat { 0.0 }
+    public func offset(forBlankSlate scrollView: UIScrollView) -> CGPoint { .zero }
 
-    public func layout(forNoDataSet scrollView: UIScrollView, for element: NoDataSet.Element) -> NoDataSet.Layout { .init() }
+    public func layout(forBlankSlate scrollView: UIScrollView, for element: BlankSlate.Element) -> BlankSlate.Layout { .init() }
 
-    public func fadeInDuration(forNoDataSet scrollView: UIScrollView) -> TimeInterval { 0.0 }
+    public func fadeInDuration(forBlankSlate scrollView: UIScrollView) -> TimeInterval { 0.0 }
 }

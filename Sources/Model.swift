@@ -1,54 +1,55 @@
 //
 //  Model.swift
-//  NoDataSet <https://github.com/liam-i/NoDataSet>
+//  BlankSlate <https://github.com/liam-i/BlankSlate>
 //
 //  Created by Liam on 2021/12/20.
 //
 
 import UIKit
 
-extension NoDataSet {
-    /// 数据加载状态
+extension BlankSlate {
+    /// Data loading status
     public enum DataLoadStatus {
-        /// 数据加载中
+        /// Data is loading.
         case loading
-        /// 数据加载成功。（有数据和空数据）
+        /// Data loaded successfully. (With data or empty data)
         case success
-        /// 数据加载失败
-        case failed
+        /// Data loading failed.
+        case failure
     }
 
-    /// 空数据集元素类型
+    /// Type of empty data set element
     public enum Element: CaseIterable {
-        /// 图片视图
+        /// Image view
         case image
-        /// 标题标签
+        /// Title label
         case title
-        /// 明细标签
+        /// Detail label
         case detail
-        /// 按钮控件
+        /// Button control
         case button
-        /// 定制视图（如果您不想使用系统提供的`image`、`title`、`detail`和`button`元素；则可以考虑定制）
+        /// Custom views (if you don’t want to use the default `image`, `title`, `detail` and `button` elements; you can consider customizing)
         case custom
     }
 
-    /// 控件布局约束值
+    /// Control layout constraints
     public struct Layout {
-        /// 控件边缘内间距
+        /// Padding around the edges of the control.
         public var edgeInsets: UIEdgeInsets
-        /// 控件高。默认：`nil`，代表自适应高
+        /// The height of the control. Default: `nil`, represents adaptive height
         public var height: CGFloat?
 
-        /// 初始化 Layout
+        /// Initialize Layout
         /// - Parameters:
-        ///   - edgeInsets: 控件边缘内间距。默认：`UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
-        ///   - height: 控件高。传值`nil`，表示自适应高。默认：`nil`
+        ///   - edgeInsets: Padding around the edges of the control. `Default to UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)`
+        ///   - height: The height of the control. Default: `nil`, represents adaptive height. `Default to nil`
         public init(edgeInsets: UIEdgeInsets = .init(top: 11, left: 16, bottom: 11, right: 16), height: CGFloat? = nil) {
             self.edgeInsets = edgeInsets
             self.height = height
         }
 
-        /// 更新属性值
+        /// Update attribute value. Executes the given block passing the `Self` in as its sole `inout` argument.
+        /// - Parameter populator: A block or function that populates the `Self`, which is passed into the block as an `inout` argument.
         @discardableResult
         public mutating func with(_ populator: (inout Self) -> Void) -> Self {
             populator(&self)

@@ -1,5 +1,5 @@
 //
-//  MainViewController.swift
+//  TabBarController.swift
 //  Example iOS
 //
 //  Created by liam on 2024/3/11.
@@ -8,14 +8,19 @@
 
 import UIKit
 
-class MainViewController: UITableViewController {
+class TabBarController: UITabBarController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: false)
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    }
+
+    deinit {
+        #if DEBUG
+        print("👍🏻👍🏻👍🏻 TabBarController is released.")
+        #endif
     }
 }

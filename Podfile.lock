@@ -1,4 +1,5 @@
 PODS:
+  - BlankSlate (0.3.0)
   - FlyHUD (1.5.6):
     - FlyHUD/FlyHUD (= 1.5.6)
     - FlyHUD/FlyIndicatorHUD (= 1.5.6)
@@ -8,24 +9,23 @@ PODS:
     - FlyHUD/FlyHUD
   - FlyHUD/FlyProgressHUD (1.5.6):
     - FlyHUD/FlyHUD
-  - NoDataSet (0.3.0)
 
 DEPENDENCIES:
+  - BlankSlate (from `./`)
   - FlyHUD
-  - NoDataSet (from `./`)
 
 SPEC REPOS:
   trunk:
     - FlyHUD
 
 EXTERNAL SOURCES:
-  NoDataSet:
+  BlankSlate:
     :path: "./"
 
 SPEC CHECKSUMS:
+  BlankSlate: 11a9e780fce54c221d52bf93652567eed92163dd
   FlyHUD: 257b62dc7566e102e9f92123fe9293301cb64189
-  NoDataSet: ca30206a861994bf2a7fdd69c11307a29548222b
 
-PODFILE CHECKSUM: 6d2b65d2b577b7eeae895df47fc8e88840b0a9b4
+PODFILE CHECKSUM: c8a4f2a561e99516586a27e3a4f323347251d4ee
 
 COCOAPODS: 1.15.2

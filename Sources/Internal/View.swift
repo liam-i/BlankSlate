@@ -1,6 +1,6 @@
 //
 //  View.swift
-//  NoDataSet <https://github.com/liam-i/NoDataSet>
+//  BlankSlate <https://github.com/liam-i/BlankSlate>
 //
 //  Created by Liam on 2024/3/9.
 //  Copyright © 2020 Liam. All rights reserved.
@@ -8,12 +8,12 @@
 
 import UIKit
 
-extension NoDataSet {
+extension BlankSlate {
     class View: UIView, UIGestureRecognizerDelegate {
         private let contentView: UIView = {
             let contentView = UIView()
             contentView.translatesAutoresizingMaskIntoConstraints = false
-            contentView.backgroundColor = UIColor.clear
+            contentView.backgroundColor = .clear
             contentView.isUserInteractionEnabled = true
             contentView.alpha = 0
             return contentView
@@ -26,7 +26,7 @@ extension NoDataSet {
 
             let imageView = UIImageView()
             imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.backgroundColor = UIColor.clear
+            imageView.backgroundColor = .clear
             imageView.isUserInteractionEnabled = false
             imageView.contentMode = .scaleAspectFit
             contentView.addSubview(imageView)
@@ -39,8 +39,8 @@ extension NoDataSet {
 
             let titleLabel = UILabel()
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            titleLabel.backgroundColor = UIColor.clear
-            titleLabel.font = UIFont.systemFont(ofSize: 27.0)
+            titleLabel.backgroundColor = .clear
+            titleLabel.font = .systemFont(ofSize: 27.0)
             titleLabel.textColor = UIColor(white: 0.6, alpha: 1.0)
             titleLabel.textAlignment = .center
             titleLabel.lineBreakMode = .byWordWrapping
@@ -55,8 +55,8 @@ extension NoDataSet {
 
             let detailLabel = UILabel()
             detailLabel.translatesAutoresizingMaskIntoConstraints = false
-            detailLabel.backgroundColor = UIColor.clear
-            detailLabel.font = UIFont.systemFont(ofSize: 17.0)
+            detailLabel.backgroundColor = .clear
+            detailLabel.font = .systemFont(ofSize: 17.0)
             detailLabel.textColor = UIColor(white: 0.6, alpha: 1.0)
             detailLabel.textAlignment = .center
             detailLabel.lineBreakMode = .byWordWrapping
@@ -71,7 +71,7 @@ extension NoDataSet {
 
             let button = UIButton(type: .custom)
             button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = UIColor.clear
+            button.backgroundColor = .clear
             button.contentHorizontalAlignment = .center
             button.contentVerticalAlignment = .center
             button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
@@ -89,7 +89,7 @@ extension NoDataSet {
         }
 
         private weak var tapGesture: UITapGestureRecognizer?
-        var verticalOffset: CGFloat = 0 // 自定义垂直偏移量
+        var offset: CGPoint = .zero
         var fadeInDuration: TimeInterval = 0
 
         var isTouchAllowed: (() -> Bool)?
@@ -104,6 +104,12 @@ extension NoDataSet {
             tap.delegate = self
             addGestureRecognizer(tap)
             tapGesture = tap
+
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(updateForCurrentOrientation),
+                name: UIApplication.didChangeStatusBarOrientationNotification,
+                object: nil)
         }
 
         @available(*, unavailable)
@@ -112,14 +118,14 @@ extension NoDataSet {
         }
 
         deinit {
+            NotificationCenter.default.removeObserver(self)
             #if DEBUG
-            print("👍🏻👍🏻👍🏻 NoDataSet.View is released.")
+            print("👍🏻👍🏻👍🏻 BlankSlate.View is released.")
             #endif
         }
 
         override func didMoveToSuperview() {
-            guard let superview = superview else { return }
-            frame = superview.bounds
+            updateForCurrentOrientation()
 
             guard fadeInDuration > 0.0 else {
                 return contentView.alpha = 1.0
@@ -127,26 +133,27 @@ extension NoDataSet {
             UIView.animate(withDuration: fadeInDuration) { [weak self] in
                 self?.contentView.alpha = 1.0
             }
-            print("didMoveToSuperview", safeAreaInsets)
         }
 
-        override func layoutSubviews() {
-            print("safeAreaInsets", safeAreaInsets)
+        override func didMoveToWindow() {
+            updateForCurrentOrientation()
         }
 
-        override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-            guard let hitView = super.hitTest(point, with: event) else { return nil }
-
-            /// 返回任何`UIControl`实例，例如`UIButton、UISegmentedControl、UISwitch`等
-            if hitView is UIControl {
-                return hitView
+        @objc
+        private func updateForCurrentOrientation() {
+            guard window != nil, let scrollView = superview as? UIScrollView else { return }
+            func syncFrame() {
+                let size = scrollView.bounds.size
+                let safe = scrollView.safeAreaInsets
+                let isVerticalScroll = scrollView.contentSize.width == scrollView.bounds.width
+                let x = isVerticalScroll ? safe.left : 0.0
+                frame = CGRect(x: x, y: 0.0, 
+                               width: size.width - safe.left - safe.right,
+                               height: size.height - safe.top - safe.bottom)
             }
 
-            /// 返回`contentView`或`customView`
-            if hitView.isEqual(contentView) || hitView.isEqual(elements[.custom]?.0) {
-                return hitView
-            }
-            return nil
+            syncFrame()
+            DispatchQueue.main.async { syncFrame() }
         }
 
         @objc
@@ -169,14 +176,15 @@ extension NoDataSet {
         }
 
         func setupConstraints() {
-            /// 首先，配置内容视图约束
+            // First, configure the content view constaints
+            // The content view must alway be centered to its superview
             var constraints = [
-                contentView.centerXAnchor.constraint(equalTo: centerXAnchor),
-                contentView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: verticalOffset),
+                contentView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: offset.x),
+                contentView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: offset.y),
                 contentView.widthAnchor.constraint(equalTo: widthAnchor)
             ]
 
-            /// 如果允许，设置自定义视图的约束
+            // If applicable, set the custom view's constraints
             if let element = elements[.custom] {
                 let view = element.0
                 let layout = element.1
@@ -196,9 +204,9 @@ extension NoDataSet {
 
                     let view = element.0
                     let layout = element.1
-                    if let previous = previous { // 上一个视图
+                    if let previous = previous { // Previous view
                         constraints.append(view.topAnchor.constraint(equalTo: previous.0.bottomAnchor, constant: layout.edgeInsets.top))
-                    } else { // 第一个视图
+                    } else { // First view
                         constraints.append(view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: layout.edgeInsets.top))
                     }
                     constraints.append(view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: layout.edgeInsets.left))
@@ -207,14 +215,28 @@ extension NoDataSet {
                     if let height = layout.height {
                         constraints.append(view.heightAnchor.constraint(equalToConstant: height))
                     }
-                    previous = element // 保存上一个视图
+                    previous = element // Save previous view
                 }
-                if let last = previous { // 最后一个视图
+                if let last = previous { // Last view
                     constraints.append(last.0.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -last.1.edgeInsets.bottom))
                 }
             }
 
             NSLayoutConstraint.activate(constraints)
+        }
+
+        override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+            guard let hitView = super.hitTest(point, with: event) else { return nil }
+            // Return any UIControl instance such as buttons, segmented controls, switches, etc.
+            if hitView is UIControl {
+                return hitView
+            }
+
+            // Return either the contentView or customView
+            if hitView.isEqual(contentView) || hitView.isEqual(elements[.custom]?.0) {
+                return hitView
+            }
+            return nil
         }
 
         // MARK: - UIGestureRecognizerDelegate
@@ -230,7 +252,7 @@ extension NoDataSet {
             if gestureRecognizer.isEqual(tapGesture) || otherGestureRecognizer.isEqual(tapGesture) {
                 return true
             }
-
+            // defer to blankSlateDelegate's implementation if available
             return shouldRecognizeSimultaneously?(otherGestureRecognizer, gestureRecognizer) ?? false
         }
     }
