@@ -163,7 +163,7 @@ class ApplicationDetailViewController: UITableViewController {
             imageName = "header_podcasts"
         }
 
-        if let imageName = imageName {
+        if let imageName {
             let image = UIImage(named: imageName)
             let imageView = UIImageView(image: image)
             imageView.isUserInteractionEnabled = true
@@ -172,7 +172,7 @@ class ApplicationDetailViewController: UITableViewController {
             imageView.addGestureRecognizer(tapGesture)
 
             var frame = view.bounds
-            if let image = image {
+            if let image {
                 frame.size.height = image.size.height
             }
             let headerView = UIView(frame: frame)
@@ -293,8 +293,8 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
             return nil
         }
 
-        if let font = font { attributes[.font] = font }
-        if let textColor = textColor { attributes[.foregroundColor] = textColor }
+        if let font { attributes[.font] = font }
+        if let textColor { attributes[.foregroundColor] = textColor }
         return NSAttributedString(string: text, attributes: attributes)
     }
 
@@ -407,10 +407,10 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
             return nil
         }
 
-        if let font = font {
+        if let font {
             attributes[.font] = font
         }
-        if let textColor = textColor {
+        if let textColor {
             attributes[.foregroundColor] = textColor
         }
         attributes[.paragraphStyle] = paragraph
@@ -485,8 +485,8 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         }
 
         var attributes: [NSAttributedString.Key: Any] = [:]
-        if let font = font { attributes[.font] = font }
-        if let textColor = textColor { attributes[.foregroundColor] = textColor }
+        if let font { attributes[.font] = font }
+        if let textColor { attributes[.foregroundColor] = textColor }
         return NSAttributedString(string: text, attributes: attributes)
     }
 
@@ -546,7 +546,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
     func offset(forBlankSlate scrollView: UIScrollView) -> CGPoint {
         if application.type == .kickstarter {
             var offset = UIApplication.shared.statusBarFrame.height
-            if let navigationController = navigationController {
+            if let navigationController {
                 offset += navigationController.navigationBar.frame.height
             }
             return CGPoint(x: 0, y: -offset)

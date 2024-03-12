@@ -24,7 +24,7 @@ struct Color: Equatable {
     }
 
     static func roundImage(for size: CGSize, with color: UIColor?) -> UIImage? {
-        guard let color = color else { return nil }
+        guard let color else { return nil }
 
         let bounds = CGRect(origin: .zero, size: size)
 

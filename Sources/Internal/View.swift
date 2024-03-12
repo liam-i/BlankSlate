@@ -208,7 +208,7 @@ extension BlankSlate {
 
                     let view = element.0
                     let layout = element.1
-                    if let previous = previous { // Previous view
+                    if let previous { // Previous view
                         constraints.append(view.topAnchor.constraint(equalTo: previous.0.bottomAnchor, constant: layout.edgeInsets.top))
                     } else { // First view
                         constraints.append(view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: layout.edgeInsets.top))
@@ -245,7 +245,7 @@ extension BlankSlate {
 
         // MARK: - UIGestureRecognizerDelegate
         override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-            if let isTouchAllowed = isTouchAllowed, isEqual(gestureRecognizer.view) {
+            if let isTouchAllowed, isEqual(gestureRecognizer.view) {
                 return isTouchAllowed()
             }
             return super.gestureRecognizerShouldBegin(gestureRecognizer)

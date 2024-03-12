@@ -42,7 +42,7 @@ class SearchViewController: UIViewController {
             self.searchController = searchController
             searchResultsController.searchController = searchController
             searchResultsController.searchResult = { [weak self](selectedColor) in
-                guard let `self` = self else { return }
+                guard let self else { return }
                 self.selectedColor = selectedColor
                 self.updateContent()
             }

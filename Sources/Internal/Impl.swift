@@ -49,7 +49,7 @@ extension UIScrollView {
         set {
             objc_setAssociatedObject(self, &kBlankSlateStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-            guard let newValue = newValue, newValue != .loading else {
+            guard let newValue, newValue != .loading else {
                 return reloadBlankSlateIfNeeded()
             }
 
@@ -70,7 +70,7 @@ extension UIScrollView {
     }
 
     func reloadBlankSlateIfNeeded() {
-        guard let blankSlateDataSource = blankSlateDataSource else {
+        guard let blankSlateDataSource else {
             dismissBlankSlateIfNeeded()
             return
         }
@@ -167,7 +167,7 @@ extension UIScrollView {
 
     func dismissBlankSlateIfNeeded() {
         var isBlankSlateVisible = false
-        if let blankSlateView = blankSlateView {
+        if let blankSlateView {
             isBlankSlateVisible = true
             blankSlateDelegate?.blankSlateWillDisappear(self) // Notifies that the empty dataset view will disappear
 
@@ -213,11 +213,11 @@ extension UIScrollView {
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.isHidden = true
         view.isTouchAllowed = { [weak self] in
-            guard let `self` = self, let blankSlateDelegate = blankSlateDelegate else { return true }
+            guard let self, let blankSlateDelegate = blankSlateDelegate else { return true }
             return blankSlateDelegate.blankSlateShouldAllowTouch(self)
         }
         view.shouldRecognizeSimultaneously = { [weak self](other, of) in
-            guard let `self` = self, let blankSlateDelegate = blankSlateDelegate else { return false }
+            guard let self, let blankSlateDelegate = blankSlateDelegate else { return false }
             if let scrollView = blankSlateDelegate as? UIScrollView, scrollView == self {
                 return false
             }
@@ -228,13 +228,13 @@ extension UIScrollView {
             return false
         }
         view.didTap = { [weak self] in
-            guard let `self` = self, let blankSlateDelegate = blankSlateDelegate else { return }
+            guard let self, let blankSlateDelegate = blankSlateDelegate else { return }
             if let button = $0 as? UIButton {
                 return blankSlateDelegate.blankSlate(self, didTapButton: button)
             }
             blankSlateDelegate.blankSlate(self, didTapView: $0)
         }
-        self.blankSlateView = view
+        blankSlateView = view
         return view
     }
 
@@ -281,7 +281,7 @@ private class WeakObject {
     private(set) weak var value: AnyObject?
 
     init?(_ value: AnyObject?) {
-        guard let value = value else { return nil }
+        guard let value else { return nil }
         self.value = value
     }
 
