@@ -9,7 +9,7 @@
 import UIKit
 import WebKit
 import BlankSlate
-import FlyHUD
+//import FlyHUD
 
 class WebViewController: UIViewController, BlankSlateDataSource, BlankSlateDelegate {
     private var webView: WKWebView = WKWebView(frame: UIScreen.main.bounds)
@@ -23,16 +23,16 @@ class WebViewController: UIViewController, BlankSlateDataSource, BlankSlateDeleg
     }
 
     @IBAction func errorButtonClicked(_ sender: Any) {
-        HUD.show(to: view, using: .animation(.zoomInOut, damping: .default, duration: 0.3)) {
-            $0.minShowTime = 0.5
-        }
+//        HUD.show(to: view, using: .animation(.zoomInOut, damping: .default, duration: 0.3)) {
+//            $0.minShowTime = 0.5
+//        }
         webView.load(URLRequest(url: URL(string: "https://error.test/")!))
     }
 
     @IBAction func successButtonClicked(_ sender: Any) {
-        HUD.show(to: view, using: .animation(.zoomInOut, damping: .default, duration: 0.3)) {
-            $0.minShowTime = 0.5
-        }
+//        HUD.show(to: view, using: .animation(.zoomInOut, damping: .default, duration: 0.3)) {
+//            $0.minShowTime = 0.5
+//        }
         webView.load(URLRequest(url: URL(string: "https://www.baidu.com/")!))
     }
 
@@ -64,13 +64,13 @@ extension WebViewController: WKUIDelegate, WKNavigationDelegate {
     /// 页面加载完成之后调用
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.scrollView.bs.dismiss()
-        HUD.hide(for: view)
+//        HUD.hide(for: view)
     }
 
     /// 页面加载失败时调用
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         webView.scrollView.bs.dataLoadStatus = .failure
-        HUD.hide(for: view)
+//        HUD.hide(for: view)
     }
 
     /// 在发送请求之前，决定是否跳转

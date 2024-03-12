@@ -1,0 +1,6 @@
+framework module BlankSlate {
+  umbrella header "BlankSlate-iOS-umbrella.h"
+
+  export *
+  module * { export * }
+}

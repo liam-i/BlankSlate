@@ -5,6 +5,14 @@
 [![License](https://img.shields.io/cocoapods/l/BlankSlate.svg?style=flat)](https://cocoapods.org/pods/BlankSlate)
 [![Platform](https://img.shields.io/cocoapods/p/BlankSlate.svg?style=flat)](https://cocoapods.org/pods/BlankSlate)
 
+[![Swift](https://img.shields.io/badge/Swift-5.7_5.8_5.9_5.10-orange?style=flat-square)](https://img.shields.io/badge/Swift-5.7_5.8_5.9_5.10-Orange?style=flat-square)
+[![Platforms](https://img.shields.io/badge/Platforms-iOS_tvOS-yellowgreen?style=flat-square)](https://img.shields.io/badge/Platforms-iOS_tvOS-Green?style=flat-square)
+[![CocoaPods](https://img.shields.io/cocoapods/v/BlankSlate.svg?style=flat)](https://cocoapods.org/pods/BlankSlate)
+[![SPM](https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat)](https://swift.org/package-manager)
+[![Carthage](https://img.shields.io/badge/Carthage-supported-4BC51D.svg?style=flat-square)](https://github.com/Carthage/Carthage)
+<!-- [![Doc](https://img.shields.io/badge/Swift-Doc-DE5C43.svg?style=flat)](https://liam-i.github.io/BlankSlate/main/documentation/blankslate) -->
+[![License](https://img.shields.io/cocoapods/l/BlankSlate.svg?style=flat)](https://github.com/liam-i/BlankSlate/blob/main/LICENSE)
+
 A Swift version of [DZNEmptyDataSet](https://github.com/dzenbot/DZNEmptyDataSet).
 
 ## Example
@@ -24,7 +32,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 - File > Swift Packages > Add Package Dependency
 - Add `https://github.com/liam-i/BlankSlate.git`
-- Select "Up to Next Minor" with "0.3.1"
+- Select "Up to Next Minor" with "0.3.2"
 
 #### CocoaPods
 
@@ -36,7 +44,7 @@ platform :ios, '12.0'
 use_frameworks!
 
 target 'MyApp' do
-  pod 'BlankSlate', '~> 0.3.1'
+  pod 'BlankSlate', '~> 0.3.2'
 end
 ```
 

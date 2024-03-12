@@ -14,7 +14,7 @@ target 'Example iOS' do
   platform :ios, '12.0'
 
   pod 'BlankSlate', :path => './'
-  pod 'FlyHUD'
+#  pod 'FlyHUD'
 
   target 'Example Tests' do
     inherit! :search_paths
@@ -23,5 +23,5 @@ end
 target 'Example tvOS' do
   platform :tvos, '12.0'
   pod 'BlankSlate', :path => './'
-  pod 'FlyHUD'
+#  pod 'FlyHUD'
 end
