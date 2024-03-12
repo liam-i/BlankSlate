@@ -105,11 +105,13 @@ extension BlankSlate {
             addGestureRecognizer(tap)
             tapGesture = tap
 
+#if !os(tvOS)
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(updateForCurrentOrientation),
                 name: UIApplication.didChangeStatusBarOrientationNotification,
                 object: nil)
+#endif
         }
 
         @available(*, unavailable)
@@ -118,10 +120,12 @@ extension BlankSlate {
         }
 
         deinit {
+#if !os(tvOS)
             NotificationCenter.default.removeObserver(self)
-            #if DEBUG
+#endif
+#if DEBUG
             print("👍🏻👍🏻👍🏻 BlankSlate.View is released.")
-            #endif
+#endif
         }
 
         override func didMoveToSuperview() {
