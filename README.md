@@ -1,10 +1,5 @@
 # BlankSlate
 
-<!-- [![CI Status](https://img.shields.io/travis/Liam/BlankSlate.svg?style=flat)](https://travis-ci.org/Liam/BlankSlate) -->
-[![Version](https://img.shields.io/cocoapods/v/BlankSlate.svg?style=flat)](https://cocoapods.org/pods/BlankSlate)
-[![License](https://img.shields.io/cocoapods/l/BlankSlate.svg?style=flat)](https://cocoapods.org/pods/BlankSlate)
-[![Platform](https://img.shields.io/cocoapods/p/BlankSlate.svg?style=flat)](https://cocoapods.org/pods/BlankSlate)
-
 [![Swift](https://img.shields.io/badge/Swift-5.7_5.8_5.9_5.10-orange?style=flat-square)](https://img.shields.io/badge/Swift-5.7_5.8_5.9_5.10-Orange?style=flat-square)
 [![Platforms](https://img.shields.io/badge/Platforms-iOS_tvOS-yellowgreen?style=flat-square)](https://img.shields.io/badge/Platforms-iOS_tvOS-Green?style=flat-square)
 [![CocoaPods](https://img.shields.io/cocoapods/v/BlankSlate.svg?style=flat)](https://cocoapods.org/pods/BlankSlate)
@@ -13,11 +8,16 @@
 <!-- [![Doc](https://img.shields.io/badge/Swift-Doc-DE5C43.svg?style=flat)](https://liam-i.github.io/BlankSlate/main/documentation/blankslate) -->
 [![License](https://img.shields.io/cocoapods/l/BlankSlate.svg?style=flat)](https://github.com/liam-i/BlankSlate/blob/main/LICENSE)
 
-A Swift version of [DZNEmptyDataSet](https://github.com/dzenbot/DZNEmptyDataSet).
+BlankSlate is a drop-in UITableView/UICollectionView superclass extension for showing empty datasets whenever the view has no content to display.
 
-## Example
+## ScreenShots
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+[![](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/1-small.png)](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/1.png)
+[![](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/2-small.png)](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/2.png)
+[![](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/3-small.png)](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/3.png)
+[![](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/4-small.png)](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/4.png)
+[![](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/5-small.png)](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/5.png)
+[![](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/6-small.png)](https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/6.png)
 
 ## Requirements
 
@@ -28,18 +28,42 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Installation
 
-#### Swift Package Manager
+### Swift Package Manager
+
+#### ...using `swift build`
+
+If you are using the [Swift Package Manager](https://www.swift.org/documentation/package-manager), add a dependency to your `Package.swift` file and import the BlankSlate library into the desired targets:
+```swift
+dependencies: [
+    .package(url: "https://github.com/liam-i/BlankSlate.git", from: "0.3.2")
+],
+targets: [
+    .target(
+        name: "MyTarget", dependencies: [
+            .product(name: "BlankSlate", package: "BlankSlate")
+        ])
+]
+```
+
+#### ...using Xcode
+
+If you are using Xcode, then you should:
 
 - File > Swift Packages > Add Package Dependency
 - Add `https://github.com/liam-i/BlankSlate.git`
 - Select "Up to Next Minor" with "0.3.2"
 
+> [!TIP]
+> For detailed tutorials, see: [Apple Docs](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app)
+
 #### CocoaPods
 
-BlankSlate is available through [CocoaPods](https://cocoapods.org). To install it, simply add the following line to your Podfile:
+If you're using [CocoaPods](https://cocoapods.org), add this to your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
+# Or use CND source
+# source 'https://cdn.cocoapods.org/'
 platform :ios, '12.0'
 use_frameworks!
 
@@ -48,10 +72,29 @@ target 'MyApp' do
 end
 ```
 
-## Author
+And run `pod install`.
 
-Liam, liam_i@163.com
+> [!IMPORTANT]  
+> CocoaPods 1.14.3 or newer is required.
+
+### Carthage
+
+If you're using [Carthage](https://github.com/Carthage/Carthage), add this to your `Cartfile`:
+
+```ruby
+github "liam-i/BlankSlate" ~> 0.3.2
+```
+
+And run `carthage update --platform iOS --use-xcframeworks`.
+
+## Example
+
+To run the example project, first clone the repo, then `cd` to the root directory and run `pod install`. Then open BlankSlate.xcworkspace in Xcode.
+
+## Credits and thanks
+
+* Thanks a lot to [Ignacio Romero Zurbuchen](https://github.com/dzenbot) for building [DZNEmptyDataSet](https://github.com/dzenbot/DZNEmptyDataSet) - all ideas in here and many implementation details were provided by his library.
 
 ## License
 
-BlankSlate is available under the MIT license. See the LICENSE file for more info.
+BlankSlate is available under the MIT license. See the [LICENSE](./LICENSE) file for more info.
