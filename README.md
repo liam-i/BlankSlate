@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/cocoapods/l/BlankSlate.svg?style=flat)](https://github.com/liam-i/BlankSlate/blob/main/LICENSE)
 <!-- [![Doc](https://img.shields.io/badge/Swift-Doc-DE5C43.svg?style=flat)](https://liam-i.github.io/BlankSlate/main/documentation/blankslate) -->
 
-BlankSlate is a drop-in UIView/UIScrollView/UITableView/UICollectionView superclass extension for showing empty datasets whenever the view has no content to display.
+BlankSlate is a drop-in UIView extension for showing empty datasets whenever the view has no content to display.
 
 ## ScreenShots
 

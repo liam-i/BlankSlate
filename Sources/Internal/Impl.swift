@@ -8,7 +8,7 @@
 
 import UIKit
 
-/// A drop-in UIView/UIScrollView/UITableView/UICollectionView superclass extension for showing empty datasets whenever the view has no content to display.
+/// A drop-in UIView extension for showing empty datasets whenever the view has no content to display.
 /// - Attention: It will work automatically, by just conforming to `BlankSlateDataSource`, and returning the data you want to show.
 extension UIView {
     weak var blankSlateDataSource: BlankSlateDataSource? {
