@@ -15,7 +15,7 @@ extension BlankSlate {
             contentView.translatesAutoresizingMaskIntoConstraints = false
             contentView.backgroundColor = .clear
             contentView.isUserInteractionEnabled = true
-            contentView.alpha = 0
+            contentView.alpha = 0.0
             return contentView
         }()
 
@@ -129,6 +129,7 @@ extension BlankSlate {
         }
 
         override func didMoveToSuperview() {
+            guard superview != nil else { return }
             updateForCurrentOrientation()
 
             guard fadeInDuration > 0.0 else {
@@ -173,6 +174,14 @@ extension BlankSlate {
 
             syncFrame()
             DispatchQueue.main.async { syncFrame() }
+        }
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            layer.sublayers?.forEach {
+                guard $0 is CAGradientLayer else { return }
+                $0.frame = bounds
+            }
         }
 
         @objc
@@ -254,7 +263,7 @@ extension BlankSlate {
             if hitView.isEqual(contentView) || hitView.isEqual(elements[.custom]?.0) {
                 return hitView
             }
-            return nil
+            return nil // Touch allowed to pass through
         }
 
         // MARK: - UIGestureRecognizerDelegate

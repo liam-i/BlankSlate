@@ -47,11 +47,15 @@ public protocol BlankSlateDataSource: AnyObject {
 
     /// Asks the data source to configure the button style.
     /// - Parameter button: Buttons that need to be configured.
-    func configure(forBlankSlate view: UIView, for button: UIButton)
+    func blankSlate(_ view: UIView, configure button: UIButton)
 
     /// Asks the data source for the background color of the dataset. Default is clear color. `Detail to UIColor.clear`
     /// - Note: A color to be applied to the dataset background view.
     func backgroundColor(forBlankSlate view: UIView) -> UIColor?
+    
+    /// Asks the data source for the background gradient of the dataset. `Default to nil`
+    /// - Returns: A gradient to be applied to the dataset background view.
+    func backgroundGradient(forBlankSlate view: UIView) -> CAGradientLayer?
 
     /// Asks the data source for a custom view to be displayed instead of the default views such as labels, imageview and button. Default is nil.
     /// Use this method to show an activity view indicator for loading feedback, or for complete custom empty data set.
@@ -82,9 +86,10 @@ extension BlankSlateDataSource {
     public func buttonTitle(forBlankSlate view: UIView, for state: UIControl.State) -> NSAttributedString? { nil }
     public func buttonBackgroundImage(forBlankSlate view: UIView, for state: UIControl.State) -> UIImage? { nil }
     public func buttonImage(forBlankSlate view: UIView, for state: UIControl.State) -> UIImage? { nil }
-    public func configure(forBlankSlate view: UIView, for button: UIButton) { }
+    public func blankSlate(_ view: UIView, configure button: UIButton) { }
 
     public func backgroundColor(forBlankSlate view: UIView) -> UIColor? { .clear }
+    public func backgroundGradient(forBlankSlate view: UIView) -> CAGradientLayer? { nil }
 
     public func customView(forBlankSlate view: UIView) -> UIView? { nil }
 

@@ -490,7 +490,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return NSAttributedString(string: text, attributes: attributes)
     }
 
-    func configure(forBlankSlate view: UIView, for button: UIButton) {
+    func blankSlate(_ view: UIView, configure button: UIButton) {
         var capInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
         var rectInsets = UIEdgeInsets.zero
         switch application.type {

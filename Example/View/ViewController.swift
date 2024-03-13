@@ -53,7 +53,17 @@ extension ViewController: BlankSlateDataSource, BlankSlateDelegate {
         UIImage(named: "empty_placeholder")
     }
 
+    func backgroundGradient(forBlankSlate view: UIView) -> CAGradientLayer? {
+        let backgroundGradient = CAGradientLayer()
+        backgroundGradient.colors = [UIColor.blue.cgColor, UIColor.red.cgColor]
+        return backgroundGradient
+    }
+
     func blankSlate(_ view: UIView, didTapView sender: UIView) {
         print(#function)
+    }
+
+    func fadeInDuration(forBlankSlate view: UIView) -> TimeInterval {
+        0.3
     }
 }

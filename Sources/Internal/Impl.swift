@@ -134,14 +134,14 @@ extension UIView {
                     let button = view.createButton(with: blankSlateDataSource.layout(forBlankSlate: self, for: .button))
                     button.setImage(buttonImage, for: .normal)
                     button.setImage(blankSlateDataSource.buttonImage(forBlankSlate: self, for: .highlighted), for: .highlighted)
-                    blankSlateDataSource.configure(forBlankSlate: self, for: button)
+                    blankSlateDataSource.blankSlate(self, configure: button)
                 } else if let titleString = blankSlateDataSource.buttonTitle(forBlankSlate: self, for: .normal) {
                     let button = view.createButton(with: blankSlateDataSource.layout(forBlankSlate: self, for: .button))
                     button.setAttributedTitle(titleString, for: .normal)
                     button.setAttributedTitle(blankSlateDataSource.buttonTitle(forBlankSlate: self, for: .highlighted), for: .highlighted)
                     button.setBackgroundImage(blankSlateDataSource.buttonBackgroundImage(forBlankSlate: self, for: .normal), for: .normal)
                     button.setBackgroundImage(blankSlateDataSource.buttonBackgroundImage(forBlankSlate: self, for: .highlighted), for: .highlighted)
-                    blankSlateDataSource.configure(forBlankSlate: self, for: button)
+                    blankSlateDataSource.blankSlate(self, configure: button)
                 }
             }
 
@@ -150,6 +150,9 @@ extension UIView {
 
             // Configure the empty dataset view
             view.backgroundColor = blankSlateDataSource.backgroundColor(forBlankSlate: self) ?? .clear
+            if let backgroundGradient = blankSlateDataSource.backgroundGradient(forBlankSlate: self) {
+                view.layer.insertSublayer(backgroundGradient, at: 0)
+            }
             view.isHidden = view.elements.isEmpty
             view.clipsToBounds = true
             view.isUserInteractionEnabled = blankSlateDelegate?.blankSlateShouldAllowTouch(self) ?? true // Configure empty dataset userInteraction permission
