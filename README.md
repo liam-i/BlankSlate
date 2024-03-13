@@ -5,8 +5,8 @@
 [![CocoaPods](https://img.shields.io/cocoapods/v/BlankSlate.svg?style=flat)](https://cocoapods.org/pods/BlankSlate)
 [![SPM](https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat)](https://swift.org/package-manager)
 [![Carthage](https://img.shields.io/badge/Carthage-supported-4BC51D.svg?style=flat-square)](https://github.com/Carthage/Carthage)
-<!-- [![Doc](https://img.shields.io/badge/Swift-Doc-DE5C43.svg?style=flat)](https://liam-i.github.io/BlankSlate/main/documentation/blankslate) -->
 [![License](https://img.shields.io/cocoapods/l/BlankSlate.svg?style=flat)](https://github.com/liam-i/BlankSlate/blob/main/LICENSE)
+<!-- [![Doc](https://img.shields.io/badge/Swift-Doc-DE5C43.svg?style=flat)](https://liam-i.github.io/BlankSlate/main/documentation/blankslate) -->
 
 BlankSlate is a drop-in UIView/UIScrollView/UITableView/UICollectionView superclass extension for showing empty datasets whenever the view has no content to display.
 
