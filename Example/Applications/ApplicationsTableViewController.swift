@@ -90,11 +90,11 @@ extension ApplicationsTableViewController: UISearchResultsUpdating {
 }
 
 extension ApplicationsTableViewController: BlankSlateDataSource, BlankSlateDelegate {
-    func title(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? {
+    func title(forBlankSlate view: UIView) -> NSAttributedString? {
         NSAttributedString(string: "No Application Found")
     }
     
-    func detail(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? {
+    func detail(forBlankSlate view: UIView) -> NSAttributedString? {
         guard let searchText = searchController.searchBar.text else { return nil }
         let attributedString = NSMutableAttributedString(string: "There are no empty dataset examples for \"")
         attributedString.append(NSAttributedString(string: searchText, attributes: [.font: UIFont.boldSystemFont(ofSize: 17.0)]))
@@ -102,7 +102,7 @@ extension ApplicationsTableViewController: BlankSlateDataSource, BlankSlateDeleg
         return attributedString
     }
 
-    func buttonTitle(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? {
+    func buttonTitle(forBlankSlate view: UIView, for state: UIControl.State) -> NSAttributedString? {
         NSAttributedString(string: "Search on the App Store", attributes: [
             .font: UIFont.systemFont(ofSize: 16.0),
             .foregroundColor: (state == .normal ? UIColor(hex: "007aff") : UIColor(hex: "c6def9")) ?? .black
@@ -113,11 +113,11 @@ extension ApplicationsTableViewController: BlankSlateDataSource, BlankSlateDeleg
         true
     }
 
-    func blankSlate(_ scrollView: UIScrollView, didTapView sender: UIView) {
+    func blankSlate(_ view: UIView, didTapView sender: UIView) {
         print(#function)
     }
 
-    func blankSlate(_ scrollView: UIScrollView, didTapButton sender: UIButton) {
+    func blankSlate(_ view: UIView, didTapButton sender: UIButton) {
         guard let searchText = searchController.searchBar.text
             , let url = URL(string: "http://itunes.com/apps/\(searchText)") else { return }
         

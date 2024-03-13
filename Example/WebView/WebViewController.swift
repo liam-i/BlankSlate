@@ -26,6 +26,7 @@ class WebViewController: UIViewController, BlankSlateDataSource, BlankSlateDeleg
 //        HUD.show(to: view, using: .animation(.zoomInOut, damping: .default, duration: 0.3)) {
 //            $0.minShowTime = 0.5
 //        }
+//        webView.load(URLRequest(url: URL(string: "about:blank")!))
         webView.load(URLRequest(url: URL(string: "https://error.test/")!))
     }
 
@@ -36,16 +37,24 @@ class WebViewController: UIViewController, BlankSlateDataSource, BlankSlateDeleg
         webView.load(URLRequest(url: URL(string: "https://www.baidu.com/")!))
     }
 
-    func image(forBlankSlate scrollView: UIScrollView) -> UIImage? {
-        UIImage(named: "icon_appstore")
+    func image(forBlankSlate view: UIView) -> UIImage? {
+        UIImage(named: "empty_placeholder")
     }
 
-    func blankSlateShouldBeInsertAtIndex(_ scrollView: UIScrollView) -> Int {
+    func blankSlateShouldBeInsertAtIndex(_ view: UIView) -> Int {
         -1
     }
 
     func elementLayout(forBlankSlate scrollView: UIScrollView, for element: BlankSlate.Element) -> BlankSlate.Layout {
         .init(edgeInsets: .init(top: 11, left: 16, bottom: 11, right: 16), height: 500)
+    }
+
+    func blankSlateShouldAllowScroll(_ scrollView: UIScrollView) -> Bool {
+        true
+    }
+
+    func blankSlateShouldDisplay(_ view: UIView) -> Bool {
+        webView.scrollView.bs.dataLoadStatus == .failure
     }
 }
 

@@ -8,9 +8,9 @@
 
 import UIKit
 
-/// A drop-in UITableView/UICollectionView superclass category for showing empty datasets whenever the view has no content to display.
+/// A drop-in UIView/UIScrollView/UITableView/UICollectionView superclass extension for showing empty datasets whenever the view has no content to display.
 /// - Attention: It will work automatically, by just conforming to `BlankSlateDataSource`, and returning the data you want to show.
-extension UIScrollView {
+extension UIView {
     weak var blankSlateDataSource: BlankSlateDataSource? {
         get { (objc_getAssociatedObject(self, &kBlankSlateDataSourceKey) as? WeakObject)?.value as? BlankSlateDataSource }
         set {
@@ -156,7 +156,10 @@ extension UIScrollView {
             if !view.isHidden { view.setupConstraints() }
 
             UIView.performWithoutAnimation { view.layoutIfNeeded() }
-            isScrollEnabled = blankSlateDelegate?.blankSlateShouldAllowScroll(self) ?? false // Configure scroll permission
+
+            if let scrollView = self as? UIScrollView {
+                scrollView.isScrollEnabled = blankSlateDelegate?.blankSlateShouldAllowScroll(scrollView) ?? false // Configure scroll permission
+            }
 
             blankSlateDelegate?.blankSlateDidAppear(self) // Notifies that the empty dataset view did appear
         } else if isBlankSlateVisible {
@@ -177,7 +180,9 @@ extension UIScrollView {
         }
 
         if isBlankSlateVisible {
-            isScrollEnabled = blankSlateDelegate?.shouldAllowScrollAfterBlankSlateDisappear(self) ?? true
+            if let scrollView = self as? UIScrollView {
+                scrollView.isScrollEnabled = blankSlateDelegate?.shouldAllowScrollAfterBlankSlateDisappear(scrollView) ?? true
+            }
             blankSlateDelegate?.blankSlateDidDisappear(self) // Notifies that the empty dataset view did disappear
         }
     }

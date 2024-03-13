@@ -22,6 +22,8 @@
 		0CA494D12B723E0E00C0C8C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CA494D02B723E0E00C0C8C7 /* Assets.xcassets */; };
 		0CA494D42B723E0E00C0C8C7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0CA494D22B723E0E00C0C8C7 /* LaunchScreen.storyboard */; };
 		0CA494E02B723F2700C0C8C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
+		0CD2E6642BA154A100214987 /* ScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD2E6632BA154A100214987 /* ScrollViewController.swift */; };
+		0CD2E6672BA1551100214987 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CD2E6662BA1551100214987 /* ViewController.swift */; };
 		0E99C6BDA825F2609FD5D880 /* Pods_Example_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DD00E74E14A76BC040ECB08 /* Pods_Example_iOS.framework */; };
 		1828E0962643B700004E75A3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1828E0942643B700004E75A3 /* LaunchScreen.storyboard */; };
 		18F63D59276F57D800D2AF7C /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F63D58276F57D800D2AF7C /* WebViewController.swift */; };
@@ -65,6 +67,8 @@
 		0CA494CE2B723E0D00C0C8C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0CA494D02B723E0E00C0C8C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0CA494D32B723E0E00C0C8C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		0CD2E6632BA154A100214987 /* ScrollViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewController.swift; sourceTree = "<group>"; };
+		0CD2E6662BA1551100214987 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		1828E0952643B700004E75A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		18F63D58276F57D800D2AF7C /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		1B5C28457C1B114F3AB55AB9 /* BlankSlate.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = BlankSlate.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -122,6 +126,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C12E0242BA19D0B009496E6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				0CD2E6662BA1551100214987 /* ViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		0C1D5CE32B9EF40400552C87 /* Help */ = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +182,14 @@
 				0CA494D22B723E0E00C0C8C7 /* LaunchScreen.storyboard */,
 			);
 			path = "Example tvOS";
+			sourceTree = "<group>";
+		};
+		0CD2E6652BA154AD00214987 /* ScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				0CD2E6632BA154A100214987 /* ScrollViewController.swift */,
+			);
+			path = ScrollView;
 			sourceTree = "<group>";
 		};
 		1D04490287CDDA04541749AE /* Pods */ = {
@@ -226,6 +246,8 @@
 				0C1D5CE42B9EF44100552C87 /* Applications */,
 				0C7B49E22B9F12E1000B20B0 /* Colors */,
 				0C7B49E12B9F106F000B20B0 /* WebView */,
+				0CD2E6652BA154AD00214987 /* ScrollView */,
+				0C12E0242BA19D0B009496E6 /* View */,
 				0C1D5CE32B9EF40400552C87 /* Help */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				1828E0942643B700004E75A3 /* LaunchScreen.storyboard */,
@@ -504,9 +526,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CD2E6672BA1551100214987 /* ViewController.swift in Sources */,
 				0C7B49E62B9F136E000B20B0 /* SearchViewController.swift in Sources */,
 				0C7B49E42B9F1354000B20B0 /* CollectionViewController.swift in Sources */,
 				0C1D5CE62B9EF71A00552C87 /* MainViewController.swift in Sources */,
+				0CD2E6642BA154A100214987 /* ScrollViewController.swift in Sources */,
 				0C7B49EC2B9F1428000B20B0 /* Palette.swift in Sources */,
 				0C7B49EE2B9F1433000B20B0 /* Color.swift in Sources */,
 				E846C455275D10BD00CE208D /* UIColor+Hexadecimal.swift in Sources */,
@@ -808,7 +832,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlankSlate_Example.app/BlankSlate_Example";
 			};
 			name = Debug;
 		};
@@ -827,7 +850,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlankSlate_Example.app/BlankSlate_Example";
 			};
 			name = Release;
 		};

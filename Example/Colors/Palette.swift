@@ -14,10 +14,6 @@ class Palette {
     private(set) var colors: [Color] = []
 
     private init() {
-        loadColors()
-    }
-
-    private func loadColors() {
         // A list of crayola colors in JSON by Jjdelc https://gist.github.com/jjdelc/1868136
         let url = Bundle.main.url(forResource: "colors", withExtension: "json")!
         do {
@@ -28,18 +24,5 @@ class Palette {
         } catch {
             fatalError("\(error)")
         }
-    }
-
-    func reloadAll() {
-        removeAll()
-        loadColors()
-    }
-
-    func remove(at color: Color) {
-        colors.removeAll { $0 == color }
-    }
-
-    func removeAll() {
-        colors.removeAll()
     }
 }

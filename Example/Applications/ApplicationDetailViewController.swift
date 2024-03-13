@@ -194,7 +194,7 @@ class ApplicationDetailViewController: UITableViewController {
 }
 
 extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDelegate {
-    func title(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? {
+    func title(forBlankSlate view: UIView) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor? = nil
@@ -298,7 +298,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return NSAttributedString(string: text, attributes: attributes)
     }
 
-    func detail(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? {
+    func detail(forBlankSlate view: UIView) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor?
@@ -426,7 +426,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return attributedString
     }
 
-    func image(forBlankSlate scrollView: UIScrollView) -> UIImage? {
+    func image(forBlankSlate view: UIView) -> UIImage? {
         if isLoading {
             return UIImage(named: "loading_imgBlue_78x78")
         }
@@ -434,7 +434,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return UIImage(named: imageName)
     }
 
-    func imageAnimation(forBlankSlate scrollView: UIScrollView) -> CAAnimation? {
+    func imageAnimation(forBlankSlate view: UIView) -> CAAnimation? {
         guard isLoading else { return nil }
 
         let animation = CABasicAnimation(keyPath: "transform")
@@ -446,7 +446,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return animation
     }
 
-    func buttonTitle(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? {
+    func buttonTitle(forBlankSlate view: UIView, for state: UIControl.State) -> NSAttributedString? {
         var text: String
         var font: UIFont?
         var textColor: UIColor?
@@ -490,7 +490,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return NSAttributedString(string: text, attributes: attributes)
     }
 
-    func configure(forBlankSlate scrollView: UIScrollView, for button: UIButton) {
+    func configure(forBlankSlate view: UIView, for button: UIButton) {
         var capInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
         var rectInsets = UIEdgeInsets.zero
         switch application.type {
@@ -521,7 +521,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         button.setBackgroundImage(image(for: .highlighted), for: .highlighted)
     }
 
-    func backgroundColor(forBlankSlate scrollView: UIScrollView) -> UIColor? {
+    func backgroundColor(forBlankSlate view: UIView) -> UIColor? {
         switch application.type {
         case .px500:      return UIColor.black
         case .airbnb:     return UIColor.white
@@ -543,7 +543,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         }
     }
 
-    func offset(forBlankSlate scrollView: UIScrollView) -> CGPoint {
+    func offset(forBlankSlate view: UIView) -> CGPoint {
         if application.type == .kickstarter {
             var offset = UIApplication.shared.statusBarFrame.height
             if let navigationController {
@@ -558,11 +558,11 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return .zero
     }
 
-    func blankSlateShouldDisplay(_ scrollView: UIScrollView) -> Bool {
+    func blankSlateShouldDisplay(_ view: UIView) -> Bool {
         return true
     }
 
-    func blankSlateShouldAllowTouch(_ scrollView: UIScrollView) -> Bool {
+    func blankSlateShouldAllowTouch(_ view: UIView) -> Bool {
         return true
     }
 
@@ -570,14 +570,14 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return true
     }
 
-    func blankSlate(_ scrollView: UIScrollView, didTapView sender: UIView) {
+    func blankSlate(_ view: UIView, didTapView sender: UIView) {
         isLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.isLoading = false
         }
     }
 
-    func blankSlate(_ scrollView: UIScrollView, didTapButton sender: UIButton) {
+    func blankSlate(_ view: UIView, didTapButton sender: UIButton) {
         isLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.isLoading = false

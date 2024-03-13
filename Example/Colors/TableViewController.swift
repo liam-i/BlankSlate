@@ -20,11 +20,11 @@ class TableViewController: UITableViewController {
         tabBarController?.navigationController?.popViewController(animated: true)
     }
     @IBAction func remove(_ sender: UIBarButtonItem) {
-        Palette.shared.removeAll()
+        colors.removeAll()
         tableView.reloadData()
     }
     @IBAction func refresh(_ sender: UIBarButtonItem) {
-        Palette.shared.reloadAll()
+        colors = Palette.shared.colors.shuffled()
         tableView.reloadData()
     }
 
@@ -46,13 +46,14 @@ class TableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    var filteredColors = [Color]()
+    var colors: [Color] = Palette.shared.colors.shuffled()
+    var filteredColors: [Color] = []
     weak var searchController: UISearchController?
     var searchResult: ((Color) -> Void)?
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard isFiltering() else {
-            return Palette.shared.colors.count
+            return colors.count
         }
         return filteredColors.count
     }
@@ -64,7 +65,7 @@ class TableViewController: UITableViewController {
         if isFiltering() {
             color = filteredColors[indexPath.row]
         } else {
-            color = Palette.shared.colors[indexPath.row]
+            color = colors[indexPath.row]
         }
         cell.textLabel?.text = color.name
         cell.detailTextLabel?.text = "#\(color.hex)"
@@ -84,8 +85,8 @@ class TableViewController: UITableViewController {
             color = filteredColors[indexPath.row]
             filteredColors.removeAll { $0 == color }
         } else {
-            color = Palette.shared.colors[indexPath.row]
-            Palette.shared.remove(at: color)
+            color = colors[indexPath.row]
+            colors.removeAll { $0 == color }
         }
         tableView.beginUpdates()
         tableView.deleteRows(at: [indexPath], with: .fade)
@@ -107,7 +108,7 @@ class TableViewController: UITableViewController {
             if self.isFiltering() {
                 color = self.filteredColors[indexPath.row]
             } else {
-                color = Palette.shared.colors[indexPath.row]
+                color = self.colors[indexPath.row]
             }
             UIPasteboard.general.string = color.hex
         }
@@ -119,7 +120,7 @@ class TableViewController: UITableViewController {
         if isFiltering() {
             color = filteredColors[indexPath.row]
         } else {
-            color = Palette.shared.colors[indexPath.row]
+            color = colors[indexPath.row]
         }
         if isFiltering() {
             searchResult?(color)
@@ -139,7 +140,7 @@ class TableViewController: UITableViewController {
 }
 
 extension TableViewController: BlankSlateDataSource, BlankSlateDelegate {
-    func title(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? {
+    func title(forBlankSlate view: UIView) -> NSAttributedString? {
         let text = isFiltering() ? "No colors Found" : "No colors loaded"
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byWordWrapping
@@ -151,7 +152,7 @@ extension TableViewController: BlankSlateDataSource, BlankSlateDelegate {
         ])
     }
 
-    func detail(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? {
+    func detail(forBlankSlate view: UIView) -> NSAttributedString? {
         let text = isFiltering() ? "Make sure that all words are\nspelled correctly." : "To show a list of random colors, tap on the refresh icon in the right top corner.\n\nTo clean the list, tap on the trash icon."
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byWordWrapping
@@ -163,7 +164,7 @@ extension TableViewController: BlankSlateDataSource, BlankSlateDelegate {
         ])
     }
 
-    func buttonTitle(forBlankSlate scrollView: UIScrollView, for state: UIControl.State) -> NSAttributedString? {
+    func buttonTitle(forBlankSlate view: UIView, for state: UIControl.State) -> NSAttributedString? {
         guard isFiltering() else { return nil }
         let text = "Add a New Color"
         var color: UIColor
@@ -181,7 +182,7 @@ extension TableViewController: BlankSlateDataSource, BlankSlateDelegate {
         ])
     }
 
-    func image(forBlankSlate scrollView: UIScrollView) -> UIImage? {
+    func image(forBlankSlate view: UIView) -> UIImage? {
         UIImage(named: isFiltering() ? "search_icon" : "empty_placeholder")
     }
 
@@ -189,11 +190,11 @@ extension TableViewController: BlankSlateDataSource, BlankSlateDelegate {
         true
     }
 
-    func blankSlate(_ scrollView: UIScrollView, didTapView sender: UIView) {
+    func blankSlate(_ view: UIView, didTapView sender: UIView) {
         print(#function)
     }
 
-    func blankSlate(_ scrollView: UIScrollView, didTapButton sender: UIButton) {
+    func blankSlate(_ view: UIView, didTapButton sender: UIButton) {
         print(#function)
     }
 }
@@ -201,7 +202,7 @@ extension TableViewController: BlankSlateDataSource, BlankSlateDelegate {
 extension TableViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchText = searchController.searchBar.text!.lowercased()
-        filteredColors = Palette.shared.colors.filter {
+        filteredColors = colors.filter {
             $0.name.lowercased().contains(searchText) || $0.hex.lowercased().contains(searchText)
         }
         tableView.reloadData()

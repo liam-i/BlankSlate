@@ -145,15 +145,30 @@ extension BlankSlate {
 
         @objc
         private func updateForCurrentOrientation() {
-            guard window != nil, let scrollView = superview as? UIScrollView else { return }
+            guard window != nil, let superview else { return }
+
+            guard let scrollView = superview as? UIScrollView else {
+                frame = CGRect(x: superview.safeAreaInsets.left,
+                               y: superview.safeAreaInsets.top,
+                               width: superview.bounds.width - superview.safeAreaInsets.left - superview.safeAreaInsets.right,
+                               height: superview.bounds.height - superview.safeAreaInsets.top - superview.safeAreaInsets.bottom)
+                return
+            }
+
             func syncFrame() {
                 let size = scrollView.bounds.size
-                let safe = scrollView.safeAreaInsets
+                let safeInsets = scrollView.safeAreaInsets
                 let isVerticalScroll = scrollView.contentSize.width == scrollView.bounds.width
-                let x = isVerticalScroll ? safe.left : 0.0
-                frame = CGRect(x: x, y: 0.0, 
-                               width: size.width - safe.left - safe.right,
-                               height: size.height - safe.top - safe.bottom)
+
+                var inset = scrollView.contentInset
+                inset = UIEdgeInsets(top: safeInsets.top + inset.top,
+                                     left: safeInsets.left + inset.left,
+                                     bottom: safeInsets.bottom + inset.bottom,
+                                     right: safeInsets.right + inset.right)
+                frame = CGRect(x: isVerticalScroll ? inset.left : 0.0, y: 0.0,
+                               width: size.width - inset.left - inset.right,
+                               height: size.height - inset.top - inset.bottom)
+                scrollView.scrollRectToVisible(frame, animated: false)
             }
 
             syncFrame()
@@ -180,8 +195,7 @@ extension BlankSlate {
         }
 
         func setupConstraints() {
-            // First, configure the content view constaints
-            // The content view must alway be centered to its superview
+            // First, configure the content view constaints The content view must alway be centered to its superview
             var constraints = [
                 contentView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: offset.x),
                 contentView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: offset.y),

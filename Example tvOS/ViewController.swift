@@ -18,7 +18,7 @@ class ViewController: UIViewController, BlankSlateDataSource, BlankSlateDelegate
         tableView.bs.delegate = self
     }
 
-    func image(forBlankSlate scrollView: UIScrollView) -> UIImage? {
+    func image(forBlankSlate view: UIView) -> UIImage? {
         UIImage(named: "icon_wwdc")
     }
 

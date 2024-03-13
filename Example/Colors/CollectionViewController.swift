@@ -21,12 +21,10 @@ class CollectionViewController: UICollectionViewController, UICollectionViewDele
         tabBarController?.navigationController?.popViewController(animated: true)
     }
     @IBAction func remove(_ sender: UIBarButtonItem) {
-        Palette.shared.removeAll()
         filteredPalette.removeAll()
         collectionView.reloadData()
     }
     @IBAction func refresh(_ sender: UIBarButtonItem) {
-        Palette.shared.reloadAll()
         filteredPalette = Palette.shared.colors.shuffled()
         collectionView.reloadData()
     }
@@ -102,7 +100,7 @@ class CollectionViewController: UICollectionViewController, UICollectionViewDele
 }
 
 extension CollectionViewController: BlankSlateDataSource, BlankSlateDelegate {
-    func title(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? {
+    func title(forBlankSlate view: UIView) -> NSAttributedString? {
         let text = "No colors loaded"
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byWordWrapping
@@ -114,7 +112,7 @@ extension CollectionViewController: BlankSlateDataSource, BlankSlateDelegate {
         ])
     }
 
-    func detail(forBlankSlate scrollView: UIScrollView) -> NSAttributedString? {
+    func detail(forBlankSlate view: UIView) -> NSAttributedString? {
         let text = "To show a list of random colors, tap on the refresh icon in the right top corner.\n\nTo clean the list, tap on the trash icon."
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = .byWordWrapping
@@ -126,7 +124,7 @@ extension CollectionViewController: BlankSlateDataSource, BlankSlateDelegate {
         ])
     }
 
-    func image(forBlankSlate scrollView: UIScrollView) -> UIImage? {
+    func image(forBlankSlate view: UIView) -> UIImage? {
         UIImage(named: "empty_placeholder")
     }
     
@@ -134,7 +132,7 @@ extension CollectionViewController: BlankSlateDataSource, BlankSlateDelegate {
         true
     }
 
-    func blankSlate(_ scrollView: UIScrollView, didTapView sender: UIView) {
+    func blankSlate(_ view: UIView, didTapView sender: UIView) {
         print(#function)
     }
 }
