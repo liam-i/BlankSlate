@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'BlankSlate'
-  s.version          = '0.6.0'
+  s.version          = '0.6.1'
   s.summary          = 'A drop-in UIView extension for showing empty datasets whenever the view has no content to display.'
 
 s.description      = <<-DESC
