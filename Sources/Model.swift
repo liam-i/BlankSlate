@@ -12,7 +12,7 @@ extension BlankSlate {
     public enum DataLoadStatus {
         /// Data is loading.
         case loading
-        /// Data loaded successfully. (With data or empty data)
+        /// Data loaded successfully. (The data is empty or not empty)
         case success
         /// Data loading failed.
         case failure

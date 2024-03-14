@@ -554,7 +554,7 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         return .center()
     }
 
-    func blankSlateShouldDisplay(_ view: UIView, of dataLoadStatus: BlankSlate.DataLoadStatus?) -> Bool {
+    func blankSlateShouldDisplay(_ view: UIView) -> Bool {
         return true
     }
 

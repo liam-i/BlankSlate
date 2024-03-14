@@ -84,9 +84,9 @@ extension ViewController: BlankSlateDataSource, BlankSlateDelegate {
         return backgroundGradient
     }
 
-    func blankSlateShouldDisplay(_ view: UIView, of dataLoadStatus: BlankSlate.DataLoadStatus?) -> Bool {
-        print(#function, String(describing: dataLoadStatus))
-        return dataLoadStatus != .loading
+    func blankSlateShouldDisplay(_ view: UIView) -> Bool {
+        print(#function, String(describing: view.bs.dataLoadStatus))
+        return view.bs.dataLoadStatus != .loading
     }
 
     func blankSlate(_ view: UIView, didTapView sender: UIView) {

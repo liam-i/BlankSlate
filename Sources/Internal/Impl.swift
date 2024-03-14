@@ -46,10 +46,7 @@ extension UIView {
 
     var dataLoadStatus: BlankSlate.DataLoadStatus? {
         get { objc_getAssociatedObject(self, &kBlankSlateStatusKey) as? BlankSlate.DataLoadStatus }
-        set {
-            objc_setAssociatedObject(self, &kBlankSlateStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            reloadIfNeeded()
-        }
+        set { objc_setAssociatedObject(self, &kBlankSlateStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
     func reloadIfNeeded() {
@@ -89,7 +86,7 @@ extension UIView {
             return dismissBlankSlateIfNeeded()
         }
 
-        if ((blankSlateDelegate?.blankSlateShouldDisplay(self, of: dataLoadStatus) ?? true) && (itemsCount == 0))
+        if ((blankSlateDelegate?.blankSlateShouldDisplay(self) ?? true) && (itemsCount == 0))
             || (blankSlateDelegate?.blankSlateShouldBeForcedToDisplay(self) ?? false) {
             blankSlateDelegate?.blankSlateWillAppear(self) // Notifies that the empty dataset view will appear
 
@@ -271,7 +268,7 @@ extension UIView {
             originalClosure(owner, originalSelector) // Call original implementation
 
             // We then inject the additional implementation for reloading the empty dataset
-            // Doing it before calling the original implementation does update the 'isEmptyDataSetVisible' flag on time.
+            // Doing it before calling the original implementation does update the 'isBlankSlateVisible' flag on time.
             owner.reloadBlankSlateIfNeeded()
         }
 

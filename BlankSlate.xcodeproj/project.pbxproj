@@ -47,7 +47,7 @@
 			containerPortal = 607FACC81AFB9204008FA782 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 607FACCF1AFB9204008FA782;
-			remoteInfo = EmptyDataSet;
+			remoteInfo = BlankSlate;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -352,7 +352,7 @@
 			dependencies = (
 			);
 			name = "Example iOS";
-			productName = EmptyDataSet;
+			productName = BlankSlate;
 			productReference = 607FACD01AFB9204008FA782 /* Example iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
