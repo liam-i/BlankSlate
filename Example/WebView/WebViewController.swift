@@ -53,8 +53,8 @@ class WebViewController: UIViewController, BlankSlateDataSource, BlankSlateDeleg
         true
     }
 
-    func blankSlateShouldDisplay(_ view: UIView) -> Bool {
-        webView.scrollView.bs.dataLoadStatus == .failure
+    func blankSlateShouldDisplay(_ view: UIView, of dataLoadStatus: BlankSlate.DataLoadStatus?) -> Bool {
+        dataLoadStatus == .failure
     }
 }
 

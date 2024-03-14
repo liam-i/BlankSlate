@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     var coun: Int = 0
     @IBAction func remove(_ sender: UIBarButtonItem) {
         coun += 1
-        view.bs.reload()
+        view.bs.reload(with: coun.isMultiple(of: 2) ? .loading : .success)
     }
 
     @IBAction func refresh(_ sender: UIBarButtonItem) {
@@ -82,6 +82,11 @@ extension ViewController: BlankSlateDataSource, BlankSlateDelegate {
         let backgroundGradient = CAGradientLayer()
         backgroundGradient.colors = [UIColor.blue.cgColor, UIColor.red.cgColor]
         return backgroundGradient
+    }
+
+    func blankSlateShouldDisplay(_ view: UIView, of dataLoadStatus: BlankSlate.DataLoadStatus?) -> Bool {
+        print(#function, String(describing: dataLoadStatus))
+        return dataLoadStatus != .loading
     }
 
     func blankSlate(_ view: UIView, didTapView sender: UIView) {

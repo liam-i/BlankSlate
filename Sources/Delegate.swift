@@ -11,11 +11,11 @@ import UIKit
 /// - Note: The delegate can adopt the `BlankSlateDelegate` protocol. The delegate is not retained. All delegate methods are optional.
 /// - Note: All delegate methods are optional. Use this delegate for receiving action callbacks.
 public protocol BlankSlateDelegate: AnyObject {
-    /// Asks the delegate to know if the empty dataset should still be displayed when the amount of items is more than 0. `Default to false`
+    /// Asks the delegate to know if the empty dataset should be force to display. `Default to false`
     func blankSlateShouldBeForcedToDisplay(_ view: UIView) -> Bool
 
-    /// Asks the delegate to know if the empty dataset should be rendered and displayed. `Default to true`
-    func blankSlateShouldDisplay(_ view: UIView) -> Bool
+    /// Asks the delegate to know if the empty dataset should be rendered and displayed in the corresponding data loading state.. `Default to true`
+    func blankSlateShouldDisplay(_ view: UIView, of dataLoadStatus: BlankSlate.DataLoadStatus?) -> Bool
 
     /// Ask the delegate whether a BlankSlateView should be inserted behind a sibling view when subviews.count > 1?
     func blankSlateShouldBeInsertedAtBack(_ view: UIView) -> Bool
@@ -53,8 +53,7 @@ public protocol BlankSlateDelegate: AnyObject {
 
 extension BlankSlateDelegate {
     public func blankSlateShouldBeForcedToDisplay(_ view: UIView) -> Bool { false }
-
-    public func blankSlateShouldDisplay(_ view: UIView) -> Bool { true }
+    public func blankSlateShouldDisplay(_ view: UIView, of dataLoadStatus: BlankSlate.DataLoadStatus?) -> Bool { true }
 
     public func blankSlateShouldBeInsertedAtBack(_ view: UIView) -> Bool { true }
 

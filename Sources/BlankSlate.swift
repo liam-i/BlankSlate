@@ -57,7 +57,9 @@ extension BlankSlate.Extension where ExtendedViewType: UIView {
     }
 
     /// Data loading status
-    /// - Note: Automatically execute the `reloadData()` method when setting this property for `UITableView` and `UICollectionView`.
+    /// - Note: After this property is successfully set, the `reload()` method will be automatically executed.
+    /// - Note: If `view` is `UITableView` or `UICollectionView` the `reloadData()` method will be executed automatically.
+    /// - Note: If `view` is `UIView` or `UIScrollView` the `reloadBlankSlate()` method will be executed automatically.
     public var dataLoadStatus: BlankSlate.DataLoadStatus? {
         get { view.dataLoadStatus }
         set { view.dataLoadStatus = newValue }
@@ -74,8 +76,22 @@ extension BlankSlate.Extension where ExtendedViewType: UIView {
     }
 
     /// Reloads the empty dataset content receiver.
-    /// - Note: Call this method to force all the data to refresh. Calling `reloadData()` is similar, but this forces only the empty dataset to reload, not the entire table view or collection view.
+    /// - Note: If `view` is `UITableView` or `UICollectionView` the `reloadData()` method will be executed automatically.
+    /// - Note: If `view` is `UIView` or `UIScrollView` the `reloadBlankSlate()` method will be executed automatically.
     public func reload() {
+        view.reloadIfNeeded()
+    }
+
+    /// Set the `dataLoadStatus` property first and then reload the empty data set.
+    /// - Parameter dataLoadStatus: A new data loading state.
+    /// - Note: This method is equivalent to executing `bs.dataLoadStatus = newValue`.
+    public func reload(with dataLoadStatus: BlankSlate.DataLoadStatus?) {
+        view.dataLoadStatus = dataLoadStatus
+    }
+
+    /// Reloads the empty dataset content receiver.
+    /// - Note: Call this method to force all the data to refresh. Calling `reloadData()` is similar, but this forces only the empty dataset to reload, not the entire table view or collection view.
+    public func reloadBlankSlate() {
         view.reloadBlankSlateIfNeeded()
     }
 

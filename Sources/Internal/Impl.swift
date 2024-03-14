@@ -48,19 +48,15 @@ extension UIView {
         get { objc_getAssociatedObject(self, &kBlankSlateStatusKey) as? BlankSlate.DataLoadStatus }
         set {
             objc_setAssociatedObject(self, &kBlankSlateStatusKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            reloadIfNeeded()
+        }
+    }
 
-            guard let newValue, newValue != .loading else {
-                return reloadBlankSlateIfNeeded()
-            }
-
-            switch self {
-            case let tableView as UITableView:
-                tableView.reloadData()
-            case let collectionView as UICollectionView:
-                collectionView.reloadData()
-            default:
-                reloadBlankSlateIfNeeded()
-            }
+    func reloadIfNeeded() {
+        switch self {
+        case let tableView as UITableView:              tableView.reloadData()
+        case let collectionView as UICollectionView:    collectionView.reloadData()
+        default:                                        reloadBlankSlateIfNeeded()
         }
     }
 
@@ -93,7 +89,7 @@ extension UIView {
             return dismissBlankSlateIfNeeded()
         }
 
-        if ((blankSlateDelegate?.blankSlateShouldDisplay(self) ?? true) && (itemsCount == 0))
+        if ((blankSlateDelegate?.blankSlateShouldDisplay(self, of: dataLoadStatus) ?? true) && (itemsCount == 0))
             || (blankSlateDelegate?.blankSlateShouldBeForcedToDisplay(self) ?? false) {
             blankSlateDelegate?.blankSlateWillAppear(self) // Notifies that the empty dataset view will appear
 
