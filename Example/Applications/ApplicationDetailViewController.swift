@@ -40,13 +40,13 @@ class ApplicationDetailViewController: UITableViewController {
         tableView.bs.setDataSourceAndDelegate(self)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
 
-        configureHeaderAndFooter()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(shuffle))
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureNavigationBar()
+        configureHeaderAndFooter()
         setNeedsStatusBarAppearanceUpdate()
     }
 
@@ -179,6 +179,7 @@ class ApplicationDetailViewController: UITableViewController {
             headerView.backgroundColor = UIColor.white
 
             imageView.center = CGPoint(x: frame.width / 2.0, y: frame.height / 2.0)
+
             headerView.addSubview(imageView)
             tableView.tableHeaderView = headerView
         } else {
@@ -543,19 +544,14 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
         }
     }
 
-    func offset(forBlankSlate view: UIView) -> CGPoint {
+    func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment {
         if application.type == .kickstarter {
-            var offset = UIApplication.shared.statusBarFrame.height
-            if let navigationController {
-                offset += navigationController.navigationBar.frame.height
-            }
-            return CGPoint(x: 0, y: -offset)
+            return .top(y: 10)
         }
-
         if application.type == .twitter {
-            return CGPoint(x: 0, y: -CGFloat(roundf(Float(tableView.frame.height) / 2.5)))
+            return .bottom(y: 20)
         }
-        return .zero
+        return .center()
     }
 
     func blankSlateShouldDisplay(_ view: UIView) -> Bool {

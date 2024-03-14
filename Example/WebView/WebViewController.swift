@@ -41,8 +41,8 @@ class WebViewController: UIViewController, BlankSlateDataSource, BlankSlateDeleg
         UIImage(named: "empty_placeholder")
     }
 
-    func blankSlateShouldBeInsertAtIndex(_ view: UIView) -> Int {
-        -1
+    func blankSlateShouldBeInsertedAtBack(_ view: UIView) -> Bool {
+        false
     }
 
     func elementLayout(forBlankSlate scrollView: UIScrollView, for element: BlankSlate.Element) -> BlankSlate.Layout {

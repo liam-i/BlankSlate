@@ -49,21 +49,21 @@ public protocol BlankSlateDataSource: AnyObject {
     /// - Parameter button: Buttons that need to be configured.
     func blankSlate(_ view: UIView, configure button: UIButton)
 
-    /// Asks the data source for the background color of the dataset. Default is clear color. `Detail to UIColor.clear`
+    /// Asks the data source for the background color of the dataset. `Detail to .clear`
     /// - Note: A color to be applied to the dataset background view.
     func backgroundColor(forBlankSlate view: UIView) -> UIColor?
-    
+
     /// Asks the data source for the background gradient of the dataset. `Default to nil`
     /// - Returns: A gradient to be applied to the dataset background view.
     func backgroundGradient(forBlankSlate view: UIView) -> CAGradientLayer?
 
-    /// Asks the data source for a custom view to be displayed instead of the default views such as labels, imageview and button. Default is nil.
+    /// Asks the data source for a custom view to be displayed instead of the default views such as labels, imageview and button. `Default to nil`.
     /// Use this method to show an activity view indicator for loading feedback, or for complete custom empty data set.
     /// - Note: The custom view.
     func customView(forBlankSlate view: UIView) -> UIView?
 
-    /// Asks the data source for a offset for vertical and horizontal alignment of the content. `Default is CGPoint.zero`.
-    func offset(forBlankSlate view: UIView) -> CGPoint
+    /// Ask the data source for the vertical alignment of the content. `Default to .center()`.
+    func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment
 
     /// Asks the layout constraint value of `BlankSlate.Element` from the data source.
     func layout(forBlankSlate view: UIView, for element: BlankSlate.Element) -> BlankSlate.Layout
@@ -93,7 +93,7 @@ extension BlankSlateDataSource {
 
     public func customView(forBlankSlate view: UIView) -> UIView? { nil }
 
-    public func offset(forBlankSlate view: UIView) -> CGPoint { .zero }
+    public func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment { .center() }
 
     public func layout(forBlankSlate view: UIView, for element: BlankSlate.Element) -> BlankSlate.Layout { .init() }
 

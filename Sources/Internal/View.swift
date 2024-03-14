@@ -15,82 +15,66 @@ extension BlankSlate {
             contentView.translatesAutoresizingMaskIntoConstraints = false
             contentView.backgroundColor = .clear
             contentView.isUserInteractionEnabled = true
-            contentView.alpha = 0.0
             return contentView
         }()
+        private var elements: [Element: ElementView] = [:]
 
-        private(set) var elements: [Element: (UIView, Layout)] = [:]
-
-        func createImageView(with layout: Layout) -> UIImageView {
-            if let element = elements[.image] { element.0.removeFromSuperview() }
-
-            let imageView = UIImageView()
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.backgroundColor = .clear
-            imageView.isUserInteractionEnabled = false
-            imageView.contentMode = .scaleAspectFit
-            contentView.addSubview(imageView)
-            elements[.image] = (imageView, layout)
-            return imageView
+        func makeImageView(with layout: Layout) -> UIImageView {
+            elements.updateLayout(layout, populator: {
+                $0.translatesAutoresizingMaskIntoConstraints = false
+                $0.backgroundColor = .clear
+                $0.isUserInteractionEnabled = false
+                $0.contentMode = .scaleAspectFit
+                contentView.addSubview($0)
+            }, for: .image)
         }
 
-        func createTitleLabel(with layout: Layout) -> UILabel {
-            if let element = elements[.title] { element.0.removeFromSuperview() }
-
-            let titleLabel = UILabel()
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            titleLabel.backgroundColor = .clear
-            titleLabel.font = .systemFont(ofSize: 27.0)
-            titleLabel.textColor = UIColor(white: 0.6, alpha: 1.0)
-            titleLabel.textAlignment = .center
-            titleLabel.lineBreakMode = .byWordWrapping
-            titleLabel.numberOfLines = 0
-            contentView.addSubview(titleLabel)
-            elements[.title] = (titleLabel, layout)
-            return titleLabel
+        func makeTitleLabel(with layout: Layout) -> UILabel {
+            elements.updateLayout(layout, populator: {
+                $0.translatesAutoresizingMaskIntoConstraints = false
+                $0.backgroundColor = .clear
+                $0.font = .systemFont(ofSize: 27.0)
+                $0.textColor = UIColor(white: 0.6, alpha: 1.0)
+                $0.textAlignment = .center
+                $0.lineBreakMode = .byWordWrapping
+                $0.numberOfLines = 0
+                contentView.addSubview($0)
+            }, for: .title)
         }
 
-        func createDetailLabel(with layout: Layout) -> UILabel {
-            if let element = elements[.detail] { element.0.removeFromSuperview() }
-
-            let detailLabel = UILabel()
-            detailLabel.translatesAutoresizingMaskIntoConstraints = false
-            detailLabel.backgroundColor = .clear
-            detailLabel.font = .systemFont(ofSize: 17.0)
-            detailLabel.textColor = UIColor(white: 0.6, alpha: 1.0)
-            detailLabel.textAlignment = .center
-            detailLabel.lineBreakMode = .byWordWrapping
-            detailLabel.numberOfLines = 0
-            contentView.addSubview(detailLabel)
-            elements[.detail] = (detailLabel, layout)
-            return detailLabel
+        func makeDetailLabel(with layout: Layout) -> UILabel {
+            elements.updateLayout(layout, populator: {
+                $0.translatesAutoresizingMaskIntoConstraints = false
+                $0.backgroundColor = .clear
+                $0.font = .systemFont(ofSize: 17.0)
+                $0.textColor = UIColor(white: 0.6, alpha: 1.0)
+                $0.textAlignment = .center
+                $0.lineBreakMode = .byWordWrapping
+                $0.numberOfLines = 0
+                contentView.addSubview($0)
+            }, for: .detail)
         }
 
-        func createButton(with layout: Layout) -> UIButton {
-            if let element = elements[.button] { element.0.removeFromSuperview() }
-
-            let button = UIButton(type: .custom)
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = .clear
-            button.contentHorizontalAlignment = .center
-            button.contentVerticalAlignment = .center
-            button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
-            contentView.addSubview(button)
-            elements[.button] = (button, layout)
-            return button
+        func makeButton(with layout: Layout) -> UIButton {
+            elements.updateLayout(layout, populator: {
+                $0.translatesAutoresizingMaskIntoConstraints = false
+                $0.backgroundColor = .clear
+                $0.contentHorizontalAlignment = .center
+                $0.contentVerticalAlignment = .center
+                $0.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
+                contentView.addSubview($0)
+            }, for: .button)
         }
 
         func setCustomView(_ view: UIView, layout: Layout) {
-            if let element = elements[.custom] { element.0.removeFromSuperview() }
-
-            view.translatesAutoresizingMaskIntoConstraints = false
-            contentView.addSubview(view)
-            elements[.custom] = (view, layout)
+            elements.updateLayout(layout, maker: { view }, populator: {
+                $0.translatesAutoresizingMaskIntoConstraints = false
+                contentView.addSubview(view)
+            }, for: .custom)
         }
 
         private weak var tapGesture: UITapGestureRecognizer?
-        var offset: CGPoint = .zero
-        var fadeInDuration: TimeInterval = 0
+        var alignment: Alignment = .center()
 
         var isTouchAllowed: (() -> Bool)?
         var shouldRecognizeSimultaneously: ((_ withOther: UIGestureRecognizer, _ of: UIGestureRecognizer) -> Bool)?
@@ -129,15 +113,7 @@ extension BlankSlate {
         }
 
         override func didMoveToSuperview() {
-            guard superview != nil else { return }
             updateForCurrentOrientation()
-
-            guard fadeInDuration > 0.0 else {
-                return contentView.alpha = 1.0
-            }
-            UIView.animate(withDuration: fadeInDuration) { [weak self] in
-                self?.contentView.alpha = 1.0
-            }
         }
 
         override func didMoveToWindow() {
@@ -178,10 +154,8 @@ extension BlankSlate {
 
         override func layoutSubviews() {
             super.layoutSubviews()
-            layer.sublayers?.forEach {
-                guard $0 is CAGradientLayer else { return }
-                $0.frame = bounds
-            }
+            guard let backgroundGradient = layer.sublayers?.first(where: { $0 is CAGradientLayer }) else { return }
+            backgroundGradient.frame = bounds
         }
 
         @objc
@@ -196,7 +170,7 @@ extension BlankSlate {
         }
 
         func prepareForReuse() {
-            elements.values.forEach { $0.0.removeFromSuperview() }
+            elements.values.forEach { $0.view.removeFromSuperview() }
             elements.removeAll()
 
             removeConstraints(constraints)
@@ -204,17 +178,28 @@ extension BlankSlate {
         }
 
         func setupConstraints() {
+            guard elements.isEmpty == false else { return }
+
             // First, configure the content view constaints The content view must alway be centered to its superview
-            var constraints = [
-                contentView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: offset.x),
-                contentView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: offset.y),
-                contentView.widthAnchor.constraint(equalTo: widthAnchor)
-            ]
+            var constraints: [NSLayoutConstraint] = [contentView.widthAnchor.constraint(equalTo: widthAnchor)]
+            
+            let offsetX: CGFloat
+            switch alignment {
+            case let .center(x, y):
+                offsetX = x
+                constraints.append(contentView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: y))
+            case let .top(x, y):
+                offsetX = x
+                constraints.append(contentView.topAnchor.constraint(equalTo: topAnchor, constant: y))
+            case let .bottom(x, y):
+                offsetX = x
+                constraints.append(contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -y))
+            }
+            constraints.append(contentView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: offsetX))
 
             // If applicable, set the custom view's constraints
             if let element = elements[.custom] {
-                let view = element.0
-                let layout = element.1
+                let view = element.view, layout = element.layout
                 constraints += [
                     view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: layout.edgeInsets.left),
                     view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -layout.edgeInsets.right),
@@ -225,14 +210,13 @@ extension BlankSlate {
                     constraints.append(view.heightAnchor.constraint(equalToConstant: height))
                 }
             } else {
-                var previous: (UIView, Layout)?
+                var previous: ElementView?
                 for key in Element.allCases {
                     guard let element = elements[key] else { continue }
 
-                    let view = element.0
-                    let layout = element.1
+                    let view = element.view, layout = element.layout
                     if let previous { // Previous view
-                        constraints.append(view.topAnchor.constraint(equalTo: previous.0.bottomAnchor, constant: layout.edgeInsets.top))
+                        constraints.append(view.topAnchor.constraint(equalTo: previous.view.bottomAnchor, constant: layout.edgeInsets.top))
                     } else { // First view
                         constraints.append(view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: layout.edgeInsets.top))
                     }
@@ -245,23 +229,20 @@ extension BlankSlate {
                     previous = element // Save previous view
                 }
                 if let last = previous { // Last view
-                    constraints.append(last.0.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -last.1.edgeInsets.bottom))
+                    constraints.append(last.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -last.layout.edgeInsets.bottom))
                 }
             }
-
             NSLayoutConstraint.activate(constraints)
         }
 
         override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
             guard let hitView = super.hitTest(point, with: event) else { return nil }
-            // Return any UIControl instance such as buttons, segmented controls, switches, etc.
             if hitView is UIControl {
-                return hitView
+                return hitView // Return any UIControl instance such as buttons, segmented controls, switches, etc.
             }
 
-            // Return either the contentView or customView
-            if hitView.isEqual(contentView) || hitView.isEqual(elements[.custom]?.0) {
-                return hitView
+            if hitView.isEqual(contentView) || hitView.isEqual(elements[.custom]?.view) {
+                return hitView // Return either the contentView or customView
             }
             return nil // Touch allowed to pass through
         }
@@ -282,5 +263,21 @@ extension BlankSlate {
             // defer to blankSlateDelegate's implementation if available
             return shouldRecognizeSimultaneously?(otherGestureRecognizer, gestureRecognizer) ?? false
         }
+    }
+}
+
+private struct ElementView {
+    let view: UIView
+    let layout: BlankSlate.Layout
+}
+extension Dictionary where Key == BlankSlate.Element, Value == ElementView {
+    @discardableResult fileprivate mutating func updateLayout<T: UIView>(
+        _ layout: BlankSlate.Layout, maker: (() -> T)? = nil, populator: (T) -> Void, for key: Key
+    ) -> T {
+        self[key]?.view.removeFromSuperview()
+        let view = maker?() ?? T()
+        populator(view)
+        self[key] = Value(view: view, layout: layout)
+        return view
     }
 }

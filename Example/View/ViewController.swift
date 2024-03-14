@@ -10,7 +10,15 @@ import UIKit
 import BlankSlate
 
 class ViewController: UIViewController {
+    deinit {
+        #if DEBUG
+        print("👍🏻👍🏻👍🏻 ViewController is released.")
+        #endif
+    }
+
+    var coun: Int = 0
     @IBAction func remove(_ sender: UIBarButtonItem) {
+        coun += 1
         view.bs.reload()
     }
 
@@ -49,6 +57,23 @@ extension ViewController: BlankSlateDataSource, BlankSlateDelegate {
         ])
     }
 
+    func buttonTitle(forBlankSlate view: UIView, for state: UIControl.State) -> NSAttributedString? {
+        let text = "Add a New Color"
+        var color: UIColor
+        if state == .highlighted {
+            color = UIColor(red: 106 / 255.0, green: 187 / 255.0, blue: 227 / 255.0, alpha: 1.0)
+        } else {
+            color = UIColor(red: 44 / 255.0, green: 137 / 255.0, blue: 202 / 255.0, alpha: 1.0)
+        }
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        return NSAttributedString(string: text, attributes: [
+            .font: UIFont.systemFont(ofSize: 14.0),
+            .foregroundColor: color,
+            .paragraphStyle: paragraphStyle
+        ])
+    }
+
     func image(forBlankSlate view: UIView) -> UIImage? {
         UIImage(named: "empty_placeholder")
     }
@@ -63,7 +88,15 @@ extension ViewController: BlankSlateDataSource, BlankSlateDelegate {
         print(#function)
     }
 
+    func blankSlate(_ view: UIView, didTapButton sender: UIButton) {
+        print(#function)
+    }
+
     func fadeInDuration(forBlankSlate view: UIView) -> TimeInterval {
         0.3
+    }
+
+    func layout(forBlankSlate view: UIView, for element: BlankSlate.Element) -> BlankSlate.Layout {
+        coun.isMultiple(of: 2) ? .init() : .init(edgeInsets: .init(top: 40, left: 20, bottom: 40, right: 20))
     }
 }

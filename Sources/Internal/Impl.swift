@@ -64,135 +64,138 @@ extension UIView {
         }
     }
 
+    var blankSlateView: BlankSlate.View? {
+        get { objc_getAssociatedObject(self, &kBlankSlateViewKey) as? BlankSlate.View }
+        set { objc_setAssociatedObject(self, &kBlankSlateViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+
     var isBlankSlateVisible: Bool {
         guard let view = objc_getAssociatedObject(self, &kBlankSlateViewKey) as? BlankSlate.View else { return false }
         return view.isHidden == false
     }
 
+    func dismissBlankSlateIfNeeded() {
+        guard let blankSlateView else { return }
+        blankSlateDelegate?.blankSlateWillDisappear(self) // Notifies that the empty dataset view will disappear
+
+        blankSlateView.prepareForReuse()
+        blankSlateView.removeFromSuperview()
+        self.blankSlateView = nil
+
+        if let scrollView = self as? UIScrollView {
+            scrollView.isScrollEnabled = blankSlateDelegate?.shouldAllowScrollAfterBlankSlateDisappear(scrollView) ?? true
+        }
+        blankSlateDelegate?.blankSlateDidDisappear(self) // Notifies that the empty dataset view did disappear
+    }
+
     func reloadBlankSlateIfNeeded() {
         guard let blankSlateDataSource else {
-            dismissBlankSlateIfNeeded()
-            return
+            return dismissBlankSlateIfNeeded()
         }
 
         if ((blankSlateDelegate?.blankSlateShouldDisplay(self) ?? true) && (itemsCount == 0))
             || (blankSlateDelegate?.blankSlateShouldBeForcedToDisplay(self) ?? false) {
-            let view = blankSlateView ?? makeBlankSlateView()
-
             blankSlateDelegate?.blankSlateWillAppear(self) // Notifies that the empty dataset view will appear
 
-            view.fadeInDuration = blankSlateDataSource.fadeInDuration(forBlankSlate: self) // Configure empty dataset fade in display
-
-            if view.superview == nil {
-                if subviews.count > 1 {
-                    let index = blankSlateDelegate?.blankSlateShouldBeInsertAtIndex(self) ?? 0
-                    if index >= 0 && index < subviews.count {
-                        insertSubview(view, at: index)
-                    } else {
-                        addSubview(view)
-                    }
-                } else {
-                    addSubview(view)
-                }
-            }
-
-            // Removing view resetting the view and its constraints it very important to guarantee a good state
-            view.prepareForReuse()
-
-            // If a non-nil custom view is available, let's configure it instead
-            if let customView = blankSlateDataSource.customView(forBlankSlate: self) {
-                view.setCustomView(customView, layout: blankSlateDataSource.layout(forBlankSlate: self, for: .custom))
-            } else {
-                // Configure Image
-                if let image = blankSlateDataSource.image(forBlankSlate: self) {
-                    let tintColor = blankSlateDataSource.imageTintColor(forBlankSlate: self)
-                    let imageView = view.createImageView(with: blankSlateDataSource.layout(forBlankSlate: self, for: .image))
-                    imageView.image = image.withRenderingMode(tintColor != nil ? .alwaysTemplate : .alwaysOriginal)
-                    imageView.tintColor = tintColor
-                    imageView.alpha = blankSlateDataSource.imageAlpha(forBlankSlate: self)
-
-                    // Configure image view animation
-                    if let animation = blankSlateDataSource.imageAnimation(forBlankSlate: self) {
-                        imageView.layer.add(animation, forKey: kEmptyImageViewAnimationKey)
-                    } else if imageView.layer.animation(forKey: kEmptyImageViewAnimationKey) != nil {
-                        imageView.layer.removeAnimation(forKey: kEmptyImageViewAnimationKey)
-                    }
-                }
-
-                // Configure title label
-                if let titleString = blankSlateDataSource.title(forBlankSlate: self) {
-                    view.createTitleLabel(with: blankSlateDataSource.layout(forBlankSlate: self, for: .title)).attributedText = titleString
-                }
-
-                // Configure detail label
-                if let detailString = blankSlateDataSource.detail(forBlankSlate: self) {
-                    view.createDetailLabel(with: blankSlateDataSource.layout(forBlankSlate: self, for: .title)).attributedText = detailString
-                }
-
-                // Configure button
-                if let buttonImage = blankSlateDataSource.buttonImage(forBlankSlate: self, for: .normal) {
-                    let button = view.createButton(with: blankSlateDataSource.layout(forBlankSlate: self, for: .button))
-                    button.setImage(buttonImage, for: .normal)
-                    button.setImage(blankSlateDataSource.buttonImage(forBlankSlate: self, for: .highlighted), for: .highlighted)
-                    blankSlateDataSource.blankSlate(self, configure: button)
-                } else if let titleString = blankSlateDataSource.buttonTitle(forBlankSlate: self, for: .normal) {
-                    let button = view.createButton(with: blankSlateDataSource.layout(forBlankSlate: self, for: .button))
-                    button.setAttributedTitle(titleString, for: .normal)
-                    button.setAttributedTitle(blankSlateDataSource.buttonTitle(forBlankSlate: self, for: .highlighted), for: .highlighted)
-                    button.setBackgroundImage(blankSlateDataSource.buttonBackgroundImage(forBlankSlate: self, for: .normal), for: .normal)
-                    button.setBackgroundImage(blankSlateDataSource.buttonBackgroundImage(forBlankSlate: self, for: .highlighted), for: .highlighted)
-                    blankSlateDataSource.blankSlate(self, configure: button)
-                }
-            }
-
-            // Configure offset
-            view.offset = blankSlateDataSource.offset(forBlankSlate: self)
-
-            // Configure the empty dataset view
-            view.backgroundColor = blankSlateDataSource.backgroundColor(forBlankSlate: self) ?? .clear
-            if let backgroundGradient = blankSlateDataSource.backgroundGradient(forBlankSlate: self) {
-                view.layer.insertSublayer(backgroundGradient, at: 0)
-            }
-            view.isHidden = view.elements.isEmpty
-            view.clipsToBounds = true
-            view.isUserInteractionEnabled = blankSlateDelegate?.blankSlateShouldAllowTouch(self) ?? true // Configure empty dataset userInteraction permission
-            if !view.isHidden { view.setupConstraints() }
-
-            UIView.performWithoutAnimation { view.layoutIfNeeded() }
-
-            if let scrollView = self as? UIScrollView {
-                scrollView.isScrollEnabled = blankSlateDelegate?.blankSlateShouldAllowScroll(scrollView) ?? false // Configure scroll permission
-            }
+            configureView(blankSlateView ?? makeBlankSlateView(), with: blankSlateDataSource)
 
             blankSlateDelegate?.blankSlateDidAppear(self) // Notifies that the empty dataset view did appear
         } else if isBlankSlateVisible {
             dismissBlankSlateIfNeeded()
         }
     }
-    // swiftlint:enable cyclomatic_complexity function_body_length
 
-    func dismissBlankSlateIfNeeded() {
-        var isBlankSlateVisible = false
-        if let blankSlateView {
-            isBlankSlateVisible = true
-            blankSlateDelegate?.blankSlateWillDisappear(self) // Notifies that the empty dataset view will disappear
+    private func configureView(_ view: BlankSlate.View, with blankSlateDataSource: BlankSlateDataSource) {
+        var fadeInDuration: TimeInterval = 0.0
+        if view.superview == nil {
+            // Configure empty dataset fade in display. Only the first "addSubview" requires gradient animation.
+            fadeInDuration = blankSlateDataSource.fadeInDuration(forBlankSlate: self)
+            view.alpha = 0.0
 
-            blankSlateView.prepareForReuse()
-            blankSlateView.removeFromSuperview()
-            self.blankSlateView = nil
+            if subviews.count > 1 && blankSlateDelegate?.blankSlateShouldBeInsertedAtBack(self) ?? true {
+                insertSubview(view, at: 0)
+            } else {
+                addSubview(view)
+            }
         }
 
-        if isBlankSlateVisible {
-            if let scrollView = self as? UIScrollView {
-                scrollView.isScrollEnabled = blankSlateDelegate?.shouldAllowScrollAfterBlankSlateDisappear(scrollView) ?? true
-            }
-            blankSlateDelegate?.blankSlateDidDisappear(self) // Notifies that the empty dataset view did disappear
+        // Removing view resetting the view and its constraints it very important to guarantee a good state
+        view.prepareForReuse()
+
+        configureElements(for: view, with: blankSlateDataSource)
+
+        // Configure offset
+        view.alignment = blankSlateDataSource.alignment(forBlankSlate: self)
+
+        // Configure the empty dataset view
+        view.backgroundColor = blankSlateDataSource.backgroundColor(forBlankSlate: self) ?? .clear
+        if let backgroundGradient = blankSlateDataSource.backgroundGradient(forBlankSlate: self) {
+            view.layer.insertSublayer(backgroundGradient, at: 0)
+        }
+        view.isHidden = false
+        view.isUserInteractionEnabled = blankSlateDelegate?.blankSlateShouldAllowTouch(self) ?? true // Configure empty dataset userInteraction permission
+        view.setupConstraints()
+
+        UIView.performWithoutAnimation { view.layoutIfNeeded() }
+
+        if let scrollView = self as? UIScrollView {
+            scrollView.isScrollEnabled = blankSlateDelegate?.blankSlateShouldAllowScroll(scrollView) ?? false // Configure scroll permission
+        }
+
+        guard fadeInDuration > 0.0 else {
+            return view.alpha = 1.0
+        }
+        UIView.animate(withDuration: fadeInDuration) {
+            view.alpha = 1.0
         }
     }
 
-    var blankSlateView: BlankSlate.View? {
-        get { objc_getAssociatedObject(self, &kBlankSlateViewKey) as? BlankSlate.View }
-        set { objc_setAssociatedObject(self, &kBlankSlateViewKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    private func configureElements(for view: BlankSlate.View, with blankSlateDataSource: BlankSlateDataSource) {
+        // If a non-nil custom view is available, let's configure it instead
+        if let customView = blankSlateDataSource.customView(forBlankSlate: self) {
+            return view.setCustomView(customView, layout: blankSlateDataSource.layout(forBlankSlate: self, for: .custom))
+        }
+
+        // Configure Image
+        if let image = blankSlateDataSource.image(forBlankSlate: self) {
+            let tintColor = blankSlateDataSource.imageTintColor(forBlankSlate: self)
+            let imageView = view.makeImageView(with: blankSlateDataSource.layout(forBlankSlate: self, for: .image))
+            imageView.image = image.withRenderingMode(tintColor != nil ? .alwaysTemplate : .alwaysOriginal)
+            imageView.tintColor = tintColor
+            imageView.alpha = blankSlateDataSource.imageAlpha(forBlankSlate: self)
+
+            // Configure image view animation
+            if let animation = blankSlateDataSource.imageAnimation(forBlankSlate: self) {
+                imageView.layer.add(animation, forKey: kEmptyImageViewAnimationKey)
+            } else if imageView.layer.animation(forKey: kEmptyImageViewAnimationKey) != nil {
+                imageView.layer.removeAnimation(forKey: kEmptyImageViewAnimationKey)
+            }
+        }
+
+        // Configure title label
+        if let titleString = blankSlateDataSource.title(forBlankSlate: self) {
+            view.makeTitleLabel(with: blankSlateDataSource.layout(forBlankSlate: self, for: .title)).attributedText = titleString
+        }
+
+        // Configure detail label
+        if let detailString = blankSlateDataSource.detail(forBlankSlate: self) {
+            view.makeDetailLabel(with: blankSlateDataSource.layout(forBlankSlate: self, for: .title)).attributedText = detailString
+        }
+
+        // Configure button
+        if let buttonImage = blankSlateDataSource.buttonImage(forBlankSlate: self, for: .normal) {
+            let button = view.makeButton(with: blankSlateDataSource.layout(forBlankSlate: self, for: .button))
+            button.setImage(buttonImage, for: .normal)
+            button.setImage(blankSlateDataSource.buttonImage(forBlankSlate: self, for: .highlighted), for: .highlighted)
+            blankSlateDataSource.blankSlate(self, configure: button)
+        } else if let titleString = blankSlateDataSource.buttonTitle(forBlankSlate: self, for: .normal) {
+            let button = view.makeButton(with: blankSlateDataSource.layout(forBlankSlate: self, for: .button))
+            button.setAttributedTitle(titleString, for: .normal)
+            button.setAttributedTitle(blankSlateDataSource.buttonTitle(forBlankSlate: self, for: .highlighted), for: .highlighted)
+            button.setBackgroundImage(blankSlateDataSource.buttonBackgroundImage(forBlankSlate: self, for: .normal), for: .normal)
+            button.setBackgroundImage(blankSlateDataSource.buttonBackgroundImage(forBlankSlate: self, for: .highlighted), for: .highlighted)
+            blankSlateDataSource.blankSlate(self, configure: button)
+        }
     }
 
     private var itemsCount: Int {
@@ -221,11 +224,11 @@ extension UIView {
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.isHidden = true
         view.isTouchAllowed = { [weak self] in
-            guard let self, let blankSlateDelegate = blankSlateDelegate else { return true }
+            guard let self, let blankSlateDelegate else { return true }
             return blankSlateDelegate.blankSlateShouldAllowTouch(self)
         }
         view.shouldRecognizeSimultaneously = { [weak self](other, of) in
-            guard let self, let blankSlateDelegate = blankSlateDelegate else { return false }
+            guard let self, let blankSlateDelegate else { return false }
             if let scrollView = blankSlateDelegate as? UIScrollView, scrollView == self {
                 return false
             }
@@ -236,7 +239,7 @@ extension UIView {
             return false
         }
         view.didTap = { [weak self] in
-            guard let self, let blankSlateDelegate = blankSlateDelegate else { return }
+            guard let self, let blankSlateDelegate else { return }
             if let button = $0 as? UIButton {
                 return blankSlateDelegate.blankSlate(self, didTapButton: button)
             }

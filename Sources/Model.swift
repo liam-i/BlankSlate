@@ -35,6 +35,7 @@ extension BlankSlate {
     /// Control layout constraints
     public struct Layout {
         /// Padding around the edges of the control.
+        /// - Note: UIEdgeInsets.bottom is only valid when the value of BlankSlate.Element is custom and button.
         public var edgeInsets: UIEdgeInsets
         /// The height of the control. Default: `nil`, represents adaptive height
         public var height: CGFloat?
@@ -55,5 +56,24 @@ extension BlankSlate {
             populator(&self)
             return self
         }
+    }
+
+    /// The vertical alignment of content within the BlankSlateView’s bounds.
+    public enum Alignment {
+        /// Aligns the content vertically in the center of the `BlankSlateView` (the default).
+        /// - Parameters:
+        ///   - x: A offset for horizontal alignment of the content. `Default to 0.0`.
+        ///   - y: A offset for vertically alignment of the content. `Default to 0.0`.
+        case center(x: CGFloat = 0.0, y: CGFloat = 0.0)
+        /// Aligns the content vertically at the top in the `BlankSlateView`.
+        /// - Parameters:
+        ///   - x: A offset for horizontal alignment of the content. `Default to 0.0`.
+        ///   - y: A offset for vertically alignment of the content. `Default to 0.0`.
+        case top(x: CGFloat = 0.0, y: CGFloat = 0.0)
+        /// Aligns the content vertically at the bottom in the `BlankSlateView`.
+        /// - Parameters:
+        ///   - x: A offset for horizontal alignment of the content. `Default to 0.0`.
+        ///   - y: A offset for vertically alignment of the content. `Default to 0.0`.
+        case bottom(x: CGFloat = 0.0, y: CGFloat = 0.0)
     }
 }

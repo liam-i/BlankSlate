@@ -63,8 +63,8 @@ extension BlankSlate.Extension where ExtendedViewType: UIView {
         set { view.dataLoadStatus = newValue }
     }
 
-    /// Blank slate content view
-    public var contentView: UIView? {
+    /// Blank slate view
+    public var view: UIView? {
         view.blankSlateView
     }
 

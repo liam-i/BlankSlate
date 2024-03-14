@@ -10,6 +10,7 @@
 		0C1D5CE02B9EF1F300552C87 /* ApplicationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1D5CDF2B9EF1F300552C87 /* ApplicationsTableViewController.swift */; };
 		0C1D5CE22B9EF25000552C87 /* ApplicationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1D5CE12B9EF25000552C87 /* ApplicationDetailViewController.swift */; };
 		0C1D5CE62B9EF71A00552C87 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C1D5CE52B9EF71A00552C87 /* MainViewController.swift */; };
+		0C3A8D3A2BA31A2200E64966 /* CustomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3A8D392BA31A2200E64966 /* CustomViewController.swift */; };
 		0C7B49E42B9F1354000B20B0 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7B49E32B9F1354000B20B0 /* CollectionViewController.swift */; };
 		0C7B49E62B9F136E000B20B0 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7B49E52B9F136E000B20B0 /* SearchViewController.swift */; };
 		0C7B49E82B9F1380000B20B0 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7B49E72B9F1380000B20B0 /* TableViewController.swift */; };
@@ -54,6 +55,7 @@
 		0C1D5CDF2B9EF1F300552C87 /* ApplicationsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationsTableViewController.swift; sourceTree = "<group>"; };
 		0C1D5CE12B9EF25000552C87 /* ApplicationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDetailViewController.swift; sourceTree = "<group>"; };
 		0C1D5CE52B9EF71A00552C87 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		0C3A8D392BA31A2200E64966 /* CustomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomViewController.swift; sourceTree = "<group>"; };
 		0C7B49E32B9F1354000B20B0 /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		0C7B49E52B9F136E000B20B0 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		0C7B49E72B9F1380000B20B0 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
@@ -152,6 +154,14 @@
 			path = Applications;
 			sourceTree = "<group>";
 		};
+		0C3A8D382BA31A1000E64966 /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				0C3A8D392BA31A2200E64966 /* CustomViewController.swift */,
+			);
+			path = CustomView;
+			sourceTree = "<group>";
+		};
 		0C7B49E12B9F106F000B20B0 /* WebView */ = {
 			isa = PBXGroup;
 			children = (
@@ -245,6 +255,7 @@
 				0C1D5CE52B9EF71A00552C87 /* MainViewController.swift */,
 				0C1D5CE42B9EF44100552C87 /* Applications */,
 				0C7B49E22B9F12E1000B20B0 /* Colors */,
+				0C3A8D382BA31A1000E64966 /* CustomView */,
 				0C7B49E12B9F106F000B20B0 /* WebView */,
 				0CD2E6652BA154AD00214987 /* ScrollView */,
 				0C12E0242BA19D0B009496E6 /* View */,
@@ -541,6 +552,7 @@
 				0C1D5CE02B9EF1F300552C87 /* ApplicationsTableViewController.swift in Sources */,
 				0C7B49F22B9F1F76000B20B0 /* TabBarController.swift in Sources */,
 				0C1D5CE22B9EF25000552C87 /* ApplicationDetailViewController.swift in Sources */,
+				0C3A8D3A2BA31A2200E64966 /* CustomViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
