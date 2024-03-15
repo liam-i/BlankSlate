@@ -546,10 +546,10 @@ extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDeleg
 
     func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment {
         if application.type == .kickstarter {
-            return .top(y: 10)
+            return .top(.offset(y: 10))
         }
         if application.type == .twitter {
-            return .bottom(y: 20)
+            return .bottom(.offset(y: 20))
         }
         return .center()
     }

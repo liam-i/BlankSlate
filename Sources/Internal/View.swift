@@ -185,15 +185,15 @@ extension BlankSlate {
             
             let offsetX: CGFloat
             switch alignment {
-            case let .center(x, y):
-                offsetX = x
-                constraints.append(contentView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: y))
-            case let .top(x, y):
-                offsetX = x
-                constraints.append(contentView.topAnchor.constraint(equalTo: topAnchor, constant: y))
-            case let .bottom(x, y):
-                offsetX = x
-                constraints.append(contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -y))
+            case let .center(offset):
+                offsetX = offset.x
+                constraints.append(contentView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: offset.y))
+            case let .top(offset):
+                offsetX = offset.x
+                constraints.append(contentView.topAnchor.constraint(equalTo: topAnchor, constant: offset.y))
+            case let .bottom(offset):
+                offsetX = offset.x
+                constraints.append(contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -offset.y))
             }
             constraints.append(contentView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: offsetX))
 

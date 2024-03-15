@@ -12,7 +12,7 @@ extension BlankSlate {
     public enum DataLoadStatus {
         /// Data is loading.
         case loading
-        /// Data loaded successfully. (The data is empty or not empty)
+        /// Data loaded successfully. (Data is empty or not empty)
         case success
         /// Data loading failed.
         case failure
@@ -61,19 +61,20 @@ extension BlankSlate {
     /// The vertical alignment of content within the BlankSlateView’s bounds.
     public enum Alignment {
         /// Aligns the content vertically in the center of the `BlankSlateView` (the default).
-        /// - Parameters:
-        ///   - x: A offset for horizontal alignment of the content. `Default to 0.0`.
-        ///   - y: A offset for vertically alignment of the content. `Default to 0.0`.
-        case center(x: CGFloat = 0.0, y: CGFloat = 0.0)
+        /// - Parameter offset: A offset for horizontal and vertically alignment of the content. `Default to .zero`.
+        case center(_ offset: CGPoint = .zero)
         /// Aligns the content vertically at the top in the `BlankSlateView`.
-        /// - Parameters:
-        ///   - x: A offset for horizontal alignment of the content. `Default to 0.0`.
-        ///   - y: A offset for vertically alignment of the content. `Default to 0.0`.
-        case top(x: CGFloat = 0.0, y: CGFloat = 0.0)
+        /// - Parameter offset: A offset for horizontal and vertically alignment of the content. `Default to .zero`.
+        case top(_ offset: CGPoint = .zero)
         /// Aligns the content vertically at the bottom in the `BlankSlateView`.
-        /// - Parameters:
-        ///   - x: A offset for horizontal alignment of the content. `Default to 0.0`.
-        ///   - y: A offset for vertically alignment of the content. `Default to 0.0`.
-        case bottom(x: CGFloat = 0.0, y: CGFloat = 0.0)
+        /// - Parameter offset: A offset for horizontal and vertically alignment of the content. `Default to .zero`.
+        case bottom(_ offset: CGPoint = .zero)
+    }
+}
+
+extension CGPoint {
+    /// Creates a point with coordinates specified as floating-point values.
+    public static func offset(y: CGFloat, x: CGFloat = 0.0) -> CGPoint {
+        .init(x: x, y: y)
     }
 }
