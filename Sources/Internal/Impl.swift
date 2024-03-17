@@ -63,8 +63,8 @@ extension UIView {
     }
 
     var isBlankSlateVisible: Bool {
-        guard let view = objc_getAssociatedObject(self, &kBlankSlateViewKey) as? BlankSlate.View else { return false }
-        return view.isHidden == false
+        guard let blankSlateView else { return false }
+        return blankSlateView.isHidden == false
     }
 
     func dismissBlankSlateIfNeeded() {

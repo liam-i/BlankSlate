@@ -17,7 +17,7 @@ public protocol BlankSlateDelegate: AnyObject {
     /// Asks the delegate to know if the empty dataset should be rendered and displayed. `Default to true`
     func blankSlateShouldDisplay(_ view: UIView) -> Bool
 
-    /// Ask the delegate whether a BlankSlateView should be inserted behind a sibling view when subviews.count > 1?
+    /// Ask the delegate whether a BlankSlateView should be inserted behind a sibling view when subviews.count > 1? `Default to true`
     func blankSlateShouldBeInsertedAtBack(_ view: UIView) -> Bool
 
     /// Asks the delegate for touch permission. `Default to true`
