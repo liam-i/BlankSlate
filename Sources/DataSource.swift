@@ -69,7 +69,7 @@ public protocol BlankSlateDataSource: AnyObject {
     func layout(forBlankSlate view: UIView, for element: BlankSlate.Element) -> BlankSlate.Layout
 
     /// Requests the duration of the fade-in animation from the data source when displaying an empty dataset. `Default to 0.0`
-    /// - Returns: If `fadeInDuration <= 0.0` no animation is performed.
+    /// - Note: If `fadeInDuration <= 0.0` no animation is performed.
     func fadeInDuration(forBlankSlate view: UIView) -> TimeInterval
 }
 
