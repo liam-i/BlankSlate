@@ -49,6 +49,17 @@ public protocol BlankSlateDataSource: AnyObject {
     /// - Parameter button: Buttons that need to be configured.
     func blankSlate(_ view: UIView, configure button: UIButton)
 
+    /// Asks the data source for a custom view to be displayed instead of the default views such as labels, imageview and button. `Default to nil`.
+    /// Use this method to show an activity view indicator for loading feedback, or for complete custom empty data set.
+    /// - Note: The custom view.
+    func customView(forBlankSlate view: UIView) -> UIView?
+
+    /// Asks the layout constraint value of `BlankSlate.Element` from the data source.
+    func layout(forBlankSlate view: UIView, for element: BlankSlate.Element) -> BlankSlate.Layout
+
+    /// Ask the data source for the vertical alignment of the content. `Default to .center()`.
+    func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment
+
     /// Asks the data source for the background color of the dataset. `Detail to .clear`
     /// - Note: A color to be applied to the dataset background view.
     func backgroundColor(forBlankSlate view: UIView) -> UIColor?
@@ -56,17 +67,6 @@ public protocol BlankSlateDataSource: AnyObject {
     /// Asks the data source for the background gradient of the dataset. `Default to nil`
     /// - Returns: A gradient to be applied to the dataset background view.
     func backgroundGradient(forBlankSlate view: UIView) -> CAGradientLayer?
-
-    /// Asks the data source for a custom view to be displayed instead of the default views such as labels, imageview and button. `Default to nil`.
-    /// Use this method to show an activity view indicator for loading feedback, or for complete custom empty data set.
-    /// - Note: The custom view.
-    func customView(forBlankSlate view: UIView) -> UIView?
-
-    /// Ask the data source for the vertical alignment of the content. `Default to .center()`.
-    func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment
-
-    /// Asks the layout constraint value of `BlankSlate.Element` from the data source.
-    func layout(forBlankSlate view: UIView, for element: BlankSlate.Element) -> BlankSlate.Layout
 
     /// Requests the duration of the fade-in animation from the data source when displaying an empty dataset. `Default to 0.0`
     /// - Note: If `fadeInDuration <= 0.0` no animation is performed.
@@ -88,14 +88,12 @@ extension BlankSlateDataSource {
     public func buttonImage(forBlankSlate view: UIView, for state: UIControl.State) -> UIImage? { nil }
     public func blankSlate(_ view: UIView, configure button: UIButton) { }
 
-    public func backgroundColor(forBlankSlate view: UIView) -> UIColor? { .clear }
-    public func backgroundGradient(forBlankSlate view: UIView) -> CAGradientLayer? { nil }
-
     public func customView(forBlankSlate view: UIView) -> UIView? { nil }
-
-    public func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment { .center() }
 
     public func layout(forBlankSlate view: UIView, for element: BlankSlate.Element) -> BlankSlate.Layout { .init() }
 
+    public func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment { .center() }
+    public func backgroundColor(forBlankSlate view: UIView) -> UIColor? { .clear }
+    public func backgroundGradient(forBlankSlate view: UIView) -> CAGradientLayer? { nil }
     public func fadeInDuration(forBlankSlate view: UIView) -> TimeInterval { 0.0 }
 }
