@@ -6,6 +6,8 @@
 //  Copyright © 2020 Liam. All rights reserved.
 //
 
+import UIKit
+
 /// A drop-in UIView extension for showing empty datasets whenever the view has no content to display.
 /// - Attention: It will work automatically, by just conforming to `BlankSlateDataSource`, and returning the data you want to show.
 public struct BlankSlate {
