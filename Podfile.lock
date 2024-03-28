@@ -1,5 +1,5 @@
 PODS:
-  - BlankSlate (0.6.3)
+  - BlankSlate (0.6.5)
 
 DEPENDENCIES:
   - BlankSlate (from `./`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "./"
 
 SPEC CHECKSUMS:
-  BlankSlate: 51e8f665f3d2e67014f157e303df60505b26276d
+  BlankSlate: e8870919b21ab092adcf570cb552ee9e7a1835df
 
 PODFILE CHECKSUM: 1ba5dbdee9e2cd771689764549157cb618df3f82
 
