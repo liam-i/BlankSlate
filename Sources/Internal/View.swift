@@ -89,7 +89,7 @@ extension BlankSlate {
             addGestureRecognizer(tap)
             tapGesture = tap
 
-#if !os(tvOS)
+#if os(iOS)
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(updateForCurrentOrientation),
@@ -104,7 +104,7 @@ extension BlankSlate {
         }
 
         deinit {
-#if !os(tvOS)
+#if os(iOS)
             NotificationCenter.default.removeObserver(self)
 #endif
 #if DEBUG

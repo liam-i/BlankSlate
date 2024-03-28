@@ -5,7 +5,11 @@ import PackageDescription
 
 let package = Package(
     name: "BlankSlate",
-    platforms: [.iOS(.v12), .tvOS(.v12)],
+    platforms: [
+        .iOS(.v12),
+        .tvOS(.v12),
+        .visionOS(.v1)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(name: "BlankSlate", targets: ["BlankSlate"])

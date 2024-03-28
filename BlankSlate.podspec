@@ -14,6 +14,7 @@ It will work automatically, by just conforming to BlankSlateDataSource, and retu
 
   s.ios.deployment_target = '12.0'
   s.tvos.deployment_target = '12.0'
+  s.visionos.deployment_target = "1.1"
 
   s.swift_versions = ['5.0']
 
