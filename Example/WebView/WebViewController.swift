@@ -11,7 +11,7 @@ import WebKit
 import BlankSlate
 //import FlyHUD
 
-class WebViewController: UIViewController, BlankSlateDataSource, BlankSlateDelegate {
+class WebViewController: UIViewController, BlankSlate.DataSource, BlankSlate.Delegate {
     private var webView: WKWebView = WKWebView(frame: UIScreen.main.bounds)
 
     override func viewDidLoad() {

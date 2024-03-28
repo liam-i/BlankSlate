@@ -99,7 +99,7 @@ class CollectionViewController: UICollectionViewController, UICollectionViewDele
     }
 }
 
-extension CollectionViewController: BlankSlateDataSource, BlankSlateDelegate {
+extension CollectionViewController: BlankSlate.DataSource, BlankSlate.Delegate {
     func title(forBlankSlate view: UIView) -> NSAttributedString? {
         let text = "No colors loaded"
         let paragraphStyle = NSMutableParagraphStyle()

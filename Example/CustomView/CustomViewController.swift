@@ -28,7 +28,7 @@ class CustomViewController: UIViewController {
     }
 }
 
-extension CustomViewController: BlankSlateDataSource, BlankSlateDelegate {
+extension CustomViewController: BlankSlate.DataSource, BlankSlate.Delegate {
     func backgroundColor(forBlankSlate view: UIView) -> UIColor? { .orange }
     func alignment(forBlankSlate view: UIView) -> BlankSlate.Alignment { .center() }
     func fadeInDuration(forBlankSlate view: UIView) -> TimeInterval { 0.5 }

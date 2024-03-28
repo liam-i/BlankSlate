@@ -32,7 +32,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: BlankSlateDataSource, BlankSlateDelegate {
+extension ViewController: BlankSlate.DataSource, BlankSlate.Delegate {
     func title(forBlankSlate view: UIView) -> NSAttributedString? {
         let text = "No colors loaded"
         let paragraphStyle = NSMutableParagraphStyle()

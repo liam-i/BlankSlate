@@ -72,7 +72,7 @@ class ScrollViewController: UIViewController {
     }
 }
 
-extension ScrollViewController: BlankSlateDataSource, BlankSlateDelegate {
+extension ScrollViewController: BlankSlate.DataSource, BlankSlate.Delegate {
     func title(forBlankSlate view: UIView) -> NSAttributedString? {
         let text = "No colors loaded"
         let paragraphStyle = NSMutableParagraphStyle()

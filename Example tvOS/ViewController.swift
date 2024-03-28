@@ -9,7 +9,7 @@
 import UIKit
 import BlankSlate
 
-class ViewController: UIViewController, BlankSlateDataSource, BlankSlateDelegate {
+class ViewController: UIViewController, BlankSlate.DataSource, BlankSlate.Delegate {
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {

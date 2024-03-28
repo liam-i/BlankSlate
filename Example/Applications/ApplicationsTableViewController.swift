@@ -89,7 +89,7 @@ extension ApplicationsTableViewController: UISearchResultsUpdating {
     }
 }
 
-extension ApplicationsTableViewController: BlankSlateDataSource, BlankSlateDelegate {
+extension ApplicationsTableViewController: BlankSlate.DataSource, BlankSlate.Delegate {
     func title(forBlankSlate view: UIView) -> NSAttributedString? {
         NSAttributedString(string: "No Application Found")
     }

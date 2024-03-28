@@ -9,7 +9,7 @@
 import UIKit
 
 /// A drop-in UIView extension for showing empty datasets whenever the view has no content to display.
-/// - Attention: It will work automatically, by just conforming to `BlankSlateDataSource`, and returning the data you want to show.
+/// - Attention: It will work automatically, by just conforming to `BlankSlate.DataSource`, and returning the data you want to show.
 public struct BlankSlate {
     /// Type that acts as a generic extension point for all `BlankSlateExtended` types.
     public struct Extension<ExtendedViewType> {
@@ -41,19 +41,19 @@ extension BlankSlate.Extended {
 extension UIView: BlankSlate.Extended {}
 extension BlankSlate.Extension where ExtendedViewType: UIView {
     /// The empty datasets data source.
-    public weak var dataSource: BlankSlateDataSource? {
+    public weak var dataSource: BlankSlate.DataSource? {
         get { view.blankSlateDataSource }
         set { view.blankSlateDataSource = newValue }
     }
 
     /// The empty datasets delegate.
-    public weak var delegate: BlankSlateDelegate? {
+    public weak var delegate: BlankSlate.Delegate? {
         get { view.blankSlateDelegate }
         set { view.blankSlateDelegate = newValue }
     }
 
-    /// Set `BlankSlateDataSource` & `BlankSlateDelegate` at the same time.
-    public func setDataSourceAndDelegate(_ newValue: (BlankSlateDataSource & BlankSlateDelegate)?) {
+    /// Set `BlankSlate.DataSource` & `BlankSlate.Delegate` at the same time.
+    public func setDataSourceAndDelegate(_ newValue: (BlankSlate.DataSource & BlankSlate.Delegate)?) {
         view.blankSlateDataSource = newValue
         view.blankSlateDelegate = newValue
     }

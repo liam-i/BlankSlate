@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary          = 'A drop-in UIView extension for showing empty datasets whenever the view has no content to display.'
 
 s.description      = <<-DESC
-It will work automatically, by just conforming to BlankSlateDataSource, and returning the data you want to show. The reloadData() call will be observed so the empty dataset will be configured whenever needed.
+It will work automatically, by just conforming to BlankSlate.DataSource, and returning the data you want to show. The reloadData() call will be observed so the empty dataset will be configured whenever needed.
                        DESC
 
   s.homepage         = 'https://github.com/liam-i/BlankSlate'

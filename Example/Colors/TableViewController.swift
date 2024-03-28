@@ -139,7 +139,7 @@ class TableViewController: UITableViewController {
     }
 }
 
-extension TableViewController: BlankSlateDataSource, BlankSlateDelegate {
+extension TableViewController: BlankSlate.DataSource, BlankSlate.Delegate {
     func title(forBlankSlate view: UIView) -> NSAttributedString? {
         let text = isFiltering() ? "No colors Found" : "No colors loaded"
         let paragraphStyle = NSMutableParagraphStyle()

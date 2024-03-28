@@ -194,7 +194,7 @@ class ApplicationDetailViewController: UITableViewController {
     }
 }
 
-extension ApplicationDetailViewController: BlankSlateDataSource, BlankSlateDelegate {
+extension ApplicationDetailViewController: BlankSlate.DataSource, BlankSlate.Delegate {
     func title(forBlankSlate view: UIView) -> NSAttributedString? {
         var text: String
         var font: UIFont?

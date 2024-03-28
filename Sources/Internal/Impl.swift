@@ -9,10 +9,10 @@
 import UIKit
 
 /// A drop-in UIView extension for showing empty datasets whenever the view has no content to display.
-/// - Attention: It will work automatically, by just conforming to `BlankSlateDataSource`, and returning the data you want to show.
+/// - Attention: It will work automatically, by just conforming to `BlankSlate.DataSource`, and returning the data you want to show.
 extension UIView {
-    weak var blankSlateDataSource: BlankSlateDataSource? {
-        get { (objc_getAssociatedObject(self, &kBlankSlateDataSourceKey) as? WeakObject)?.value as? BlankSlateDataSource }
+    weak var blankSlateDataSource: BlankSlate.DataSource? {
+        get { (objc_getAssociatedObject(self, &kBlankSlateDataSourceKey) as? WeakObject)?.value as? BlankSlate.DataSource }
         set {
             if newValue == nil || blankSlateDataSource == nil {
                 dismissBlankSlateIfNeeded()
@@ -34,8 +34,8 @@ extension UIView {
         }
     }
 
-    weak var blankSlateDelegate: BlankSlateDelegate? {
-        get { (objc_getAssociatedObject(self, &kBlankSlateDelegateKey) as? WeakObject)?.value as? BlankSlateDelegate }
+    weak var blankSlateDelegate: BlankSlate.Delegate? {
+        get { (objc_getAssociatedObject(self, &kBlankSlateDelegateKey) as? WeakObject)?.value as? BlankSlate.Delegate }
         set {
             if newValue == nil {
                 dismissBlankSlateIfNeeded()
@@ -98,7 +98,7 @@ extension UIView {
         }
     }
 
-    private func configureView(_ view: BlankSlate.View, with blankSlateDataSource: BlankSlateDataSource) {
+    private func configureView(_ view: BlankSlate.View, with blankSlateDataSource: BlankSlate.DataSource) {
         var fadeInDuration: TimeInterval = 0.0
         if view.superview == nil {
             // Configure empty dataset fade in display. Only the first "addSubview" requires gradient animation.
@@ -143,7 +143,7 @@ extension UIView {
         }
     }
 
-    private func configureElements(for view: BlankSlate.View, with blankSlateDataSource: BlankSlateDataSource) {
+    private func configureElements(for view: BlankSlate.View, with blankSlateDataSource: BlankSlate.DataSource) {
         // If a non-nil custom view is available, let's configure it instead
         if let customView = blankSlateDataSource.customView(forBlankSlate: self) {
             return view.setCustomView(customView, layout: blankSlateDataSource.layout(forBlankSlate: self, for: .custom))
