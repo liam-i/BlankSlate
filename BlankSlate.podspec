@@ -11,6 +11,13 @@ It will work automatically, by just conforming to BlankSlate.DataSource, and ret
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Liam' => 'liam_i@163.com' }
   s.source           = { :git => 'https://github.com/liam-i/BlankSlate.git', :tag => s.version.to_s }
+#  s.documentation_url = 'https://liam-i.github.io/BlankSlate/main/documentation/blankslate'
+  s.screenshots  = 'https://raw.githubusercontent.com/wiki/liam-i/BlankSlate/Screenshots/1.png'
+  s.social_media_url   = "https://liam-i.github.io"
+
+  # 1.12.0: Ensure developers won't hit CocoaPods/CocoaPods#11402 with the resource bundle for the privacy manifest.
+  # 1.13.0: visionOS is recognized as a platform.
+  s.cocoapods_version = '>= 1.13.0'
 
   s.ios.deployment_target = '12.0'
   s.tvos.deployment_target = '12.0'

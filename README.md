@@ -75,7 +75,7 @@ end
 And run `pod install`.
 
 > [!IMPORTANT]  
-> CocoaPods 1.14.3 or newer is required.
+> CocoaPods 1.13.0 or newer is required.
 
 ### Carthage
 
