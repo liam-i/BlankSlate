@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'BlankSlate'
-  s.version          = '0.7.0'
+  s.version          = '0.7.1'
   s.summary          = 'A drop-in UIView extension for showing empty datasets whenever the view has no content to display.'
 
 s.description      = <<-DESC
@@ -26,4 +26,6 @@ It will work automatically, by just conforming to BlankSlate.DataSource, and ret
   s.swift_versions = ['5.0']
 
   s.source_files = 'Sources/**/*'
+  
+  s.resource_bundles = {'BlankSlate' => ['Sources/PrivacyInfo.xcprivacy']}
 end
